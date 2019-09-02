@@ -1,0 +1,21 @@
+{
+  "name": "disco",
+  "version": "1.0.0",
+  "description": "Um bot que adicionar cargos no app discord e toca musica nos canais de audio.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "444527298016837634",
+  "license": "ISC",
+  "dependencies": {
+    "add": "^2.0.6",
+    "discord.js": "^11.5.1",
+    "download-file": "^0.1.5",
+    "gif-to-apng": "^0.1.2",
+    "node-opus": "^0.3.2",
+    "uuid": "^3.3.3",
+    "start": "node index"
+  }
+}
