@@ -16,6 +16,6 @@
     "gif-to-apng": "^0.1.2",
     "node-opus": "^0.3.2",
     "uuid": "^3.3.3",
-    "start": "node index"
+    "start": "node bot"
   }
 }

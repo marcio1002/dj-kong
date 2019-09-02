@@ -1,6 +1,7 @@
 const discord = require("discord.js")
 const client = new discord.Client()
 const config = require("./config.json")
+const pacotejson = require("./package.json")
 
 client.on("ready", () => {
     console.log(`Bot foi iniciado, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
@@ -26,7 +27,7 @@ client.on("message", async message => {
 
     if (comando === "ping") {
         const m = await message.channel.send("ping ?")
-        m.edit(` 🏓 pong! A latência é `` ${m.createdTimestamp - message.createdTimestamp}`` ms. A latência  da API  é ${Math.round(client.ping)} ms.`)
+        m.edit(`🏓 pong! A latência é  **${m.createdTimestamp - message.createdTimestamp}** ms. A latência  da API  é **${Math.round(client.ping)}** ms.`)
     }
     if (comando === "") {
         const m = message.channel.send(" Você esqueceu de adicionar os argumentos. Digite **``!dhelp``** para saber mais.")
