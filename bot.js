@@ -111,3 +111,7 @@ client.on("raw", async dados => {
     }
 })
 client.login(config.token)
+
+if(client.login == Error){
+    return client.login(config.token)
+}
