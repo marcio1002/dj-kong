@@ -69,12 +69,48 @@ client.on("message", async message => {
     }
 
     if (comando === "avatar") {
+        let numColor = Math.floor(Math.random() * (23234567 + 3 + 4))
+        console.log(numColor)
         if (mentionUser) {
-
-            message.channel.send(`${memberMentions.user.displayAvatarURL}`)
+            const embed = {
+                "embed": {
+                    "title": "avatar: ``" + memberMentions.user.username + "``",
+                    "color": numColor,
+                    "timestamp": message.createdTimestamp,
+                    "footer": {
+                        "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                        "text": "Ondisco"
+                    },
+                    "image": {
+                        "url": memberMentions.user.displayAvatarURL
+                    },
+                    "author": {
+                        "name": message.author.username,
+                        "icon_url": message.author.displayAvatarURL
+                    }
+                }
+            }
+            message.channel.send(embed)
 
         } else {
-            message.channel.send(`${message.author.displayAvatarURL}`)
+            const embed = {
+                "embed": {
+                    "color": numColor,
+                    "timestamp": message.createdTimestamp,
+                    "footer": {
+                        "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                        "text": "Ondisco"
+                    },
+                    "image": {
+                        "url": message.author.displayAvatarURL
+                    },
+                    "author": {
+                        "name": message.author.username,
+                        "icon_url": message.author.displayAvatarURL
+                    }
+                }
+            }
+            message.channel.send(embed)
         }
 
     }
