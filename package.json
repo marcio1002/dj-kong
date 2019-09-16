@@ -1,5 +1,5 @@
 {
-  "name": "disco",
+  "name": "ondisco",
   "version": "1.0.0",
   "description": "Um bot que adicionar cargos no app discord e toca musica nos canais de audio.",
   "main": "bot.js",
@@ -14,6 +14,7 @@
     "discord.js": "^11.5.1",
     "download-file": "^0.1.5",
     "gif-to-apng": "^0.1.2",
+    "jimp": "^0.8.2",
     "node-opus": "^0.3.2",
     "uuid": "^3.3.3"
   }
