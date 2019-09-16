@@ -1,7 +1,7 @@
 {
   "name": "ondisco",
   "version": "1.0.0",
-  "description": "Um bot que adicionar cargos no app discord e toca musica nos canais de audio.",
+  "description": "Um bot toca musica nos canais de audio e outras funções simples.",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

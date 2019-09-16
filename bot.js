@@ -10,7 +10,7 @@ client.on("ready", () => {
 
 client.on("presenceUpdate", async presenceupdate => {
     await setTimeout(() => { client.user.setGame(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
-    setTimeout(() => { client.user.setGame('Digite !dhelp para mais informações.') }, 14000)
+    await setTimeout(() => { client.user.setGame('Digite !dhelp para mais informações.') }, 14000)
     return presenceupdate
 })
 
@@ -78,12 +78,9 @@ client.on("message", async message => {
         }
 
     }
-    /*
-     if (message.isMemberMentioned == "<@617522102895116358>"){
-         message.channel.send("Olá" + message.author + "me chamo <@617522102895116358> e meu prefixo é ``!d``")
-     }
- */
-    /* if(comando === "sr.tempo"){
+    
+ 
+    /* if(comando === "msgdeleted"){
          if(message.channel.deleted == true){
              message.channel.sendEmbed(message.guildMember..lastMessage`**Mensagem: **` + messsage.deleted)
          }else{ 
@@ -122,6 +119,9 @@ client.on("raw", async dados => {
             membro.removeRole(cargo2)
         }
     }
+
+    if (dados.d.content === "<@617522102895116358>") message.channel.send("Olá" + message.author + "me chamo <@617522102895116358> e meu prefixo é ``!d``")
+
 })
 client.on("raw", console.log)
 client.login(config.token)
