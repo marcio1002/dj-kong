@@ -78,20 +78,10 @@ client.on("message", async message => {
         }
 
     }
-    
- 
-    /* if(comando === "msgdeleted"){
-         if(message.channel.deleted == true){
-             message.channel.sendEmbed(message.guildMember..lastMessage`**Mensagem: **` + messsage.deleted)
-         }else{ 
-             message.channel.send(`${message.author} 🙁  não encontrei nenhuma mensagem apagada. `)
-         }
-     }*/
-
 })
 
 client.on("raw", async dados => {
-    if (dados.t !== "MESSAGE_REACTION_ADD" && dados.t !== "MESSAGE_REACTION_REMOVE" || dados.t !== "MESSAGE_CREATE") return
+    if (dados.t !== "MESSAGE_REACTION_ADD" && dados.t !== "MESSAGE_REACTION_REMOVE") return
     if (dados.d.message_id != "617843012617109515" && dados.d.channel_id != "617843012617109515") return
 
     let servidor = client.guilds.get("565566718446141450")
@@ -119,8 +109,5 @@ client.on("raw", async dados => {
             membro.removeRole(cargo2)
         }
     }
-
-    if (dados.d.content === "<@617522102895116358>") message.channel.send("Olá" + message.author + "me chamo <@617522102895116358> e meu prefixo é ``!d``")
-
 })
 client.login(config.token)
