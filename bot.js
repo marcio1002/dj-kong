@@ -9,8 +9,8 @@ client.on("ready", () => {
 })
 
 client.on("presenceUpdate", async presenceupdate => {
-    await setTimeout(() => { client.user.setGame(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
-    await setTimeout(() => { client.user.setGame('Digite !dhelp para mais informações.') }, 14000)
+    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
+    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 14000)
     return presenceupdate
 })
 
@@ -111,7 +111,3 @@ client.on("raw", async dados => {
     }
 })
 client.login(config.token)
-
-if(client.login == Error){
-    return client.login(config.token)
-}
