@@ -123,5 +123,4 @@ client.on("raw", async dados => {
     if (dados.d.content === "<@617522102895116358>") message.channel.send("Olá" + message.author + "me chamo <@617522102895116358> e meu prefixo é ``!d``")
 
 })
-client.on("raw", console.log)
 client.login(config.token)
