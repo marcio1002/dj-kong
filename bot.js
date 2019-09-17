@@ -70,7 +70,6 @@ client.on("message", async message => {
 
     if (comando === "avatar") {
         let numColor = Math.floor(Math.random() * (23234567 + 3 + 4))
-        console.log(numColor)
         if (mentionUser) {
             const embed = {
                 "embed": {
