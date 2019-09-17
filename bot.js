@@ -120,19 +120,6 @@ client.on("message", async message => {
         }
 
     }
-    // let role = message.guild.roles.find("name", "Admin")message.member.has(role.id)&&
-    if (comando === "delete") {
-        if (comando.args[0] == "") {
-            message.channel.send('Digite o comando **mais** o numero para deletar as mensagens. n\ exe: !del 5')
-        } else {
-            let number = 5
-            let msgDelete = parseInt(number)
-            console.log(numbermsg)
-           message.channel.fetchMessages({limit: msgDelete}). then(messages => message.channel.bulkDelete(messages))
-        }
-
-    }
-    // if (!role) message.channel.send('Você não tem o cargo de admin ou moderador.')
 })
 
 client.on("raw", async dados => {
