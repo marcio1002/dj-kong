@@ -30,28 +30,34 @@ client.on("guildDelete", guild => {
 
 client.on("guildMemberAdd", async newmember => {
     if (newmember.user == client.user.bot) return
-    let servidor = client.guilds.get('565566718446141450')
+    canal = client.channels.get('622940693022638090')
+    let numColor = Math.floor(Math.random() * (23234567 + 2 + 1 - 1))
 
-    if (newmember.guild == servidor) {
-        let canal = await client.channels.get("622940693022638090")
-        let font = await jimp.loadFont(jimp.FONT_SANS_64_WHITE)
-        let mascara = await jimp.read('img/mascara.png')
-        let fundo = await jimp.read('img/wumpus.gif')
+    let welcome = {
+        "embed": {
+            "color": numColor,
+            "timestamp": canal.createdTimestamp,
+            "thumbnail": {
+                "url": newmember.user.displayAvatarURL,
+            },
+            "fields": [
+                {
+                    "name": "**Você entrou no servidor:** " + newmember.guild.name + "\n **Região:** ``" + newmember.guild.region + "``",
+                    "value": "____________________________________________________________________"
+                }
 
-        jimp.read(newmember.user.displayAvatarURL)
-            .then(avatar => {
-                avatar.resize(280, 280)
-                mascara.resize(280, 280)
-                avatar.mask(mascara)
-                fundo.print(font, 60, 60, 'Bem vindo! ' + newmember.user.username)
-                fundo.composite(avatar, 80, 190).write("img/avatar.png")
-                canal.send('', { files: ['img/avatar.png'] })
-                console.log('imagem enviada pro discord.')
-            })
-            .catch(err => {
-                console.log('erro não foi possível mostrar a imagem')
-            })
+            ],
+            "image": {
+                "url": "https://2.bp.blogspot.com/-jyZ34VySasQ/WonkFswP4WI/AAAAAAAAAXo/Nwo-jZExiMo4agIdDzNkJpTfxpS45EpbQCLcBGAs/s640/wumpus_dribbble.gif"
+            },
+            "footer": {
+                "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                "text": "Ondisco"
+            },
+        }
     }
+    canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, welcome)
+    console.log('Embed enviada ao canal')
 })
 
 client.on("message", async message => {
