@@ -2,6 +2,9 @@ const discord = require("discord.js")
 const client = new discord.Client()
 const config = require("./config.json")
 const jimp = require('jimp')
+const express = require("express")
+const path = require('path')
+const port = process.env.PORT || 8080
 
 
 client.on("ready", () => {
@@ -145,6 +148,11 @@ client.on("raw", async dados => {
         }
     }
 })
-let porta = process.env.PORT || 8080
-console.log(porta)
+
+express()
+    .use(express.static(path.join(__dirname, 'public')))
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs')
+    .listen(port, () => console.log(`Listening on ${port}`))
+
 client.login(config.token)
