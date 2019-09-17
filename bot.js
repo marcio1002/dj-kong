@@ -125,8 +125,8 @@ client.on("message", async message => {
         if (comando.args[0] == "") {
             message.channel.send('Digite o comando **mais** o numero para deletar as mensagens. n\ exe: !del 5')
         } else {
-
-            let msgDelete = 5
+            let number = 5
+            let msgDelete = parseInt(number)
             console.log(numbermsg)
            message.channel.fetchMessages({limit: msgDelete}). then(messages => message.channel.bulkDelete(messages))
         }
