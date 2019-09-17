@@ -155,6 +155,6 @@ express()
     .set('view engine', 'ejs')
     .get('/', (req, res) => res.render('pages/bot'))
     .get('/cool', (req, res) => res.send(cool()))
-    .listen(port, () => console.log(`Listening on ${port}`))
+    .listen(port, () => console.log(`servidor está usando a porta ${port}`))
 
 client.login(config.token)
