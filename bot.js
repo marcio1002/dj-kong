@@ -145,4 +145,6 @@ client.on("raw", async dados => {
         }
     }
 })
+let porta = process.env.PORT || 8080
+console.log(porta)
 client.login(config.token)
