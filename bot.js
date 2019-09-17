@@ -1,7 +1,6 @@
 const discord = require("discord.js")
 const client = new discord.Client()
 const config = require("./config.json")
-const jimp = require('jimp')
 const express = require("express")
 const path = require('path')
 const port = process.env.PORT || 8181
@@ -15,7 +14,7 @@ client.on("ready", () => {
 client.on("presenceUpdate", async presenceupdate => {
     await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
     await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 14000)
-    return presenceupdate
+    console.log(client.user.username)
 })
 
 client.on("guildCreate", guild => {
@@ -45,7 +44,6 @@ client.on("guildMemberAdd", async newmember => {
                     "name": "**Você entrou no servidor:** " + newmember.guild.name + "\n **Região:** ``" + newmember.guild.region + "``",
                     "value": "____________________________________________________________________"
                 }
-
             ],
             "image": {
                 "url": "https://2.bp.blogspot.com/-jyZ34VySasQ/WonkFswP4WI/AAAAAAAAAXo/Nwo-jZExiMo4agIdDzNkJpTfxpS45EpbQCLcBGAs/s640/wumpus_dribbble.gif"
@@ -68,18 +66,17 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
-
-    if (comando === "ping") {
-        const m = await message.channel.send("ping ?")
-        m.edit(`🏓 pong! A latência é  **${m.createdTimestamp - message.createdTimestamp}** ms. e a latência  da API  é **${Math.round(client.ping)}** ms.`)
+    let numColor = Math.floor(Math.random() * (23234567 + 3  - 2))
+    comandoObject = {
+        "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
+        "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais."
     }
-
-    if (comando === "") {
-        message.channel.send(message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais.")
+    if (comandoObject[message.content]) {
+        message.channel.send(comandoObject[message.content])
     }
 
     if (comando === "avatar") {
-        let numColor = Math.floor(Math.random() * (23234567 + 3 + 4))
+
         if (mentionUser) {
             const embed = {
                 "embed": {
@@ -123,6 +120,19 @@ client.on("message", async message => {
         }
 
     }
+    // let role = message.guild.roles.find("name", "Admin")message.member.has(role.id)&&
+    if (comando === "delete") {
+        if (comando.args[0] == "") {
+            message.channel.send('Digite o comando **mais** o numero para deletar as mensagens. n\ exe: !del 5')
+        } else {
+
+            let msgDelete = 5
+            console.log(numbermsg)
+           message.channel.fetchMessages({limit: msgDelete}). then(messages => message.channel.bulkDelete(messages))
+        }
+
+    }
+    // if (!role) message.channel.send('Você não tem o cargo de admin ou moderador.')
 })
 
 client.on("raw", async dados => {
@@ -163,5 +173,5 @@ express()
     .get('/', (req, res) => res.render('pages/bot'))
     .get('/cool', (req, res) => res.send(cool()))
     .listen(port, () => console.log(`servidor está usando a porta ${port}`))
-
+// client.on("raw", console.log)
 client.login(config.token)
