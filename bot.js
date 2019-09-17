@@ -4,7 +4,8 @@ const config = require("./config.json")
 const jimp = require('jimp')
 const express = require("express")
 const path = require('path')
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8181
+const cool = require('cool-ascii-faces')
 
 
 client.on("ready", () => {
@@ -44,7 +45,7 @@ client.on("guildMemberAdd", async newmember => {
                 avatar.mask(mascara)
                 fundo.print(font, 60, 60, 'Bem vindo! ' + newmember.user.username)
                 fundo.composite(avatar, 80, 190).write("img/avatar.png")
-                canal.send(``, { files: ['img/avatar.png'] })
+                canal.send('', { files: ['img/avatar.png'] })
                 console.log('imagem enviada pro discord.')
             })
             .catch(err => {
