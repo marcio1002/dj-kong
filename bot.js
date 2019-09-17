@@ -66,7 +66,7 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
-    let numColor = Math.floor(Math.random() * (23234567 + 3  - 2))
+    let numColor = Math.floor(Math.random() * (23234567  - 1))
     comandoObject = {
         "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais."
@@ -173,5 +173,4 @@ express()
     .get('/', (req, res) => res.render('pages/bot'))
     .get('/cool', (req, res) => res.send(cool()))
     .listen(port, () => console.log(`servidor está usando a porta ${port}`))
-// client.on("raw", console.log)
 client.login(config.token)
