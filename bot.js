@@ -3,7 +3,7 @@ const client = new discord.Client()
 const config = require("./config.json")
 const express = require("express")
 const path = require('path')
-const port = process.env.PORT || 8181
+const port = process.env.PORT || 8080
 const cool = require('cool-ascii-faces')
 
 
@@ -11,10 +11,11 @@ client.on("ready", () => {
     console.log(`Bot foi iniciado, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
 })
 
+client.on('error', console.error);
+
 client.on("presenceUpdate", async presenceupdate => {
     await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
     await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 14000)
-    console.log(client.user.username)
 })
 
 client.on("guildCreate", guild => {
@@ -34,6 +35,7 @@ client.on("guildMemberAdd", async newmember => {
 
     let welcome = {
         "embed": {
+            "title": newmember.user.tag,
             "color": numColor,
             "timestamp": canal.createdTimestamp,
             "thumbnail": {
@@ -46,7 +48,7 @@ client.on("guildMemberAdd", async newmember => {
                 }
             ],
             "image": {
-                "url": "https://2.bp.blogspot.com/-jyZ34VySasQ/WonkFswP4WI/AAAAAAAAAXo/Nwo-jZExiMo4agIdDzNkJpTfxpS45EpbQCLcBGAs/s640/wumpus_dribbble.gif"
+                "url": "https://cdn.dribbble.com/users/1029769/screenshots/3430845/hypeguy_dribbble.gif"
             },
             "footer": {
                 "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
@@ -66,11 +68,12 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
-    let numColor = Math.floor(Math.random() * (23234567  - 1))
+    let numColor = Math.floor(Math.random() * (23234567 - 1))
     comandoObject = {
         "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais."
     }
+
     if (comandoObject[message.content]) {
         message.channel.send(comandoObject[message.content])
     }
@@ -120,6 +123,37 @@ client.on("message", async message => {
         }
 
     }
+    if (comando === "help") {
+        const embed = {
+            "embed": {
+                "title": "**```Help```**",
+                "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
+                "color": 8007606,
+                "timestamp": "2019-09-18T03:42:15.970Z",
+                "footer": {
+                    "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                    "text": "Ondisco"
+                },
+                "fields": [
+                    {
+                        "name": "``ping``",
+                        "value": "Comando para testar a latência da API do discord com o bot",
+                    },
+                    {
+                        "name": "``avatar``",
+                        "value": "Comando para visualizar o avatar do perfil",
+                    },
+                    {
+                        "name": "🙄",
+                        "value": "Estamos em desenvolvimento do bot, por enquanto não temos muitas funções para o Ondisco."
+                    }
+                ]
+
+            }
+        }
+            message.channel.send(embed)
+    }
+
 })
 
 client.on("raw", async dados => {
