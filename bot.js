@@ -28,15 +28,25 @@ client.on("guildDelete", guild => {
     client.user.setActivity(`Servindo a ${client.guilds.size} servidores.`)
 })
 
+
+function colorRadom() {
+    let letters = "0123456789024810"
+    backgroundColor = ""
+    for (let mcolor = 0; mcolor < 7; mcolor++) {
+        backgroundColor += letters[Math.floor(Math.random() * 13)]
+    }
+    return backgroundColor
+}
+
 client.on("guildMemberAdd", async newmember => {
     if (newmember.user == client.user.bot) return
     canal = client.channels.get('622940693022638090')
-    let numColor = Math.floor(Math.random() * (23234567 + 2 + 1 - 1))
+
 
     let welcome = {
         "embed": {
             "title": newmember.user.tag,
-            "color": numColor,
+            "color": colorRadom,
             "timestamp": canal.createdTimestamp,
             "thumbnail": {
                 "url": newmember.user.displayAvatarURL,
@@ -68,7 +78,6 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
-    let numColor = Math.floor(Math.random() * (23234567 - 1))
     comandoObject = {
         "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais."
@@ -84,7 +93,7 @@ client.on("message", async message => {
             const embed = {
                 "embed": {
                     "title": "avatar: ``" + memberMentions.user.username + "``",
-                    "color": numColor,
+                    "color": colorRadom(),
                     "timestamp": message.createdTimestamp,
                     "footer": {
                         "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
@@ -104,7 +113,7 @@ client.on("message", async message => {
         } else {
             const embed = {
                 "embed": {
-                    "color": numColor,
+                    "color": colorRadom(),
                     "timestamp": message.createdTimestamp,
                     "footer": {
                         "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
@@ -128,7 +137,7 @@ client.on("message", async message => {
             "embed": {
                 "title": "**```Help```**",
                 "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
-                "color": 8007606,
+                "color": colorRadom(),
                 "timestamp": "2019-09-18T03:42:15.970Z",
                 "footer": {
                     "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
@@ -151,7 +160,7 @@ client.on("message", async message => {
 
             }
         }
-            message.channel.send(embed)
+        message.channel.send(embed)
     }
 
 })
