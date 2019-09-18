@@ -153,8 +153,12 @@ client.on("message", async message => {
                         "value": "Comando para visualizar o avatar do perfil",
                     },
                     {
-                        "name": "🙄",
+                        "name": "\\🙄",
                         "value": "Estamos em desenvolvimento do bot, por enquanto não temos muitas funções para o Ondisco."
+                    },
+                    {
+                        "name": "Projeto",
+                        "value": "Em breve teremos comandos para musicas. \\😋"
                     }
                 ]
 
