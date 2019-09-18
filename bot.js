@@ -158,7 +158,7 @@ client.on("message", async message => {
                     },
                     {
                         "name": "Projeto",
-                        "value": "Em breve teremos comandos para musicas. \\😋"
+                        "value": "Em breve teremos comandos para ouvir musicas. \\😋"
                     }
                 ]
 
