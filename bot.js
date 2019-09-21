@@ -9,6 +9,7 @@ const ytdl = require('ytdl-core')
 const mapa = new Map()
 
 
+
 client.on("ready", () => {
     console.log(`Bot foi iniciado, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
 })
