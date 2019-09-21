@@ -5,6 +5,8 @@ const express = require("express")
 const path = require('path')
 const port = process.env.PORT || 8080
 const cool = require('cool-ascii-faces')
+const ytdl = require('ytdl-core')
+const mapa = new Map()
 
 
 client.on("ready", () => {
@@ -14,12 +16,12 @@ client.on("ready", () => {
 client.on('error', console.error);
 
 client.on("presenceUpdate", async presenceupdate => {
-    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 4000)
-    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 14000)
+    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 8000)
+    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 36000)
 })
 
 client.on("guildCreate", guild => {
-    console.log(`O bot entrou  nos servidores: ${guild.name} (id ${guild.id}). população: ${guild.memberCount} membros.`)
+    console.log(`O bot entrou  no servidor: ${guild.name} (id ${guild.id}). população: ${guild.memberCount} membros.`)
     client.user.setActivity(`Estou em ${client.guilds.size} servidores`)
 })
 
@@ -39,9 +41,10 @@ function colorRadom() {
 }
 
 client.on("guildMemberAdd", async newmember => {
-    if (newmember.user == client.user.bot) return
     canal = client.channels.get('622940693022638090')
-
+    guild = client.guilds.get('565566718446141450')
+    if (!guild) return
+    if (newmember.user == client.user.bot) return
 
     let welcome = {
         "embed": {
@@ -74,13 +77,17 @@ client.on("message", async message => {
     if (message.author.bot) return
     if (message.channel.type === "dm") return
     if (!message.content.startsWith(config.prefix)) return;
-    const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
-    const comando = args.shift().toLowerCase()
+
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
+    const argsUrl = message.content.split(' ')
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
+    const comando = args.shift().toLowerCase()
+    const serveFila = mapa.get(message.guild.id)
+
     comandoObject = {
         "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
-        "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais."
+        "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais.",
     }
 
     if (comandoObject[message.content]) {
@@ -88,7 +95,6 @@ client.on("message", async message => {
     }
 
     if (comando === "avatar") {
-
         if (mentionUser) {
             const embed = {
                 "embed": {
@@ -143,6 +149,7 @@ client.on("message", async message => {
                     "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
                     "text": "Ondisco"
                 },
+
                 "fields": [
                     {
                         "name": "``ping``",
@@ -157,16 +164,90 @@ client.on("message", async message => {
                         "value": "Estamos em desenvolvimento do bot, por enquanto não temos muitas funções para o Ondisco."
                     },
                     {
-                        "name": "Projeto",
-                        "value": "Em breve teremos comandos para ouvir musicas. \😋"
+                        "name": "Musicas",
+                        "value": "Comando de musicas está em desenvolvimento, mas temos algumas funções.\n **OBS:** Se encontrar alguns problemas mandem um feedback e não se preocupe, ele está em desenvolvimento"
+                    },
+                    {
+                        "name": "play",
+                        "value": "Comando para iniciar a musica",
+                        "inline": true
+                    },
+                    {
+                        "name": "stop",
+                        "value": "Comando para parar a musica",
+                        "inline": true
                     }
                 ]
+
 
             }
         }
         message.channel.send(embed)
     }
+    const voiceChannel = message.member.voiceChannel
+    if (comando === "play") {
 
+        if (!voiceChannel) return message.channel.send(`❗Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
+        const musicInfo = await ytdl.getInfo(argsUrl[1])
+        const song = {
+            title: musicInfo.title,
+            url: musicInfo.video_url
+        }
+        if (voiceChannel) {
+            if (!serveFila) {
+
+                const filaConstruir = {
+                    textChannel: message.channel,
+                    voiceChannel: voiceChannel,
+                    connection: null,
+                    songs: [],
+                    volume: 6,
+                    playing: true
+                }
+                mapa.set(message.guild.id, filaConstruir)
+                filaConstruir.songs.push(song)
+
+                try {
+                    const voiceConnection = await voiceChannel.join()
+                    filaConstruir.connection = voiceConnection
+
+                    if (!song) {
+                        serveFila.voiceChannel.leave()
+                        mapa.delete(guild.id)
+                        return message.channel.send('Não encontrei nenhuma url.')
+                    }
+
+                    const musics = await voiceConnection.playStream(ytdl(song.url))
+
+                    message.channel.send('Tocando 💿')
+                        .on('end', () => {
+                            serveFila.songs.shift()
+                            serveFila.songs[0]
+                        })
+
+                        .on('error', error => {
+                            console.log(error)
+                        })
+                    play(message.guild, filaConstruir.songs[0])
+                } catch (error) {
+                    console.log(`Não encontrei nenhuma musica ${error}`)
+                    mapa.delete(message.guild.id)
+                }
+
+            } else {
+                serveFila.songs.push(song)
+                return message.channel.send(`**${song.title}** Foi adicionado a fila.`)
+            }
+            return undefined
+        }
+
+    }
+    if (comando === "stop") {
+        if (!client.voiceConnections) return
+        if (!voiceChannel) return message.channel.send(`❗Desculpe <@${message.author.id}> , não posso parar a musica sem que você esteja  no canal de voz.`)
+        voiceChannel.leave()
+        return message.channel.send('musica parada')
+    }
 })
 
 client.on("raw", async dados => {
