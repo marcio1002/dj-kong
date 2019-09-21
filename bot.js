@@ -102,6 +102,7 @@ client.on("message", async message => {
                     "title": "avatar: ``" + memberMentions.user.username + "``",
                     "color": colorRadom(),
                     "timestamp": message.createdTimestamp,
+                    "description": "**[Baixar a imagem](" + memberMentions.user.displayAvatarURL + ")**",
                     "footer": {
                         "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
                         "text": "Ondisco"
@@ -122,6 +123,7 @@ client.on("message", async message => {
                 "embed": {
                     "color": colorRadom(),
                     "timestamp": message.createdTimestamp,
+                    "description": "**[Baixar a imagem](" + memberMentions.user.displayAvatarURL + ")**",
                     "footer": {
                         "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
                         "text": "Ondisco"
