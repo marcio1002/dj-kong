@@ -144,7 +144,7 @@ client.on("message", async message => {
                 "title": "**```Help```**",
                 "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
                 "color": colorRadom(),
-                "timestamp": "2019-09-18T03:42:15.970Z",
+                "timestamp": message.createdTimestamp,
                 "footer": {
                     "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
                     "text": "Ondisco"
