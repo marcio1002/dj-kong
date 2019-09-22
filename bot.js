@@ -284,6 +284,9 @@ client.on("raw", async dados => {
     }
 })
 
+setTimeout(() => {
+    console.log('node .')
+}, 29000);
 express()
     .use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
