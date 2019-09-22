@@ -50,7 +50,7 @@ client.on("guildMemberAdd", async newmember => {
     let welcome = {
         "embed": {
             "title": newmember.user.tag,
-            "color": colorRadom,
+            "color": 16773376,
             "timestamp": canal.createdTimestamp,
             "thumbnail": {
                 "url": newmember.user.displayAvatarURL,
@@ -71,7 +71,7 @@ client.on("guildMemberAdd", async newmember => {
         }
     }
     canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, welcome)
-    console.log('Embed enviada ao canal')
+    console.log(`Embed enviada no servidor ${newmember.guild.name}`)
 })
 
 client.on("message", async message => {
@@ -99,7 +99,7 @@ client.on("message", async message => {
         if (mentionUser) {
             const embed = {
                 "embed": {
-                    "title": "avatar: ``" + memberMentions.user.username + "``",
+                    "title": "avatar: ``" + memberMentions.user.tag + "``",
                     "color": colorRadom(),
                     "timestamp": message.createdTimestamp,
                     "description": "**[Baixar a imagem](" + memberMentions.user.displayAvatarURL + ")**",
@@ -132,7 +132,7 @@ client.on("message", async message => {
                         "url": message.author.displayAvatarURL
                     },
                     "author": {
-                        "name": message.author.username,
+                        "name": message.author.tag,
                         "icon_url": message.author.displayAvatarURL
                     }
                 }
@@ -284,7 +284,7 @@ client.on("raw", async dados => {
     }
 })
 
-setTimeout(() => {
+setInterval(() => {
     console.log('node .')
 }, 29000);
 express()

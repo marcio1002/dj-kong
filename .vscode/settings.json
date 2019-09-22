@@ -1,4 +1,4 @@
 {
-    "discordrp.enabled": true,
+    "discordrp.enabled": false,
     "git.ignoreLimitWarning": true
 }
