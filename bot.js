@@ -84,7 +84,6 @@ client.on("message", async message => {
     const argsUrl = message.content.split(' ')
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
-    const serveFila = mapa.get(message.guild.id)
 
     comandoObject = {
         "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
@@ -191,66 +190,57 @@ client.on("message", async message => {
     if (comando === "play") {
 
         if (!voiceChannel) return message.channel.send(`❗Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
+        
         const musicInfo = await ytdl.getInfo(argsUrl[1])
         const song = {
             title: musicInfo.title,
             url: musicInfo.video_url
         }
-        if (voiceChannel) {
-            if (!serveFila) {
 
+        if (voiceChannel) {
+ 
                 const filaConstruir = {
-                    textChannel: message.channel,
+                    textChannel: musicInfo,
                     voiceChannel: voiceChannel,
                     connection: null,
                     songs: [],
                     volume: 6,
                     playing: true
                 }
-                mapa.set(message.guild.id, filaConstruir)
-                filaConstruir.songs.push(song)
 
+                filaConstruir.songs.push(song.url)
+                
                 try {
                     const voiceConnection = await voiceChannel.join()
                     filaConstruir.connection = voiceConnection
 
-                    if (!song) {
-                        serveFila.voiceChannel.leave()
-                        mapa.delete(guild.id)
-                        return message.channel.send('Não encontrei nenhuma url.')
-                    }
+                    const musics = await voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
+                    message.channel.send('Tocando 💿 ``' + song.title + '``')
 
-                    const musics = await voiceConnection.playStream(ytdl(song.url))
-
-                    message.channel.send('Tocando 💿')
-                        .on('end', () => {
-                            serveFila.songs.shift()
-                            serveFila.songs[0]
+                        musics.on('end', () => {
+                            filaConstruir.songs.shift()
+                            filaConstruir.songs[0]
                         })
 
-                        .on('error', error => {
+                        musics.on('error', error => {
                             console.log(error)
                         })
-                    play(message.guild, filaConstruir.songs[0])
-                } catch (error) {
-                    console.log(`Não encontrei nenhuma musica ${error}`)
-                    mapa.delete(message.guild.id)
-                }
 
-            } else {
-                serveFila.songs.push(song)
-                return message.channel.send(`**${song.title}** Foi adicionado a fila.`)
-            }
+                } catch (error) {
+                    console.log(`Tipo de erro: ${error}`)
+                }
             return undefined
         }
 
-    }
-    if (comando === "stop") {
+    }else if(comando === "stop") {
         if (!client.voiceConnections) return
-        if (!voiceChannel) return message.channel.send(`❗Desculpe <@${message.author.id}> , não posso parar a musica sem que você esteja  no canal de voz.`)
+        if (!voiceChannel) return message.channel.send(`Desculpe <@${message.author.id}> , não posso parar a musica sendo que você não está canal de voz.`)
         voiceChannel.leave()
         return message.channel.send('musica parada')
+    }else if(comando === "skip"){
+        
     }
+
 })
 
 client.on("raw", async dados => {
@@ -284,9 +274,7 @@ client.on("raw", async dados => {
     }
 })
 
-setInterval(() => {
-    console.log('node .')
-}, 29000);
+
 express()
     .use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
