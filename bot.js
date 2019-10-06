@@ -11,7 +11,7 @@ const mapa = new Map()
 
 
 client.on("ready", () => {
-    console.log(`Bot foi iniciado, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
+    console.log(`Bot Online, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
 })
 
 client.on('error', console.error);
@@ -81,12 +81,11 @@ client.on("message", async message => {
 
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
-    const argsUrl = message.content.split(' ')
+    const arguments = message.content.split(' ')
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
 
     comandoObject = {
-        "!dping": `🏓 pong! A  latência  da API  é **${Math.round(client.ping)}** ms.`,
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais.",
     }
 
@@ -151,7 +150,6 @@ client.on("message", async message => {
                     "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
                     "text": "Ondisco"
                 },
-
                 "fields": [
                     {
                         "name": "``ping``",
@@ -162,26 +160,32 @@ client.on("message", async message => {
                         "value": "Comando para visualizar o avatar do perfil",
                     },
                     {
-                        "name": "\🙄",
-                        "value": "Estamos em desenvolvimento do bot, por enquanto não temos muitas funções para o Ondisco."
+                        "name": "<:alert:630429039785410562> ",
+                        "value": "Comando de __**musicas**__\n **OBS:** Se encontrar algum problema mandem seu feedback e não se preocupe, ele está em desenvolvimento"
                     },
+
                     {
-                        "name": "Musicas",
-                        "value": "Comando de musicas está em desenvolvimento, mas temos algumas funções.\n **OBS:** Se encontrar alguns problemas mandem um feedback e não se preocupe, ele está em desenvolvimento"
-                    },
-                    {
-                        "name": "play",
+                        "name": "**play**",
                         "value": "Comando para iniciar a musica",
                         "inline": true
                     },
                     {
-                        "name": "stop",
-                        "value": "Comando para parar a musica",
+                        "name": "**stop**",
+                        "value": "Comando para finalizar a musica e sair do canal",
+                        "inline": true
+                    },
+                    {
+                        "name": "**continue**",
+                        "value": "Comando para continuar a musica",
+                        "inline": true
+                    },
+                    {
+                        "name": "**pause**",
+                        "value": "Comando para pausar a musica",
                         "inline": true
                     }
+
                 ]
-
-
             }
         }
         message.channel.send(embed)
@@ -189,58 +193,69 @@ client.on("message", async message => {
     const voiceChannel = message.member.voiceChannel
     if (comando === "play") {
 
-        if (!voiceChannel) return message.channel.send(`❗Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
-        
-        const musicInfo = await ytdl.getInfo(argsUrl[1])
+        if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
+
+        const musicInfo = await ytdl.getInfo(arguments[1])
         const song = {
             title: musicInfo.title,
             url: musicInfo.video_url
         }
 
         if (voiceChannel) {
- 
-                const filaConstruir = {
-                    textChannel: musicInfo,
-                    voiceChannel: voiceChannel,
-                    connection: null,
-                    songs: [],
-                    volume: 6,
-                    playing: true
-                }
 
-                filaConstruir.songs.push(song.url)
-                
-                try {
-                    const voiceConnection = await voiceChannel.join()
-                    filaConstruir.connection = voiceConnection
+            const filaConstruir = {
+                textChannel: musicInfo,
+                voiceChannel: voiceChannel,
+                connection: null,
+                songs: [],
+                volume: 6,
+                playing: true
+            }
 
-                    const musics = await voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
-                    message.channel.send('Tocando 💿 ``' + song.title + '``')
+            filaConstruir.songs.push(song.url)
 
-                        musics.on('end', () => {
-                            filaConstruir.songs.shift()
-                            filaConstruir.songs[0]
-                        })
+            try {
+                const voiceConnection = await voiceChannel.join()
+                filaConstruir.connection = voiceConnection
 
-                        musics.on('error', error => {
-                            console.log(error)
-                        })
+                const musics = await voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
+                message.channel.send('Tocando 💿 ``' + song.title + '``')
 
-                } catch (error) {
-                    console.log(`Tipo de erro: ${error}`)
-                }
+                musics.on('end', () => {
+                    filaConstruir.songs.shift()
+                    filaConstruir.songs[0]
+                })
+
+                musics.on('error', error => {
+                    console.log(error)
+                })
+
+            } catch (error) {
+                console.log(`Tipo de erro: ${error}`)
+            }
             return undefined
         }
 
-    }else if(comando === "stop") {
-        if (!client.voiceConnections) return
-        if (!voiceChannel) return message.channel.send(`Desculpe <@${message.author.id}> , não posso parar a musica sendo que você não está canal de voz.`)
-        voiceChannel.leave()
-        return message.channel.send('musica parada')
-    }else if(comando === "skip"){
-        
     }
 
+    if (comando === "stop") {
+        if (!client.voiceConnections) return
+        if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso parar a musica sendo que você não está no canal de voz.`)
+        voiceChannel.leave()
+        return message.channel.send('musica parada')
+    }
+    if (comando === "pause") {
+        if (!client.voiceConnections) return
+        if (!voiceChannel) return
+        voiceChannel.connection.dispatcher.pause()
+
+    }
+
+    if (comando === "continue") {
+        if (!client.voiceConnections) return
+        if (!voiceChannel) return
+        return (voiceChannel.connection.dispatcher.paused == true) ? voiceChannel.connection.dispatcher.resume() : message.channel.send(`<:erro:630429351678312506> Esse comando é só usado quando a musica está pausada.`)
+    }
 })
 
 client.on("raw", async dados => {
