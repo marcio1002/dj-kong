@@ -73,7 +73,6 @@ client.on("guildMemberAdd", async newmember => {
     canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, welcome)
     console.log(`Embed enviada no servidor ${newmember.guild.name}`)
 })
-
 client.on("message", async message => {
     if (message.author.bot) return
     if (message.channel.type === "dm") return
@@ -144,7 +143,7 @@ client.on("message", async message => {
             "embed": {
                 "title": "**```Help```**",
                 "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
-                "color": colorRadom(),
+                "color": 11347415,
                 "timestamp": message.createdTimestamp,
                 "footer": {
                     "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
@@ -160,7 +159,7 @@ client.on("message", async message => {
                         "value": "Comando para visualizar o avatar do perfil",
                     },
                     {
-                        "name": "<:alert:630429039785410562> ",
+                        "name": "😀",
                         "value": "Comando de __**musicas**__\n **OBS:** Se encontrar algum problema mandem seu feedback e não se preocupe, ele está em desenvolvimento"
                     },
 
@@ -218,8 +217,8 @@ client.on("message", async message => {
                 const voiceConnection = await voiceChannel.join()
                 filaConstruir.connection = voiceConnection
 
-                const musics = await voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
-                message.channel.send('Tocando 💿 ``' + song.title + '``')
+                const musics =  voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
+                message.channel.send('Tocando <a:Ondisco:630470764004638720> ``' + song.title + '``')
 
                 musics.on('end', () => {
                     filaConstruir.songs.shift()
@@ -251,7 +250,7 @@ client.on("message", async message => {
 
     }
 
-    if (comando === "continue") {
+    if (comando === "back") {
         if (!client.voiceConnections) return
         if (!voiceChannel) return
         return (voiceChannel.connection.dispatcher.paused == true) ? voiceChannel.connection.dispatcher.resume() : message.channel.send(`<:erro:630429351678312506> Esse comando é só usado quando a musica está pausada.`)
