@@ -204,9 +204,10 @@ client.on("message", async message => {
 
         if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
         if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio no canal de voz.`)
+        if (!arguments[1]) return message.channel.send("<@" + message.author.id + "> Digite a url do vídeo. \n exe: ``!dplay https://youtu.be/t67_zAg5vvI`` ")
 
-        const musicInfo = await ytdl.getInfo(arguments[1])
-        const song = {
+        let musicInfo = await ytdl.getInfo(arguments[1])
+        let song = {
             title: musicInfo.title,
             url: musicInfo.video_url
         }
