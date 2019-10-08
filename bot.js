@@ -160,27 +160,37 @@ client.on("message", async message => {
                     },
                     {
                         "name": "😀",
-                        "value": "Comando de __**musicas**__\n **OBS:** Se encontrar algum problema mandem seu feedback e não se preocupe, ele está em desenvolvimento"
+                        "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback e não se preocupe, ele está em desenvolvimento"
                     },
 
                     {
                         "name": "**play**",
-                        "value": "Comando para iniciar a musica",
+                        "value": " iniciar a musica",
                         "inline": true
                     },
                     {
-                        "name": "**stop**",
-                        "value": "Comando para finalizar a musica e sair do canal",
+                        "name": "**leave**",
+                        "value": "Finalizar a musica e sair do canal",
                         "inline": true
                     },
                     {
-                        "name": "**continue**",
-                        "value": "Comando para continuar a musica",
+                        "name": "**back**",
+                        "value": "Continuar a musica",
                         "inline": true
                     },
                     {
                         "name": "**pause**",
-                        "value": "Comando para pausar a musica",
+                        "value": "Pausar a musica",
+                        "inline": true
+                    },
+                    {
+                        "name": "**stop**",
+                        "value": "Finalizar musica",
+                        "inline": true
+                    },
+                    {
+                        "name": "**vol**",
+                        "value": "Aumentar ou diminuir o volume",
                         "inline": true
                     }
 
@@ -193,6 +203,7 @@ client.on("message", async message => {
     if (comando === "play") {
 
         if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
+        if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio no canal de voz.`)
 
         const musicInfo = await ytdl.getInfo(arguments[1])
         const song = {
@@ -202,12 +213,12 @@ client.on("message", async message => {
 
         if (voiceChannel) {
 
-            const filaConstruir = {
+            let filaConstruir = {
                 textChannel: musicInfo,
                 voiceChannel: voiceChannel,
                 connection: null,
                 songs: [],
-                volume: 6,
+                volume: 8,
                 playing: true
             }
 
@@ -219,10 +230,9 @@ client.on("message", async message => {
 
                 const musics =  voiceConnection.playStream(ytdl(filaConstruir.songs[0]))
                 message.channel.send('Tocando <a:Ondisco:630470764004638720> ``' + song.title + '``')
-
+               
                 musics.on('end', () => {
                     filaConstruir.songs.shift()
-                    filaConstruir.songs[0]
                 })
 
                 musics.on('error', error => {
@@ -231,29 +241,39 @@ client.on("message", async message => {
 
             } catch (error) {
                 console.log(`Tipo de erro: ${error}`)
+                return undefined
             }
-            return undefined
         }
 
     }
 
-    if (comando === "stop") {
-        if (!client.voiceConnections) return
-        if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso parar a musica sendo que você não está no canal de voz.`)
-        voiceChannel.leave()
-        return message.channel.send('musica parada')
+    if (comando === "leave") {
+        if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+        if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso parar a musica você está ausente no canal de voz.`)
+        voiceChannel.connection.disconnect()
     }
     if (comando === "pause") {
-        if (!client.voiceConnections) return
+        if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
         if (!voiceChannel) return
         voiceChannel.connection.dispatcher.pause()
-
+    }
+    if (comando === "back") {
+        if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+        if (!voiceChannel) return
+        return (voiceChannel.connection.dispatcher.paused == true) ? voiceChannel.connection.dispatcher.resume() : message.channel.send(`<:alert:630429039785410562> Esse comando é só usado quando a musica está pausada.`)
+    }
+    if (comando == "stop") {
+        if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+        if (!voiceChannel) return
+        voiceChannel.connection.dispatcher.end()
+        return message.channel.send('musica parada')
     }
 
-    if (comando === "back") {
-        if (!client.voiceConnections) return
+    if (comando == "vol") {
+        if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
         if (!voiceChannel) return
-        return (voiceChannel.connection.dispatcher.paused == true) ? voiceChannel.connection.dispatcher.resume() : message.channel.send(`<:erro:630429351678312506> Esse comando é só usado quando a musica está pausada.`)
+        let numberVol = parseInt(arguments[1])
+        return (numberVol <= 5) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0.1 a 5`)
     }
 })
 
