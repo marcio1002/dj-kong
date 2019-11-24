@@ -105,106 +105,106 @@ client.on("message", async message => {
         case "avatar":
             if (mentionUser) {
                 const embed = {
-                        "embed": {
-                            "title": "avatar: ``" + memberMentions.user.tag + "``",
-                            "color": colorRadom(),
-                            "timestamp": message.createdTimestamp,
-                            "description": "<:image:633071783414726666>**[Baixar imagem](" + memberMentions.user.displayAvatarURL + ")**",
-                            "footer": {
-                                "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                                "text": "Ondisco"
-                            },
-                            "image": {
-                                "url": memberMentions.user.displayAvatarURL
-                            },
-                            "author": {
-                                "name": message.author.username,
-                                "icon_url": message.author.displayAvatarURL
-                            }
+                    "embed": {
+                        "title": "avatar: ``" + memberMentions.user.tag + "``",
+                        "color": colorRadom(),
+                        "timestamp": message.createdTimestamp,
+                        "description": "<:image:633071783414726666>**[Baixar imagem](" + memberMentions.user.displayAvatarURL + ")**",
+                        "footer": {
+                            "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                            "text": "Ondisco"
+                        },
+                        "image": {
+                            "url": memberMentions.user.displayAvatarURL
+                        },
+                        "author": {
+                            "name": message.author.username,
+                            "icon_url": message.author.displayAvatarURL
                         }
+                    }
                 }
-                
+
 
             } else {
                 const embed = {
-                            "embed": {
-                                "color": colorRadom(),
-                                "timestamp": message.createdTimestamp,
-                                "description": "<:image:633071783414726666> **[Baixar imagem](" + message.author.displayAvatarURL + ")**",
-                                "footer": {
-                                    "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                                    "text": "Ondisco"
-                                },
-                                "image": {
-                                    "url": message.author.displayAvatarURL
-                                },
-                                "author": {
-                                    "name": message.author.tag,
-                                    "icon_url": message.author.displayAvatarURL
-                                }
-                            }
+                    "embed": {
+                        "color": colorRadom(),
+                        "timestamp": message.createdTimestamp,
+                        "description": "<:image:633071783414726666> **[Baixar imagem](" + message.author.displayAvatarURL + ")**",
+                        "footer": {
+                            "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                            "text": "Ondisco"
+                        },
+                        "image": {
+                            "url": message.author.displayAvatarURL
+                        },
+                        "author": {
+                            "name": message.author.tag,
+                            "icon_url": message.author.displayAvatarURL
                         }
+                    }
+                }
             }
-                message.channel.send(embed)
-        break;
+            message.channel.send(embed)
+            break;
         case "help":
             const embed = {
-            "embed": {
-                "title": "**```Help```**",
-                "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
-                "color": 11347415,
-                "timestamp": message.createdTimestamp,
-                "footer": {
-                    "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                    "text": "Ondisco"
-                },
-                "fields": [
+                "embed": {
+                    "title": "**```Help```**",
+                    "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
+                    "color": 11347415,
+                    "timestamp": message.createdTimestamp,
+                    "footer": {
+                        "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
+                        "text": "Ondisco"
+                    },
+                    "fields": [
 
-                    {
-                        "name": "``avatar``",
-                        "value": "Comando para visualizar o avatar do perfil",
-                    },
-                    {
-                        "name": "😀",
-                        "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506"
-                    },
+                        {
+                            "name": "``avatar``",
+                            "value": "Comando para visualizar o avatar do perfil",
+                        },
+                        {
+                            "name": "😀",
+                            "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506"
+                        },
 
-                    {
-                        "name": "**play**",
-                        "value": " iniciar a musica",
-                        "inline": true
-                    },
-                    {
-                        "name": "**leave**",
-                        "value": "Finalizar a musica e sair do canal",
-                        "inline": true
-                    },
-                    {
-                        "name": "**back**",
-                        "value": "Continuar a musica",
-                        "inline": true
-                    },
-                    {
-                        "name": "**pause**",
-                        "value": "Pausar a musica",
-                        "inline": true
-                    },
-                    {
-                        "name": "**stop**",
-                        "value": "Finalizar musica",
-                        "inline": true
-                    },
-                    {
-                        "name": "**vol**",
-                        "value": "Aumentar ou diminuir o volume",
-                        "inline": true
-                    }
+                        {
+                            "name": "**play**",
+                            "value": " iniciar a musica",
+                            "inline": true
+                        },
+                        {
+                            "name": "**leave**",
+                            "value": "Finalizar a musica e sair do canal",
+                            "inline": true
+                        },
+                        {
+                            "name": "**back**",
+                            "value": "Continuar a musica",
+                            "inline": true
+                        },
+                        {
+                            "name": "**pause**",
+                            "value": "Pausar a musica",
+                            "inline": true
+                        },
+                        {
+                            "name": "**stop**",
+                            "value": "Finalizar musica",
+                            "inline": true
+                        },
+                        {
+                            "name": "**vol**",
+                            "value": "Aumentar ou diminuir o volume",
+                            "inline": true
+                        }
 
-                ]
+                    ]
+                }
             }
-        }
-        message.channel.send(embed)
-        break;
+            message.channel.send(embed)
+            break;
         case "play":
             if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
             if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio no canal de voz.`)
@@ -223,28 +223,27 @@ client.on("message", async message => {
                         playing: true
                     }
 
-                    filaConstruir.songs.push(info.video_url)
-                    console.log(filaConstruir.songs)
+
                     try {
                         const voiceConnection = voiceChannel.join()
-                        filaConstruir.connection = voiceConnection
 
                         voiceConnection.then(connection => {
                             if (connection.speaking == true) {
-                                filaConstruir.songs.push(info.video_url)
-                                
+                                connection.receivers.push(info.video_url)
+
                                 embedMusic.setTitle('``' + info.title + '`` \n Foi adicionada na fila')
                                 message.channel.send(embedMusic)
                             } else {
-                                music = connection.playStream(ytdl(filaConstruir.songs[0]))
-                                    connection.dispatcher.on("start", () => {
-                                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                        message.channel.send(embedMusic)
-                                    })
-                                    connection.on('end', () => {
-                                        music = connection.playStream(ytdl(filaConstruir.songs[0]))
-                                        message.channel.send(embedMusic)
-                                    })
+                                connection.receivers.push(info.video_url)
+                                music = connection.playStream(ytdl(connection.receivers[0]))
+                                connection.dispatcher.stream.on("start", () => {
+                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
+                                    message.channel.send(embedMusic)
+                                })
+                                connection.dispatcher.stream.on('end', () => {
+                                    connection.receivers.shift()
+                                    music = connection.playStream(ytdl(connection.receivers[0]))
+                                })
                             }
 
                         })
@@ -257,12 +256,13 @@ client.on("message", async message => {
                 }
 
             })
-        break;
+            musicInfo.catch(console.error)
+            break;
         case "leave":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso parar a musica você está ausente no canal de voz.`)
-            voiceChannel.connection.disconnect() 
-        break;
+            voiceChannel.connection.disconnect()
+            break;
         case "pause":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
@@ -270,7 +270,7 @@ client.on("message", async message => {
             embedMusic.setDescription("<:pause:633071783465058334> Pausado")
             voiceChannel.connection.dispatcher.pause()
             message.channel.send(embedMusic)
-        break;
+            break;
         case "back":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
@@ -285,7 +285,7 @@ client.on("message", async message => {
             embedMusic.setDescription("<:stop:633088253142106115> musica parada")
             voiceChannel.connection.dispatcher.end()
             return message.channel.send(embedMusic)
-        case"vol":
+        case "vol":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
             let numberVol = parseInt(arguments[1])
@@ -311,7 +311,7 @@ client.on("message", async message => {
                     console.error(error)
                     break;
             }
-            return (numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0.1 a 4`) 
+            return (numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0.1 a 4`)
     }
 
 })
@@ -344,7 +344,7 @@ client.on("raw", async dados => {
             console.log("Removeu cargo")
             membro.removeRole(cargo2)
         }
-    }        
+    }
 
 })
 
