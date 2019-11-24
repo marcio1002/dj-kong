@@ -173,7 +173,7 @@ client.on("message", async message => {
                                 })
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
-                                    if (!connection.receivers) {
+                                    if (!connection.receivers[0]) {
                                         return
                                     } else {
                                         music = connection.playStream(ytdl(connection.receivers[0]))
