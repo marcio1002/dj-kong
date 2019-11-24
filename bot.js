@@ -174,14 +174,15 @@ client.on("message", async message => {
                                         return
                                     } else {
                                         music = connection.playStream(ytdl(connection.receivers[0]))
+                                            
                                     }
 
                                 })
-                                connection.dispatcher.on("start", () => {
-                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                    message.channel.send(embedMusic)
-                                })
                             }
+                            connection.dispatcher.on("start", () => {
+                                embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
+                                message.channel.send(embedMusic)
+                            })
 
                         })
                         voiceConnection.catch(error => console.log(`Tipo de erro: ${error}`))
