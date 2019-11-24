@@ -166,7 +166,7 @@ client.on("message", async message => {
                     },
                     {
                         "name": "😀",
-                        "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback e não se preocupe, ele está em desenvolvimento"
+                        "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506"
                     },
 
                     {
@@ -211,6 +211,7 @@ client.on("message", async message => {
             if (voiceChannel.muted == true) return message.channel.send(`<@${message.author.id}>  não posso enviar audio no canal de voz, canal de voz mudo.`)
             if (!arguments[1]) return message.channel.send("<@" + message.author.id + "> Digite a url do vídeo. \n exe: ``!dplay https://youtu.be/t67_zAg5vvI`` ")
             let musicInfo = ytdl.getInfo(arguments[1])
+            embedMusic.setColor(11347415)
 
             musicInfo.then((info) => {
                 if (voiceChannel) {
@@ -231,12 +232,15 @@ client.on("message", async message => {
                         voiceConnection.then(connection => {
                             if (connection.speaking == true) {
                                 filaConstruir.songs.push(info.video_url)
-                                message.channel.send(' ``' + info.title + '`` foi adicionada na fila')
+                                
+                                embedMusic.setTitle('``' + info.title + '`` \n Foi adicionada na fila')
+                                message.channel.send(embedMusic)
                             } else {
                                 music = connection.playStream(ytdl(filaConstruir.songs[0]))
-                                embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                embedMusic.setColor(11347415)
-                                message.channel.send(embedMusic)
+                                    connection.dispatcher.on("start", () => {
+                                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
+                                        message.channel.send(embedMusic)
+                                    })
                                     connection.on('end', () => {
                                         music = connection.playStream(ytdl(filaConstruir.songs[0]))
                                         message.channel.send(embedMusic)
@@ -344,7 +348,7 @@ client.on("raw", async dados => {
 
 })
 
-client.on('raw', console.log)
+// client.on('raw', console.log)
 express()
     .use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
