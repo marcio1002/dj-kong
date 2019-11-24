@@ -167,10 +167,7 @@ client.on("message", async message => {
                             } else {
                                 connection.receivers.push(info.video_url)
                                 music = connection.playStream(ytdl(connection.receivers[0]))
-                                connection.dispatcher.on("start", () => {
-                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                    message.channel.send(embedMusic)
-                                })
+                               
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
                                     if (!connection.receivers[0]) {
@@ -179,6 +176,10 @@ client.on("message", async message => {
                                         music = connection.playStream(ytdl(connection.receivers[0]))
                                     }
 
+                                })
+                                connection.dispatcher.on("start", () => {
+                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
+                                    message.channel.send(embedMusic)
                                 })
                             }
 
