@@ -1,10 +1,10 @@
 {
   "name": "ondisco",
-  "version": "1.0.1",
-  "description": "Um bot toca musica nos canais de audio e outras funções simples.",
+  "version": "1.8.1",
+  "description": "Um bot que toca musica nos canais de audio e outras funções simples.",
   "main": "bot.js",
   "scripts": {
-    "start": "node .",
+    "start": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
