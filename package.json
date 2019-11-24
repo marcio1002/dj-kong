@@ -1,7 +1,7 @@
 {
   "name": "ondisco",
   "version": "1.8.1",
-  "description": "Um bot que toca musica nos canais de audio e outras funções simples.",
+  "description": "Um bot que toca musica nos canais de audio do Discord e outras funções simples.",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "node-opus": "^0.3.2",
     "uuid": "^3.3.3",
-    "ytdl-core": "^0.29.7"
+    "ytdl-core": "^0.29.7",
+    "node-modules": "^1.0.1"
   }
 }
