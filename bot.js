@@ -95,7 +95,7 @@ client.on("message", async message => {
     const voiceChannel = message.member.voiceChannel
 
     comandoObject = {
-        "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` para saber mais.",
+        "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
     }
 
     if (comandoObject[message.content]) {
@@ -104,106 +104,45 @@ client.on("message", async message => {
     switch (comando) {
         case "avatar":
             if (mentionUser) {
-                const embed = {
-                    "embed": {
-                        "title": "avatar: ``" + memberMentions.user.tag + "``",
-                        "color": colorRadom(),
-                        "timestamp": message.createdTimestamp,
-                        "description": "<:image:633071783414726666>**[Baixar imagem](" + memberMentions.user.displayAvatarURL + ")**",
-                        "footer": {
-                            "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                            "text": "Ondisco"
-                        },
-                        "image": {
-                            "url": memberMentions.user.displayAvatarURL
-                        },
-                        "author": {
-                            "name": message.author.username,
-                            "icon_url": message.author.displayAvatarURL
-                        }
-                    }
-                }
+                embedMusic.setColor(colorRadomEx())
+                    .setTitle("avatar: ``" + memberMentions.user.tag + "``")
+                    .setTimestamp(message.createdTimestamp)
+                    .setDescription(`<:image:633071783414726666>** [Baixar imagem](${memberMentions.user.displayAvatarURL})**`)
+                    .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+                    .setImage(memberMentions.user.displayAvatarURL)
+                    .setAuthor(message.author.tag, message.author.displayAvatarURL)
 
+                message.channel.send(embedMusic)
 
             } else {
-                const embed = {
-                    "embed": {
-                        "color": colorRadom(),
-                        "timestamp": message.createdTimestamp,
-                        "description": "<:image:633071783414726666> **[Baixar imagem](" + message.author.displayAvatarURL + ")**",
-                        "footer": {
-                            "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                            "text": "Ondisco"
-                        },
-                        "image": {
-                            "url": message.author.displayAvatarURL
-                        },
-                        "author": {
-                            "name": message.author.tag,
-                            "icon_url": message.author.displayAvatarURL
-                        }
-                    }
-                }
+                embedMusic.setColor(colorRadomEx())
+                    .setTimestamp(message.createdTimestamp)
+                    .setDescription(`<:image:633071783414726666>** [Baixar imagem](${message.author.displayAvatarURL})**`)
+                    .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+                    .setImage(message.author.displayAvatarURL)
+                    .setAuthor(message.author.tag, message.author.displayAvatarURL)
+
+                message.channel.send(embedMusic)
             }
-            message.channel.send(embed)
+
             break;
         case "help":
-            const embed = {
-                "embed": {
-                    "title": "**```Help```**",
-                    "description": "Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------",
-                    "color": 11347415,
-                    "timestamp": message.createdTimestamp,
-                    "footer": {
-                        "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                        "text": "Ondisco"
-                    },
-                    "fields": [
-
-                        {
-                            "name": "``avatar``",
-                            "value": "Comando para visualizar o avatar do perfil",
-                        },
-                        {
-                            "name": "😀",
-                            "value": "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506"
-                        },
-
-                        {
-                            "name": "**play**",
-                            "value": " iniciar a musica",
-                            "inline": true
-                        },
-                        {
-                            "name": "**leave**",
-                            "value": "Finalizar a musica e sair do canal",
-                            "inline": true
-                        },
-                        {
-                            "name": "**back**",
-                            "value": "Continuar a musica",
-                            "inline": true
-                        },
-                        {
-                            "name": "**pause**",
-                            "value": "Pausar a musica",
-                            "inline": true
-                        },
-                        {
-                            "name": "**stop**",
-                            "value": "Finalizar musica",
-                            "inline": true
-                        },
-                        {
-                            "name": "**vol**",
-                            "value": "Aumentar ou diminuir o volume",
-                            "inline": true
-                        }
-
-                    ]
-                }
-            }
-            message.channel.send(embed)
+            embedMusic.setColor("#AD25D7")
+                .setTitle("**```Help```**")
+                .setTimestamp(message.createdTimestamp)
+                .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------")
+                .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+                .addField("``avatar``", "Comando para visualizar o avatar do perfil")
+                .addField("😀", "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506")
+                .addBlankField()
+                .addField("**``play``**","iniciar a musica",true)
+                .addField("**``leave``**","Finalizar a musica e sair do canal",true)
+                .addField("**``back``**","Continua a musica",true)
+                .addField("**``pause``**","Pausa a musica",true)
+                .addField("**``stop``**","Finaliza a musica",true)
+                .addField("**``vol``**","Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4",true)
+           
+            message.channel.send(embedMusic)
             break;
         case "play":
             if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
@@ -215,14 +154,6 @@ client.on("message", async message => {
 
             musicInfo.then((info) => {
                 if (voiceChannel) {
-                    let filaConstruir = {
-                        voiceChannel: voiceChannel,
-                        connection: null,
-                        songs: [],
-                        volume: 0.8,
-                        playing: true
-                    }
-
 
                     try {
                         const voiceConnection = voiceChannel.join()
@@ -236,13 +167,18 @@ client.on("message", async message => {
                             } else {
                                 connection.receivers.push(info.video_url)
                                 music = connection.playStream(ytdl(connection.receivers[0]))
-                                connection.dispatcher.stream.on("start", () => {
+                                connection.dispatcher.on("start", () => {
                                     embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
                                     message.channel.send(embedMusic)
                                 })
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
-                                    music = connection.playStream(ytdl(connection.receivers[0]))
+                                    if (!connection.receivers) {
+                                        return
+                                    } else {
+                                        music = connection.playStream(ytdl(connection.receivers[0]))
+                                    }
+
                                 })
                             }
 
@@ -291,7 +227,7 @@ client.on("message", async message => {
             let numberVol = parseInt(arguments[1])
             embedMusic.setColor(colorRadomEx())
             switch (numberVol) {
-                case 0 || 0.0:
+                case 0:
                     embedMusic.setDescription("<:silentmode:633076689202839612>")
                     message.channel.send(embedMusic)
                     break;
@@ -304,14 +240,14 @@ client.on("message", async message => {
                     message.channel.send(embedMusic)
                     break;
                 case 4:
-                    embedMusic.setDescription("<:alert:630429039785410562> Não recomendo esse volume")
+                    embedMusic.setDescription("<:alert:630429039785410562>Volume máximo, Não recomendo a altura desse volume")
                     message.channel.send(embedMusic)
                     break;
                 default:
-                    console.error(error)
-                    break;
+                    voiceChannel.connection.dispatcher.setVolume(1)
+                break;
             }
-            return (numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0.1 a 4`)
+            return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
     }
 
 })
