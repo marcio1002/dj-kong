@@ -54,7 +54,7 @@ client.on("guildMemberAdd", async newmember => {
     guild = client.guilds.get('565566718446141450')
     if (newmember.guild != guild) return
     if (newmember.user == client.user.bot) return
-    
+
     let embed = new discord.RichEmbed()
     embed.setTitle(newmember.user.tag)
         .setColor("#FFF100")
@@ -63,9 +63,9 @@ client.on("guildMemberAdd", async newmember => {
         .setDescription("**Você entrou no servidor:** **``" + newmember.guild.name + "``** \n**Com você temos:** **``" + newmember.guild.memberCount + "`` membros 🥳**")
         .setImage("https://cdn.dribbble.com/users/1029769/screenshots/3430845/hypeguy_dribbble.gif")
         .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
-        
-            canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embedMusic)
-            console.log(`Novo membro \nEmbed enviada no servidor ${newmember.guild.name}`)
+
+    canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embedMusic)
+    console.log(`Novo membro \nEmbed enviada no servidor ${newmember.guild.name}`)
 })
 client.on("message", async message => {
     if (message.author.bot) return
@@ -79,16 +79,16 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const voiceChannel = message.member.voiceChannel
     let embedMusic = new discord.RichEmbed()
-    comandoObject = {
+    argsObject = {
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
     }
 
-    if (comandoObject[message.content]) {
+    if (argsObject[message.content]) {
         message.channel.send(comandoObject[message.content])
     }
     switch (comando) {
         case "avatar":
-            
+
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
@@ -120,13 +120,13 @@ client.on("message", async message => {
                 .addField("``avatar``", "Comando para visualizar o avatar do perfil")
                 .addField("😀", "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506")
                 .addBlankField()
-                .addField("**``play``**","iniciar a musica",true)
-                .addField("**``leave``**","Finalizar a musica e sair do canal",true)
-                .addField("**``back``**","Continua a musica",true)
-                .addField("**``pause``**","Pausa a musica",true)
-                .addField("**``stop``**","Finaliza a musica",true)
-                .addField("**``vol``**","Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4",true)
-           
+                .addField("**``play``**", "iniciar a musica", true)
+                .addField("**``leave``**", "Finalizar a musica e sair do canal", true)
+                .addField("**``back``**", "Continua a musica", true)
+                .addField("**``pause``**", "Pausa a musica", true)
+                .addField("**``stop``**", "Finaliza a musica", true)
+                .addField("**``vol``**", "Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4", true)
+
             message.channel.send(embedMusic)
             break;
         case "play":
@@ -147,19 +147,20 @@ client.on("message", async message => {
                             if (connection.speaking == true) {
                                 connection.receivers.push(info.video_url)
 
-                                embedMusic.setTitle('``' + info.title + '`` \n Foi adicionada na fila')
+                                embedMusic.setTitle('<:music:648556667364966400> ``' + info.title + '`` \n Foi adicionada na fila')
                                 message.channel.send(embedMusic)
                             } else {
                                 connection.receivers.push(info.video_url)
-                                    connection.playStream(ytdl(connection.receivers[0]))
-                               
+                                connection.playStream(ytdl(connection.receivers[0]))
+
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
                                     if (!connection.receivers[0]) {
                                         return
                                     } else {
                                         connection.playStream(ytdl(connection.receivers[0]))
-                                            
+                                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
+                                        message.channel.send(embedMusic)
                                     }
 
                                 })
@@ -182,37 +183,56 @@ client.on("message", async message => {
             musicInfo.catch(console.error)
             break;
         case "leave":
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
-            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso parar a musica você está ausente no canal de voz.`)
+            if (!voiceChannel.connection) return message.channel.send(`<@${message.author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`)
+            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso sair do canal de voz você está ausente.`)
+            embedMusic.setTitle("Acabou o disco de vinil")
+            message.channel.send(embedMusic)
             voiceChannel.connection.disconnect()
+
             break;
         case "pause":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
-            if (!voiceChannel) return
+            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso pausar a musica você está ausente no canal de voz`)
             embedMusic.setColor(colorRadomEx())
-            embedMusic.setDescription("<:pause:633071783465058334> Pausado")
-            voiceChannel.connection.dispatcher.pause()
-            message.channel.send(embedMusic)
+            embedMusic.setDescription("<:pause:633071783465058334> paused")
+            if (voiceChannel.connection.speaking == true) {
+                voiceChannel.connection.dispatcher.pause()
+                message.channel.send(embedMusic)
+            } else {
+                return message.channel.send(`<@${message.author.id}>  <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
+            }
+
             break;
         case "back":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
-            embedMusic.setColor(colorRadomEx())
-            embedMusic.setDescription("<:play:633088252940648480>")
-            message.channel.send(embedMusic)
-            return (voiceChannel.connection.dispatcher.paused == true) ? voiceChannel.connection.dispatcher.resume() : message.channel.send(`<:alert:630429039785410562> Esse comando é só usado quando a musica está pausada.`)
+            embedMusic.setDescription("<:play:633088252940648480> ")
+                .setColor(colorRadomEx())
+
+            if (voiceChannel.connection.dispatcher.paused == true) {
+                voiceChannel.connection.dispatcher.resume()
+                message.channel.send(embedMusic)
+            } else {
+                return console.log("erro! não pode continuar a musica pausada")
+            }
+            break;
         case "stop":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
-            embedMusic.setColor(colorRadomEx())
-            embedMusic.setDescription("<:stop:633088253142106115> musica parada")
-            voiceChannel.connection.dispatcher.end()
-            return message.channel.send(embedMusic)
+            embedMusic.setDescription("<:stop:648561120155795466> stop")
+            if (voiceChannel.connection.speaking == true) {
+                voiceChannel.connection.dispatcher.end()
+                message.channel.send(embedMusic)
+            } else {
+                return message.channel.send(`<@${message.author.id}> <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
+            }
+            break;
         case "vol":
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
-            if (!voiceChannel) return
             let numberVol = parseInt(arguments[1])
             embedMusic.setColor(colorRadomEx())
+            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+            if (!voiceChannel || !numberVol) return
+
             switch (numberVol) {
                 case 0:
                     embedMusic.setDescription("<:silentmode:633076689202839612>")
@@ -227,12 +247,12 @@ client.on("message", async message => {
                     message.channel.send(embedMusic)
                     break;
                 case 4:
-                    embedMusic.setDescription("<:alert:630429039785410562>Volume máximo, Não recomendo a altura desse volume")
+                    embedMusic.setDescription("\🥴  Volume máximo, Não recomendo a altura desse volume")
                     message.channel.send(embedMusic)
                     break;
                 default:
                     voiceChannel.connection.dispatcher.setVolume(1)
-                break;
+                    break;
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
     }
@@ -272,6 +292,6 @@ client.on("raw", async dados => {
 })
 
 // client.on('raw', console.log)
-express() 
+express()
     .listen(port, () => console.log(`servidor está usando a porta ${port}`))
 client.login(token)
