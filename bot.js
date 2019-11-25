@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080
 const cool = require('cool-ascii-faces')
 const ytdl = require('ytdl-core')
 const mapa = new Map()
-
+const token = process.env.token || config.token
 
 
 client.on("ready", () => {
@@ -287,11 +287,6 @@ client.on("raw", async dados => {
 })
 
 // client.on('raw', console.log)
-express()
-    .use(express.static(path.join(__dirname, 'public')))
-    .set('views', path.join(__dirname, 'views'))
-    .set('view engine', 'ejs')
-    .get('/', (req, res) => res.render('pages/bot'))
-    .get('/cool', (req, res) => res.send(cool()))
+express() 
     .listen(port, () => console.log(`servidor está usando a porta ${port}`))
-client.login(config.token)
+client.login(token)
