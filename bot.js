@@ -9,6 +9,7 @@ const ytdl = require('ytdl-core')
 const mapa = new Map()
 const token = process.env.token || config.token
 const prefix = process.env.prefix || config.prefix
+let embedMusic = new discord.RichEmbed()
 
 
 client.on("ready", () => {
@@ -55,32 +56,15 @@ client.on("guildMemberAdd", async newmember => {
     guild = client.guilds.get('565566718446141450')
     if (newmember.guild != guild) return
     if (newmember.user == client.user.bot) return
-
-    let welcome = {
-        "embed": {
-            "title": newmember.user.tag,
-            "color": 16773376,
-            "timestamp": canal.createdTimestamp,
-            "thumbnail": {
-                "url": newmember.user.displayAvatarURL,
-            },
-            "fields": [
-                {
-                    "name": "**Você entrou no servidor:** " + newmember.guild.name + "\n **Região:** ``" + newmember.guild.region + "``",
-                    "value": "____________________________________________________________________"
-                }
-            ],
-            "image": {
-                "url": "https://cdn.dribbble.com/users/1029769/screenshots/3430845/hypeguy_dribbble.gif"
-            },
-            "footer": {
-                "icon_url": "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256",
-                "text": "Ondisco"
-            },
-        }
-    }
-    canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, welcome)
-    console.log(`Embed enviada no servidor ${newmember.guild.name}`)
+    embedMusic.setTitle(newmember.user.tag)
+        .setColor("#FFF100")
+        .setTimestamp(canal.createdTimestamp)
+        .setThumbnail(newmember.user.displayAvatarURL)
+        .addField("**Você entrou no servidor:** " + newmember.guild.name + "\n **Com você temos:** ``" + newmember.guild.memberCount + "``", "____________________________________________________________________")
+        .setImage("https://cdn.dribbble.com/users/1029769/screenshots/3430845/hypeguy_dribbble.gif")
+        .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+            canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embedMusic)
+            console.log(`novo membro \n Embed enviada no servidor ${newmember.guild.name}`)
 })
 client.on("message", async message => {
     if (message.author.bot) return
@@ -92,7 +76,6 @@ client.on("message", async message => {
     const arguments = message.content.split(' ')
     const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
-    let embedMusic = new discord.RichEmbed()
     const voiceChannel = message.member.voiceChannel
 
     comandoObject = {
