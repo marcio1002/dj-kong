@@ -8,6 +8,7 @@ const cool = require('cool-ascii-faces')
 const ytdl = require('ytdl-core')
 const mapa = new Map()
 const token = process.env.token || config.token
+const prefix = process.env.prefix || config.prefix
 
 
 client.on("ready", () => {
@@ -84,12 +85,12 @@ client.on("guildMemberAdd", async newmember => {
 client.on("message", async message => {
     if (message.author.bot) return
     if (message.channel.type === "dm") return
-    if (!message.content.startsWith(config.prefix)) return;
+    if (!message.content.startsWith(prefix)) return;
 
     const mentionUser = message.mentions.users.first()
     const memberMentions = message.guild.member(mentionUser)
     const arguments = message.content.split(' ')
-    const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
+    const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
     let embedMusic = new discord.RichEmbed()
     const voiceChannel = message.member.voiceChannel
