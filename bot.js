@@ -2,14 +2,12 @@ const discord = require("discord.js")
 const client = new discord.Client()
 const config = require("./config.json")
 const express = require("express")
-const path = require('path')
-const port = process.env.PORT || 8080
-const cool = require('cool-ascii-faces')
+const port = process.env.PORT || 3232
 const ytdl = require('ytdl-core')
 const mapa = new Map()
 const token = process.env.token || config.token
 const prefix = process.env.prefix || config.prefix
-let embedMusic = new discord.RichEmbed()
+
 
 
 client.on("ready", () => {
@@ -19,8 +17,8 @@ client.on("ready", () => {
 client.on('error', console.error);
 
 client.on("presenceUpdate", async presenceupdate => {
-    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 8000)
-    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 36000)
+    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 22000)
+    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 40000)
 })
 
 client.on("guildCreate", guild => {
@@ -56,15 +54,18 @@ client.on("guildMemberAdd", async newmember => {
     guild = client.guilds.get('565566718446141450')
     if (newmember.guild != guild) return
     if (newmember.user == client.user.bot) return
-    embedMusic.setTitle(newmember.user.tag)
+    
+    let embed = new discord.RichEmbed()
+    embed.setTitle(newmember.user.tag)
         .setColor("#FFF100")
         .setTimestamp(canal.createdTimestamp)
         .setThumbnail(newmember.user.displayAvatarURL)
-        .addField("**Você entrou no servidor:** " + newmember.guild.name + "\n **Com você temos:** ``" + newmember.guild.memberCount + "``", "____________________________________________________________________")
+        .setDescription("**Você entrou no servidor:** **``" + newmember.guild.name + "``** \n**Com você temos:** **``" + newmember.guild.memberCount + "`` membros 🥳**")
         .setImage("https://cdn.dribbble.com/users/1029769/screenshots/3430845/hypeguy_dribbble.gif")
         .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+        
             canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embedMusic)
-            console.log(`novo membro \n Embed enviada no servidor ${newmember.guild.name}`)
+            console.log(`Novo membro \nEmbed enviada no servidor ${newmember.guild.name}`)
 })
 client.on("message", async message => {
     if (message.author.bot) return
@@ -77,7 +78,7 @@ client.on("message", async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
     const voiceChannel = message.member.voiceChannel
-
+    let embedMusic = new discord.RichEmbed()
     comandoObject = {
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
     }
@@ -87,11 +88,11 @@ client.on("message", async message => {
     }
     switch (comando) {
         case "avatar":
+            
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
-                    .setTitle("avatar: ``" + memberMentions.user.tag + "``")
                     .setTimestamp(message.createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar imagem](${memberMentions.user.displayAvatarURL})**`)
+                    .setDescription(`<:image:633071783414726666>** [Baixar avatar de ${memberMentions.user.tag}](${memberMentions.user.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
@@ -101,7 +102,7 @@ client.on("message", async message => {
             } else {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar imagem](${message.author.displayAvatarURL})**`)
+                    .setDescription(`<:image:633071783414726666>** [Baixar avatar de ${message.author.tag}](${message.author.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(message.author.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
@@ -150,14 +151,14 @@ client.on("message", async message => {
                                 message.channel.send(embedMusic)
                             } else {
                                 connection.receivers.push(info.video_url)
-                                music = connection.playStream(ytdl(connection.receivers[0]))
+                                    connection.playStream(ytdl(connection.receivers[0]))
                                
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
                                     if (!connection.receivers[0]) {
                                         return
                                     } else {
-                                        music = connection.playStream(ytdl(connection.receivers[0]))
+                                        connection.playStream(ytdl(connection.receivers[0]))
                                             
                                     }
 
