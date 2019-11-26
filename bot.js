@@ -79,6 +79,14 @@ client.on("message", async message => {
     const comando = args.shift().toLowerCase()
     const voiceChannel = message.member.voiceChannel
     let embedMusic = new discord.RichEmbed()
+
+    var song = {
+        title: new Array(),
+        description: String,
+        timeStamp: String,
+        author: String,
+
+    }
     argsObject = {
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
     }
@@ -92,7 +100,7 @@ client.on("message", async message => {
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar avatar de ${memberMentions.user.tag}](${memberMentions.user.displayAvatarURL})**`)
+                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${memberMentions.user.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
@@ -102,7 +110,7 @@ client.on("message", async message => {
             } else {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar avatar de ${message.author.tag}](${message.author.displayAvatarURL})**`)
+                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${message.author.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(message.author.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
@@ -135,57 +143,59 @@ client.on("message", async message => {
             if (voiceChannel.muted == true) return message.channel.send(`<@${message.author.id}>  não posso enviar audio no canal de voz, canal de voz mudo.`)
             if (!arguments[1]) return message.channel.send("<@" + message.author.id + "> Digite a url do vídeo. \n exe: ``!dplay https://youtu.be/t67_zAg5vvI`` ")
             let musicInfo = ytdl.getInfo(arguments[1])
-            embedMusic.setColor(11347415)
+            embedMusic.setColor("#A331B6")
 
             musicInfo.then((info) => {
                 if (voiceChannel) {
-
+                    info.timestamp
                     try {
                         const voiceConnection = voiceChannel.join()
 
                         voiceConnection.then(connection => {
+
                             if (connection.speaking == true) {
                                 connection.receivers.push(info.video_url)
-
-                                embedMusic.setTitle('<:music:648556667364966400> ``' + info.title + '`` \n Foi adicionada na fila')
+                                song.title.push(info.title)
+                                embedMusic.setTitle('``' + info.title + '`` \n <:music:648556667364966400> Foi adicionada na fila')
                                 message.channel.send(embedMusic)
                             } else {
                                 connection.receivers.push(info.video_url)
+                                song.title.push(info.title)
                                 connection.playStream(ytdl(connection.receivers[0]))
 
                                 connection.dispatcher.stream.on('end', () => {
                                     connection.receivers.shift()
+
                                     if (!connection.receivers[0]) {
                                         return
                                     } else {
                                         connection.playStream(ytdl(connection.receivers[0]))
-                                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                        message.channel.send(embedMusic)
                                     }
 
                                 })
+                                connection.dispatcher.on("start", () => {
+                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + song.title[0] + '``')
+                                    message.channel.send(embedMusic)
+                                })
                             }
-                            connection.dispatcher.on("start", () => {
-                                embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + info.title + '``')
-                                message.channel.send(embedMusic)
-                            })
+                            console.log(song.title)
 
                         })
-                        voiceConnection.catch(error => console.log(`Tipo de erro: ${error}`))
 
+                            .catch(error => console.log(`Tipo de erro: ${error}`))
                     } catch (error) {
-                        console.log(`Tipo de erro: ${error}`)
-                        return undefined
+                        console.log(error)
                     }
                 }
 
             })
-            musicInfo.catch(console.error)
+                .catch(console.error)
             break;
         case "leave":
             if (!voiceChannel.connection) return message.channel.send(`<@${message.author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`)
             if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso sair do canal de voz você está ausente.`)
-            embedMusic.setTitle("Acabou o disco de vinil")
+            embedMusic.setTitle("Sai do canal")
+                .setColor(colorRadomEx())
             message.channel.send(embedMusic)
             voiceChannel.connection.disconnect()
 
@@ -255,6 +265,14 @@ client.on("message", async message => {
                     break;
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
+        case "skip":
+            voiceChannel.connection.receivers.shift()
+            voiceChannel.connection.playStream(ytdl(voiceChannel.connection.receivers[0]))
+            embedMusic.setTitle("música pulada")
+                .setColor(embedMusic.setColor("#A331B6"))
+            message.channel.send(embedMusic)
+            
+            break;
     }
 
 })
