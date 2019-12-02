@@ -17,9 +17,10 @@
     "discord.js": "^11.5.1",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
+    "node-modules": "^1.0.1",
     "node-opus": "^0.3.2",
     "uuid": "^3.3.3",
-    "ytdl-core": "^0.29.7",
-    "node-modules": "^1.0.1"
+    "yt-search": "^0.4.1",
+    "ytdl-core": "^0.29.7"
   }
 }

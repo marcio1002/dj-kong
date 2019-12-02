@@ -4,6 +4,7 @@ const config = require("./config.json")
 const express = require("express")
 const port = process.env.PORT || 3232
 const ytdl = require('ytdl-core')
+const ytSearch = require('yt-search')
 const mapa = new Map()
 const token = process.env.token || config.token
 const prefix = process.env.prefix || config.prefix
@@ -81,7 +82,7 @@ client.on("message", async message => {
     let embedMusic = new discord.RichEmbed()
 
     var song = {
-        title: new Array(),
+        title: [],
         description: String,
         timeStamp: String,
         author: String,
@@ -130,7 +131,7 @@ client.on("message", async message => {
                 .addBlankField()
                 .addField("**``play``**", "iniciar a musica", true)
                 .addField("**``leave``**", "Finalizar a musica e sair do canal", true)
-                .addField("**``back``**", "Continua a musica", true)
+                .addField("**``back``**", "Continua a musica pausada", true)
                 .addField("**``pause``**", "Pausa a musica", true)
                 .addField("**``stop``**", "Finaliza a musica", true)
                 .addField("**``vol``**", "Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4", true)
@@ -141,63 +142,75 @@ client.on("message", async message => {
             if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
             if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio no canal de voz.`)
             if (voiceChannel.muted == true) return message.channel.send(`<@${message.author.id}>  não posso enviar audio no canal de voz, canal de voz mudo.`)
-            if (!arguments[1]) return message.channel.send("<@" + message.author.id + "> Digite a url do vídeo. \n exe: ``!dplay https://youtu.be/t67_zAg5vvI`` ")
-            let musicInfo = ytdl.getInfo(arguments[1])
+            if (!arguments[0]) return message.channel.send("<@" + message.author.id + "> Digite a o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Venom `` ")
+            arguments.shift()
             embedMusic.setColor("#A331B6")
+            
+            ytSearch(arguments.join(" "), async function (err, videoInfo) {
+                if (err) console.log(err)
+                const listVideos = videoInfo.videos
+                console.log(musics)
+                console.log(listVideos)
+                // let option = 1
+                // let cont = 1
+                // optionTitle = []
+                // embedMusic.setTitle("Qual musica você deseja tocar ? \n digite !dtopt e um numero entre ``1`` a ``10`` ")
+                //     .setColor('#B955D4')
+                // for (const video of listVideos) {
+                //     console.log(video)
+                //     optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
+                //     option = option + 1;
+                //     if (cont == 10) break
+                //     cont = cont + 1;
+                // }
+                // embedMusic.setDescription(optionTitle)
 
-            musicInfo.then((info) => {
-                if (voiceChannel) {
-                    info.timestamp
-                    try {
+                try {
+
+                    let music = await listVideos[0]
+                    if (music) {
                         const voiceConnection = voiceChannel.join()
-
                         voiceConnection.then(connection => {
-
                             if (connection.speaking == true) {
-                                connection.receivers.push(info.video_url)
-                                song.title.push(info.title)
-                                embedMusic.setTitle('``' + info.title + '`` \n <:music:648556667364966400> Foi adicionada na fila')
+                                connection.receivers.push("https://www.youtube.com" + music['url'])
+                                embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionada na fila')
                                 message.channel.send(embedMusic)
                             } else {
-                                connection.receivers.push(info.video_url)
-                                song.title.push(info.title)
+                                connection.receivers.push("https://www.youtube.com" + music['url'])
                                 connection.playStream(ytdl(connection.receivers[0]))
+                                connection.dispatcher.on("start", () => {
+                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
 
-                                connection.dispatcher.stream.on('end', () => {
+                                    message.channel.send(embedMusic)
+                                })
+                                connection.dispatcher.stream.on("end", () => {
                                     connection.receivers.shift()
-
                                     if (!connection.receivers[0]) {
                                         return
                                     } else {
                                         connection.playStream(ytdl(connection.receivers[0]))
                                     }
+                                })
 
-                                })
-                                connection.dispatcher.on("start", () => {
-                                    embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + song.title[0] + '``')
-                                    message.channel.send(embedMusic)
-                                })
                             }
-                            console.log(song.title)
 
                         })
-
-                            .catch(error => console.log(`Tipo de erro: ${error}`))
-                    } catch (error) {
-                        console.log(error)
+                        voiceConnection.catch(console.error)
                     }
-                }
 
+                } catch (error) {
+                    console.log(`Tipo de erro: ${error}`)
+                    return undefined
+                }
             })
-                .catch(console.error)
             break;
         case "leave":
             if (!voiceChannel.connection) return message.channel.send(`<@${message.author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`)
             if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso sair do canal de voz você está ausente.`)
-            embedMusic.setTitle("Sai do canal")
+            embedMusic.setTitle("Desconectado do canal ``"+voiceChannel.name+"``")
                 .setColor(colorRadomEx())
-            message.channel.send(embedMusic)
             voiceChannel.connection.disconnect()
+            message.channel.send(embedMusic)
 
             break;
         case "pause":
@@ -232,7 +245,7 @@ client.on("message", async message => {
             embedMusic.setDescription("<:stop:648561120155795466> stop")
             if (voiceChannel.connection.speaking == true) {
                 voiceChannel.connection.dispatcher.end()
-                message.channel.send(embedMusic)
+                return message.channel.send(embedMusic)
             } else {
                 return message.channel.send(`<@${message.author.id}> <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
             }
@@ -266,11 +279,16 @@ client.on("message", async message => {
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
         case "skip":
-            voiceChannel.connection.receivers.shift()
-            voiceChannel.connection.playStream(ytdl(voiceChannel.connection.receivers[0]))
-            embedMusic.setTitle("música pulada")
-                .setColor(embedMusic.setColor("#A331B6"))
-            message.channel.send(embedMusic)
+            voiceChannel.connection.receivers
+            console.log(voiceChannel.connection.receivers)
+           if(!voiceChannel.connection.receivers[0]) {
+                return
+           } else {
+               voiceChannel.connection.playStream(ytdl(voiceChannel.connection.receivers[0]))
+               embedMusic.setTitle("música pulada")
+                   .setColor("#A331B6")
+               message.channel.send(embedMusic)
+           }
             
             break;
     }
