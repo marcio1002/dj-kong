@@ -132,36 +132,47 @@ client.on("message", async message => {
             ytSearch(arguments.join(" "), async function (err, videoInfo) {
                 if (err) console.log(err)
                 const listVideos = videoInfo.videos
-                // let option = 1
-                // let cont = 1
-                // optionTitle = []
-                // embedMusic.setTitle("Qual musica você deseja tocar ? \n digite !dtopt e um numero entre ``1`` a ``10`` ")
-                //     .setColor('#B955D4')
-                // for (const video of listVideos) {
-                //     console.log(video)
-                //     optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
-                //     option = option + 1;
-                //     if (cont == 10) break
-                //     cont = cont + 1;
-                // }
-                // embedMusic.setDescription(optionTitle)
-
-                try {
-
-                    let music = await listVideos[0]
-                    if (music) {
-                        const voiceConnection = voiceChannel.join()
-                        voiceConnection.then(connection => {
-                            play(connection,music['url'])
-
-                        })
-                        voiceConnection.catch(console.error)
-                    }
-
-                } catch (error) {
-                    console.log(`Tipo de erro: ${error}`)
-                    return undefined
+                let option = 1
+                let cont = 1
+                optionTitle = []
+                const optEmbed = new discord.RichEmbed()
+                optEmbed.setTitle("Qual musica você deseja tocar ? \n digite um numero entre ``1`` a ``10`` ")
+                    .setColor('#B955D4')
+                for (const video of listVideos) {
+                    optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
+                    option = option + 1;
+                    if (cont == 10) break
+                    cont = cont + 1;
                 }
+                message.author.id
+                const filter = respon => respon.author.id === message.author.id
+                optEmbed.setDescription(optionTitle)
+                message.reply(optEmbed)
+
+                message.channel.awaitMessages(filter, {
+                    max: 1,
+                    time: 30000
+                }).then(async sellect => {
+                    if (sellect.first().content) {
+                        selectOption(sellect.first().content)
+                        try {
+                            console.log(op)
+                            let music = listVideos[op]
+                            if (music) {
+                                const voiceConnection = voiceChannel.join()
+                                voiceConnection.then(async connection => {
+                                    await playMusic(connection, music)
+                                })
+                                voiceConnection.catch(console.error)
+                            }
+
+                        } catch (error) {
+                            console.log(`Tipo de erro: ${error}`)
+                            return undefined
+                        }
+                    }
+                })
+                    .catch(console.error)
             })
             break;
         case "leave":
@@ -251,33 +262,41 @@ client.on("message", async message => {
             }
 
             break;
-    }
 
-    async function play(connection, url) {
-        if (connection.receivers[0]) {
-            connection.receivers.push("https://www.youtube.com" + url)
-            embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionada na fila')
-            message.channel.send(embedMusic)
-        } else {
-            connection.receivers.push("https://www.youtube.com" + url)
-            connection.playStream(ytdl(connection.receivers[0]))
-            connection.dispatcher.on("start", () => {
-                embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
+            async function selectOption(arg) {
+                const numbers = "123456789"
+                if (!arg || arg == undefined) return message.channel.send(`Nenhuma opção escolhida`)
+                if (arg.length > 2) return console.log("O tamanho do caractere foi excedido:" + arguments.length)
+                if (arg == numbers.substring(0, numbers.length)) return console.log("Só é aceito numeros")
+                const option = Number(arg) - 1
+                op = option;
+            }
 
-                message.channel.send(embedMusic)
-            })
-            connection.dispatcher.stream.on("end", () => {
-                connection.receivers.shift()
-                if (!connection.receivers[0]) {
-                    return
+            async function playMusic(connection, music) {
+                if (connection.receivers[0]) {
+                    connection.receivers.push("https://www.youtube.com" + music['url'])
+                    embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionada na fila')
+                    message.channel.send(embedMusic)
                 } else {
+                    connection.receivers.push("https://www.youtube.com" + music['url'])
                     connection.playStream(ytdl(connection.receivers[0]))
+                    connection.dispatcher.on("start", () => {
+                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
+
+                        message.channel.send(embedMusic)
+                    })
+                    connection.dispatcher.stream.on("end", () => {
+                        connection.receivers.shift()
+                        if (!connection.receivers[0]) {
+                            return
+                        } else {
+                            connection.playStream(ytdl(connection.receivers[0]))
+                        }
+                    })
+
                 }
-            })
-
-        }
+            }
     }
-
 
 })
 
