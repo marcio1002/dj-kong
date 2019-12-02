@@ -28,8 +28,8 @@ client.on("guildCreate", guild => {
 })
 
 client.on("guildDelete", guild => {
-    console.log(`O bot foi removido do servidor: ${guild.name} (id: ${guild.id})`)
-    client.user.setActivity(`Servindo a ${client.guilds.size} servidores.`)
+    console.log(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`)
+    client.user.setActivity(`Agora estou em ${client.guilds.size} servidores.`)
 })
 
 function colorRadomEx() {
@@ -113,14 +113,16 @@ client.on("message", async message => {
                 .addField("``avatar``", "Comando para visualizar o avatar do perfil")
                 .addField("😀", "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506")
                 .addBlankField()
-                .addField("**``play``**", "iniciar a musica", true)
-                .addField("**``leave``**", "Finalizar a musica e sair do canal", true)
-                .addField("**``back``**", "Continua a musica pausada", true)
-                .addField("**``pause``**", "Pausa a musica", true)
-                .addField("**``stop``**", "Finaliza a musica", true)
+                .addField("**``play``**", "inicia a música", true)
+                .addField("**``leave``**", "Finalizar a música e sai do canal", true)
+                .addField("**``back``**", "Continua a música pausada", true)
+                .addField("**``pause``**", "Pausa a música", true)
+                .addField("**``stop``**", "Finaliza a música", true)
                 .addField("**``vol``**", "Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4", true)
+                .addField("**``skip``**", "pula a música que está tocando no momento", true)
 
-            message.channel.send(embedMusic)
+            const m = await message.author.send(embedMusic)
+            m.delete(35000)
             break;
         case "play":
             if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
@@ -146,17 +148,18 @@ client.on("message", async message => {
                 }
                 message.author.id
                 const filter = respon => respon.author.id === message.author.id
+
                 optEmbed.setDescription(optionTitle)
-                message.reply(optEmbed)
+                const msg = await message.reply(optEmbed)
+                msg.delete(20000)
 
                 message.channel.awaitMessages(filter, {
                     max: 1,
-                    time: 30000
+                    time: 40000
                 }).then(async sellect => {
                     if (sellect.first().content) {
                         selectOption(sellect.first().content)
                         try {
-                            console.log(op)
                             let music = listVideos[op]
                             if (music) {
                                 const voiceConnection = voiceChannel.join()
@@ -220,7 +223,7 @@ client.on("message", async message => {
             } else {
                 return message.channel.send(`<@${message.author.id}> <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
             }
-            break;
+            
         case "vol":
             let numberVol = parseInt(arguments[1])
             embedMusic.setColor(colorRadomEx())
@@ -267,7 +270,7 @@ client.on("message", async message => {
                 const numbers = "123456789"
                 if (!arg || arg == undefined) return message.channel.send(`Nenhuma opção escolhida`)
                 if (arg.length > 2) return console.log("O tamanho do caractere foi excedido:" + arguments.length)
-                if (arg == numbers.substring(0, numbers.length)) return console.log("Só é aceito numeros")
+                if (arg == numbers.substring(0, numbers.length)) return console.log("Só é aceito números")
                 const option = Number(arg) - 1
                 op = option;
             }
@@ -331,8 +334,6 @@ client.on("raw", async dados => {
     }
 
 })
-
-// client.on('raw', console.log)
 express()
     .listen(port, () => console.log(`servidor está usando a porta ${port}`))
 client.login(token)
