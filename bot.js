@@ -121,7 +121,7 @@ client.on("message", async message => {
                 .addField("**``vol``**", "Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4", true)
                 .addField("**``skip``**", "pula a música que está tocando no momento", true)
 
-            const m = await message.author.send(embedMusic)
+            const m = await message.channel.send(embedMusic)
             m.delete(35000)
             break;
         case "play":
@@ -151,7 +151,7 @@ client.on("message", async message => {
 
                 optEmbed.setDescription(optionTitle)
                 const msg = await message.reply(optEmbed)
-                msg.delete(20000)
+                msg.delete(40000)
 
                 message.channel.awaitMessages(filter, {
                     max: 1,
@@ -253,7 +253,7 @@ client.on("message", async message => {
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
         case "skip":
-            voiceChannel.connection.receivers
+            voiceChannel.connection.receivers.shift()
             console.log(voiceChannel.connection.receivers)
             if (!voiceChannel.connection.receivers[0]) {
                 return
@@ -262,6 +262,14 @@ client.on("message", async message => {
                 embedMusic.setTitle("música pulada")
                     .setColor("#A331B6")
                 message.channel.send(embedMusic)
+                connection.dispatcher.stream.on("end", () => {
+                    connection.receivers.shift()
+                    if (!connection.receivers[0]) {
+                        return
+                    } else {
+                        connection.playStream(ytdl(connection.receivers[0]))
+                    }
+                })
             }
 
             break;
