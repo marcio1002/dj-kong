@@ -70,7 +70,7 @@ client.on("message", async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
     const voiceChannel = message.member.voiceChannel
-    let embedMusic = new discord.RichEmbed()
+    const embedMusic = new discord.RichEmbed()
 
     argsObject = {
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
@@ -81,7 +81,7 @@ client.on("message", async message => {
     }
     switch (comando) {
         case "avatar":
-
+            const embedavatar = new discord.RichEmbed() 
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
@@ -89,9 +89,6 @@ client.on("message", async message => {
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
-
-                message.channel.send(embedMusic)
-
             } else {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
@@ -99,13 +96,12 @@ client.on("message", async message => {
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(message.author.displayAvatarURL)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
-
-                message.channel.send(embedMusic)
             }
-
+            message.channel.send(embedMusic)
             break;
         case "help":
-            embedMusic.setColor("#AD25D7")
+           const embedHelp = new discord.RichEmbed() 
+            embedHelp.setColor("#AD25D7")
                 .setTitle("**```Help```**")
                 .setTimestamp(message.createdTimestamp)
                 .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------")
@@ -121,7 +117,7 @@ client.on("message", async message => {
                 .addField("**``vol``**", "Aumenta ou diminui o volume.\n **``Min:``** 0   **``Max:``** 4", true)
                 .addField("**``skip``**", "pula a música que está tocando no momento", true)
 
-            const m = await message.channel.send(embedMusic)
+            const m = await message.channel.send(embedHelp)
             m.delete(35000)
             break;
         case "play":
@@ -146,7 +142,6 @@ client.on("message", async message => {
                     if (cont == 10) break
                     cont = cont + 1;
                 }
-                message.author.id
                 const filter = respon => respon.author.id === message.author.id
 
                 optEmbed.setDescription(optionTitle)
