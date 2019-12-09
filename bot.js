@@ -5,11 +5,22 @@ const express = require("express")
 const port = process.env.PORT || 3232
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
+const fs = require('fs')
 const mapa = new Map()
 const token = process.env.token || config.token
 const prefix = process.env.prefix || config.prefix
 
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+function colorRadomEx() {
+    let letters = "123456789ABCDEFGH"
+    color = "#"
+    for (let c = 0; c < 6; c++) {
+        color += letters[Math.floor(Math.random() * 12)]
+    }
+    return color
+}
 
 client.on("ready", () => {
     console.log(`Bot Online, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`)
@@ -18,8 +29,14 @@ client.on("ready", () => {
 client.on('error', console.error);
 
 client.on("presenceUpdate", async presenceupdate => {
-    await setTimeout(() => { client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `) }, 22000)
-    await setTimeout(() => { client.user.setActivity('Digite !dhelp para mais informações.') }, 40000)
+    await setTimeout(async () => {
+
+        client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `)
+    }, 80000)
+    await sleep(100000)
+    await setTimeout(async () => {
+        client.user.setActivity('Digite !dhelp para mais informações.')
+    }, 80000)
 })
 
 client.on("guildCreate", guild => {
@@ -32,14 +49,7 @@ client.on("guildDelete", guild => {
     client.user.setActivity(`Agora estou em ${client.guilds.size} servidores.`)
 })
 
-function colorRadomEx() {
-    let letters = "123456789ABCDEFGH"
-    color = "#"
-    for (let c = 0; c < 6; c++) {
-        color += letters[Math.floor(Math.random() * 12)]
-    }
-    return color
-}
+
 
 client.on("guildMemberAdd", async newmember => {
     canal = client.channels.get('622940693022638090')
@@ -81,7 +91,6 @@ client.on("message", async message => {
     }
     switch (comando) {
         case "avatar":
-            const embedavatar = new discord.RichEmbed() 
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
@@ -100,7 +109,7 @@ client.on("message", async message => {
             message.channel.send(embedMusic)
             break;
         case "help":
-           const embedHelp = new discord.RichEmbed() 
+            const embedHelp = new discord.RichEmbed()
             embedHelp.setColor("#AD25D7")
                 .setTitle("**```Help```**")
                 .setTimestamp(message.createdTimestamp)
@@ -134,10 +143,10 @@ client.on("message", async message => {
                 let cont = 1
                 optionTitle = []
                 const optEmbed = new discord.RichEmbed()
-                optEmbed.setTitle("Qual musica você deseja tocar ? \n digite um numero entre ``1`` a ``10`` ")
+                optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` a ``10``")
                     .setColor('#B955D4')
                 for (const video of listVideos) {
-                    optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
+                    optionTitle.push("** " + option + "** ->  <:streamvideo:633071783393755167> **``" + video['title'] + "``** \n")
                     option = option + 1;
                     if (cont == 10) break
                     cont = cont + 1;
@@ -162,6 +171,49 @@ client.on("message", async message => {
                                     await playMusic(connection, music)
                                 })
                                 voiceConnection.catch(console.error)
+                            }
+
+                        } catch (error) {
+                            console.log(`Tipo de erro: ${error}`)
+                            return undefined
+                        }
+                    }
+                })
+                    .catch(console.error)
+            })
+            break;
+        case "Down":
+            ytSearch(arguments.join(" "), async function (err, videoInfo) {
+                if (err) console.log(err)
+                const listVideos = videoInfo.videos
+                let option = 1
+                let cont = 1
+                optionTitle = []
+                const optEmbed = new discord.RichEmbed()
+                optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` e ``10``")
+                    .setColor('#B955D4')
+                for (const video of listVideos) {
+                    optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
+                    option = option + 1;
+                    if (cont == 10) break
+                    cont = cont + 1;
+                }
+                const filter = respon => respon.author.id === message.author.id
+
+                optEmbed.setDescription(optionTitle)
+                const msg = await message.reply(optEmbed)
+                msg.delete(40000)
+
+                message.channel.awaitMessages(filter, {
+                    max: 1,
+                    time: 40000
+                }).then(async sellect => {
+                    if (sellect.first().content) {
+                        selectOption(sellect.first().content)
+                        try {
+                            let music = listVideos[op]
+                            if (music) {
+                                downloadVideo(music)
                             }
 
                         } catch (error) {
@@ -218,7 +270,7 @@ client.on("message", async message => {
             } else {
                 return message.channel.send(`<@${message.author.id}> <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
             }
-            
+
         case "vol":
             let numberVol = parseInt(arguments[1])
             embedMusic.setColor(colorRadomEx())
@@ -248,6 +300,8 @@ client.on("message", async message => {
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
         case "skip":
+            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+            if (!voiceChannel) return
             voiceChannel.connection.receivers.shift()
             console.log(voiceChannel.connection.receivers)
             if (!voiceChannel.connection.receivers[0]) {
@@ -257,14 +311,7 @@ client.on("message", async message => {
                 embedMusic.setTitle("música pulada")
                     .setColor("#A331B6")
                 message.channel.send(embedMusic)
-                connection.dispatcher.stream.on("end", () => {
-                    connection.receivers.shift()
-                    if (!connection.receivers[0]) {
-                        return
-                    } else {
-                        connection.playStream(ytdl(connection.receivers[0]))
-                    }
-                })
+                playMusic(voiceChannel.connection,voiceChannel.connection.receivers)
             }
 
             break;
@@ -287,8 +334,9 @@ client.on("message", async message => {
                     connection.receivers.push("https://www.youtube.com" + music['url'])
                     connection.playStream(ytdl(connection.receivers[0]))
                     connection.dispatcher.on("start", () => {
+                        const video_url = music["videoId"]
                         embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
-
+                            .setDescription(`Duração: ${music["timestamp"]} \n [Video](https://www.youtube.com/watch?v=${video_url})`)
                         message.channel.send(embedMusic)
                     })
                     connection.dispatcher.stream.on("end", () => {
@@ -299,9 +347,10 @@ client.on("message", async message => {
                             connection.playStream(ytdl(connection.receivers[0]))
                         }
                     })
-
+                    connection.dispatcher.stream.on('error', error => console.log(error))
                 }
             }
+           
     }
 
 })
