@@ -6,7 +6,6 @@ const port = process.env.PORT || 3232
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
 const fs = require('fs')
-const mapa = new Map()
 const token = process.env.token || config.token
 const prefix = process.env.prefix || config.prefix
 
@@ -29,14 +28,7 @@ client.on("ready", () => {
 client.on('error', console.error);
 
 client.on("presenceUpdate", async presenceupdate => {
-    await setTimeout(async () => {
-
-        client.user.setActivity(`😍 Eu estou em ${client.guilds.size} servidores. um bom começo você não acha ? . 😃 `)
-    }, 80000)
-    await sleep(100000)
-    await setTimeout(async () => {
-        client.user.setActivity('Digite !dhelp para mais informações.')
-    }, 80000)
+    client.user.setActivity('Digite !dhelp para mais informações.')
 })
 
 client.on("guildCreate", guild => {
@@ -79,8 +71,10 @@ client.on("message", async message => {
     const arguments = message.content.split(' ')
     const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const comando = args.shift().toLowerCase()
-    const voiceChannel = message.member.voiceChannel
     const embedMusic = new discord.RichEmbed()
+    let op;
+    const { author, createdTimestamp, member: { voiceChannel } } = message
+
 
     argsObject = {
         "!d": message.author + " Você esqueceu dos argumentos, Digite ``!dhelp`` ",
@@ -93,7 +87,7 @@ client.on("message", async message => {
         case "avatar":
             if (mentionUser) {
                 embedMusic.setColor(colorRadomEx())
-                    .setTimestamp(message.createdTimestamp)
+                    .setTimestamp(createdTimestamp)
                     .setDescription(`<:image:633071783414726666>** [Baixar avatar](${memberMentions.user.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
@@ -101,10 +95,10 @@ client.on("message", async message => {
             } else {
                 embedMusic.setColor(colorRadomEx())
                     .setTimestamp(message.createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${message.author.displayAvatarURL})**`)
+                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${author.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
-                    .setImage(message.author.displayAvatarURL)
-                    .setAuthor(message.author.tag, message.author.displayAvatarURL)
+                    .setImage(author.displayAvatarURL)
+                    .setAuthor(author.tag, author.displayAvatarURL)
             }
             message.channel.send(embedMusic)
             break;
@@ -112,11 +106,11 @@ client.on("message", async message => {
             const embedHelp = new discord.RichEmbed()
             embedHelp.setColor("#AD25D7")
                 .setTitle("**```Help```**")
-                .setTimestamp(message.createdTimestamp)
+                .setTimestamp(createdTimestamp)
                 .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------")
                 .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                 .addField("``avatar``", "Comando para visualizar o avatar do perfil")
-                .addField("😀", "Comandos para ouvir musica \n **OBS:** Se encontrar algum problema mandem seu feedback  para Marcio#1506")
+                .addField("😀", "Comandos para ouvir musica")
                 .addBlankField()
                 .addField("**``play``**", "inicia a música", true)
                 .addField("**``leave``**", "Finalizar a música e sai do canal", true)
@@ -130,9 +124,14 @@ client.on("message", async message => {
             m.delete(35000)
             break;
         case "play":
-            if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> Desculpe <@${message.author.id}> , Não te encontrei em nenhum canal de voz.`)
-            if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio no canal de voz.`)
-            if (voiceChannel.muted == true) return message.channel.send(`<@${message.author.id}>  não posso enviar audio no canal de voz, canal de voz mudo.`)
+            if (!voiceChannel) return message.channel.send(`<:erro:630429351678312506> <@${author.id}> só posso conceder essa função se você estiver conectado em um canal de voz`)
+            if (voiceChannel.joinable == false || voiceChannel.speakable == false) return message.channel.send(`<:alert:630429039785410562> <@${message.author.id}> Não tenho permissão para ingressar ou enviar audio nesse canal.`)
+            if (voiceChannel.muted == true) return message.channel.send(`<@${author.id}>  não posso enviar audio nesse canal de voz, canal de voz mudo.`)
+            if (!message.member.voiceChannel.memberPermissions(author.id)) return
+
+            const memberPermission = voiceChannel.memberPermissions(author.id);
+            if (!memberPermission.has("CONNECT") || !memberPermission.has("ADMINISTRATOR")) return message.channel.send(`<@${author.id}> Você não tem permissão para conectar nesse canal de voz`)
+
             arguments.shift()
             if (!arguments[0]) return message.channel.send("<@" + message.author.id + "> Digite a o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Venom `` ")
             embedMusic.setColor("#A331B6")
@@ -141,7 +140,7 @@ client.on("message", async message => {
                 const listVideos = videoInfo.videos
                 let option = 1
                 let cont = 1
-                optionTitle = []
+                let optionTitle = []
                 const optEmbed = new discord.RichEmbed()
                 optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` a ``10``")
                     .setColor('#B955D4')
@@ -151,7 +150,7 @@ client.on("message", async message => {
                     if (cont == 10) break
                     cont = cont + 1;
                 }
-                const filter = respon => respon.author.id === message.author.id
+                const filter = respon => respon.author.id === author.id
 
                 optEmbed.setDescription(optionTitle)
                 const msg = await message.reply(optEmbed)
@@ -161,44 +160,43 @@ client.on("message", async message => {
                     max: 1,
                     time: 40000
                 }).then(async sellect => {
-                    if (sellect.first().content) {
-                        selectOption(sellect.first().content)
-                        try {
-                            let music = listVideos[op]
-                            if (music) {
-                                const voiceConnection = voiceChannel.join()
-                                voiceConnection.then(async connection => {
-                                    await playMusic(connection, music)
-                                })
-                                voiceConnection.catch(console.error)
-                            }
 
-                        } catch (error) {
-                            console.log(`Tipo de erro: ${error}`)
-                            return undefined
-                        }
+                    try {
+                        await selectOption(sellect.first().content)
+                        let music = listVideos[op]
+                        if (!music) return
+                        const voiceConnection = voiceChannel.join()
+                        voiceConnection.then(connection => {
+                            playMusic(connection, music)
+                        })
+
+                    } catch (error) {
+                        console.log(`Tipo de erro: ${error}`)
+                        return undefined
                     }
                 })
                     .catch(console.error)
             })
             break;
-        case "Down":
+        case "dl":
+            arguments.shift()
+            if (!arguments) return message.channel.send(`<@${message.author.id}> Digite o nome da musica para fazer o download.`)
             ytSearch(arguments.join(" "), async function (err, videoInfo) {
                 if (err) console.log(err)
                 const listVideos = videoInfo.videos
                 let option = 1
                 let cont = 1
-                optionTitle = []
+                let optionTitle = []
                 const optEmbed = new discord.RichEmbed()
-                optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` e ``10``")
+                optEmbed.setTitle("Selecione a musica para fazer o download digitando um numero entre ``1`` a ``10``")
                     .setColor('#B955D4')
                 for (const video of listVideos) {
-                    optionTitle.push("** " + option + "** -> **``" + video['title'] + "``** \n")
+                    optionTitle.push("** " + option + "** ->  <:streamvideo:633071783393755167> **``" + video['title'] + "``** \n")
                     option = option + 1;
                     if (cont == 10) break
                     cont = cont + 1;
                 }
-                const filter = respon => respon.author.id === message.author.id
+                const filter = respon => respon.author.id === author.id
 
                 optEmbed.setDescription(optionTitle)
                 const msg = await message.reply(optEmbed)
@@ -208,26 +206,22 @@ client.on("message", async message => {
                     max: 1,
                     time: 40000
                 }).then(async sellect => {
-                    if (sellect.first().content) {
-                        selectOption(sellect.first().content)
-                        try {
-                            let music = listVideos[op]
-                            if (music) {
-                                downloadVideo(music)
-                            }
+                    try {
+                        await selectOption(sellect.first().content)
+                        let music = listVideos[op]
+                        if (!music) return
+                        downloadVideo(music)
 
-                        } catch (error) {
-                            console.log(`Tipo de erro: ${error}`)
-                            return undefined
-                        }
+                    } catch (error) {
+                        return console.log(`Tipo de erro: \n${error}`)
                     }
                 })
                     .catch(console.error)
             })
             break;
         case "leave":
-            if (!voiceChannel.connection) return message.channel.send(`<@${message.author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`)
-            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso sair do canal de voz você está ausente.`)
+            if (!voiceChannel.connection) return message.channel.send(`<@${author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`)
+            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso sair do canal de voz você está ausente.`)
             embedMusic.setTitle("Desconectado do canal ``" + voiceChannel.name + "``")
                 .setColor(colorRadomEx())
             voiceChannel.connection.disconnect()
@@ -235,20 +229,20 @@ client.on("message", async message => {
 
             break;
         case "pause":
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
-            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${message.author.id}> , não posso pausar a musica você está ausente no canal de voz`)
+            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`)
+            if (!voiceChannel) return message.channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso pausar a musica você está ausente no canal de voz`)
             embedMusic.setColor(colorRadomEx())
             embedMusic.setDescription("<:pause:633071783465058334> paused")
             if (voiceChannel.connection.speaking == true) {
                 voiceChannel.connection.dispatcher.pause()
                 message.channel.send(embedMusic)
             } else {
-                return message.channel.send(`<@${message.author.id}>  <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
+                return message.channel.send(`<@${author.id}>  <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`)
             }
 
             break;
         case "back":
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
             embedMusic.setDescription("<:play:633088252940648480> ")
                 .setColor(colorRadomEx())
@@ -261,7 +255,7 @@ client.on("message", async message => {
             }
             break;
         case "stop":
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
+            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
             embedMusic.setDescription("<:stop:648561120155795466> stop")
             if (voiceChannel.connection.speaking == true) {
@@ -274,8 +268,8 @@ client.on("message", async message => {
         case "vol":
             let numberVol = parseInt(arguments[1])
             embedMusic.setColor(colorRadomEx())
-            if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
-            if (!voiceChannel || !numberVol) return
+
+            if (!voiceChannel || !numberVol || !voiceChannel.connection) return
 
             switch (numberVol) {
                 case 0:
@@ -304,23 +298,19 @@ client.on("message", async message => {
             if (!voiceChannel) return
             voiceChannel.connection.receivers.shift()
             console.log(voiceChannel.connection.receivers)
-            if (!voiceChannel.connection.receivers[0]) {
-                return
-            } else {
-                voiceChannel.connection.playStream(await ytdl(voiceChannel.connection.receivers[0]))
-                embedMusic.setTitle("música pulada")
-                    .setColor("#A331B6")
-                message.channel.send(embedMusic)
-                playMusic(voiceChannel.connection,voiceChannel.connection.receivers)
-            }
+            if (!voiceChannel.connection.receivers[0]) return
 
+            voiceChannel.connection.playStream(await ytdl(voiceChannel.connection.receivers[0]))
+            embedMusic.setTitle("música pulada")
+                .setColor("#A331B6")
+            message.channel.send(embedMusic)
             break;
 
             async function selectOption(arg) {
-                const numbers = "123456789"
-                if (!arg || arg == undefined) return message.channel.send(`Nenhuma opção escolhida`)
+                const numbers = "12345678910"
+                if (!arg || arg.length === 0) return message.channel.send(`Nenhuma opção escolhida`)
                 if (arg.length > 2) return console.log("O tamanho do caractere foi excedido:" + arguments.length)
-                if (arg == numbers.substring(0, numbers.length)) return console.log("Só é aceito números")
+                if (!numbers.includes(arg)) return console.log("Só é aceito números")
                 const option = Number(arg) - 1
                 op = option;
             }
@@ -341,16 +331,37 @@ client.on("message", async message => {
                     })
                     connection.dispatcher.stream.on("end", () => {
                         connection.receivers.shift()
-                        if (!connection.receivers[0]) {
-                            return
-                        } else {
-                            connection.playStream(ytdl(connection.receivers[0]))
-                        }
+                        if (!connection.receivers[0]) return
+                        connection.playStream(ytdl(connection.receivers[0]))
                     })
                     connection.dispatcher.stream.on('error', error => console.log(error))
                 }
             }
-           
+
+            function downloadVideo(music) {
+                return new Promise((resolve, reject) => {
+                    if (!music) return console.log("valor nulo, não posso baixar a musica")
+                    if (ytdl.validateURL(music['url'])) {
+                        const video_download = ytdl(music['url'])
+                        message.channel.send("Espere o download")
+                        const pathVideo = video_download.pipe(fs.createWriteStream(`/home/marcioalemao/Documentos/bot/assets/musics/${music['title']}.mp3`))
+                        video_download.on("end",  () => {
+                            resolve(pathVideo['path'])
+                        })
+                        video_download.on("error", (error) => console.log(error))
+                    } else {
+                        reject("Erro na converção")
+                    }
+                })
+                    .then((file) => {
+                        embedMusic.attachFile(file)
+                            .setColor("#B955D4")
+                            .setTitle("Musica convertida")
+                        message.channel.send(embedMusic)
+                        console.log(file)
+                    })
+                    .catch((erro) => console.warn(erro))
+            }
     }
 
 })

@@ -1,11 +1,12 @@
 {
   "name": "ondisco",
-  "version": "1.10.6",
+  "version": "1.10.10",
   "description": "Um bot que toca musica nos canais de audio do Discord e outras funções simples.",
   "main": "bot.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon bot.js"
   },
   "keywords": [],
   "author": "444527298016837634",
@@ -22,5 +23,8 @@
     "uuid": "^3.3.3",
     "yt-search": "^0.4.1",
     "ytdl-core": "^1.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.1"
   }
 }
