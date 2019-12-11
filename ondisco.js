@@ -337,23 +337,23 @@ client.on("message", async message => {
             }
 
             async function playMusic(connection, music) {
-                if (voiceChannel.connection.receivers[0]) {
-                    voiceChannel.connection.receivers.push("https://www.youtube.com" + music['url'])
+                if (connection.receivers[0]) {
+                    connection.receivers.push("https://www.youtube.com" + music['url'])
                     embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionada na fila')
                     message.channel.send(embedMusic)
                 } else {
-                    voiceChannel.connection.receivers.push("https://www.youtube.com" + music['url'])
-                    voiceChannel.connection.playStream(ytdl(voiceChannel.connection.receivers[0]))
-                    voiceChannel.connection.dispatcher.on("start", () => {
+                    connection.receivers.push("https://www.youtube.com" + music['url'])
+                    connection.playStream(ytdl(connection.receivers[0]))
+                    connection.dispatcher.on("start", () => {
                         const video_url = music["videoId"]
                         embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
                             .setDescription(`Duração: ${music["timestamp"]} \n [Video](https://www.youtube.com/watch?v=${video_url})`)
                         message.channel.send(embedMusic)
                     })
-                    voiceChannel.connection.dispatcher.stream.on("end", () => {
-                        voiceChannel.connection.receivers.shift()
+                    connection.dispatcher.stream.on("end", () => {
+                        connection.receivers.shift()
                         if (!connection.receivers[0]) return
-                        voiceChannel.connection.playStream(ytdl(voiceChannel.connection.receivers[0]))
+                        connection.playStream(ytdl(connection.receivers[0]))
                     })
                     voiceChannel.connection.dispatcher.stream.on('error', error => console.log(error))
                 }
