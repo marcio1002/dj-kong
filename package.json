@@ -4,8 +4,7 @@
   "description": "Um bot que toca musica nos canais de audio do Discord e outras funções simples.",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot.js",
+    "start": "node ondisco.js",
     "dev": "nodemon ondisco.js"
   },
   "keywords": [],
