@@ -304,7 +304,7 @@ client.on("message", async message => {
                     break;
             }
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Digite um numero de 0 a 4`)
-        
+
         case "skip":
             if (!voiceChannel.connection) return message.channel.send(`<:erro:630429351678312506> <@${message.author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
