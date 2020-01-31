@@ -269,7 +269,7 @@ client.on("message", async message => {
         case "stop":
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`)
             if (!voiceChannel) return
-            embedMusic.setDescription("<:stop:648561120155795466> stop")
+            embedMusic.setDescription("<:stop:648561120155795466> stopped")
             if (voiceChannel.connection.speaking == true) {
                 voiceChannel.connection.dispatcher.end()
                 return channel.send(embedMusic)
@@ -347,7 +347,7 @@ client.on("message", async message => {
             function playMusic(connection, music) {
                 if (connection.receivers[0]) {
                     connection.receivers.push("https://www.youtube.com" + music['url'])
-                    embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionada na fila')
+                    embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila')
                     channel.send(embedMusic)
                 } else {
                     connection.receivers.push("https://www.youtube.com" + music['url'])
@@ -373,7 +373,7 @@ client.on("message", async message => {
                     if (ytdl.validateURL(music['url'])) {
                         const video_download = ytdl(music['url'])
                         channel.send("Espere o download")
-                        const pathVideo = video_download.pipe(fs.createWriteStream(`/home/marcioalemao/Documentos/bot-ondisco/assets/musics/${music['title']}.mp3`))
+                        const pathVideo = video_download.pipe(fs.createWriteStream(`/home/marcioubuntu/Documentos/bot-ondisco/assets/musics/${music['title']}.mp3`))
                         video_download.on("end", () => {
                             resolve(pathVideo['path'])
                             music['title'] = ""
