@@ -3,6 +3,7 @@ const client = new discord.Client()
 const config = require("./config.json")
 const express = require("express")
 const port = process.env.PORT || 23011
+const host  = 0.0
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
 const fs = require('fs')
@@ -429,5 +430,6 @@ client.on("raw", async dados => {
 
 })
 express()
-    .listen(port, () => console.log(`servidor está usando a porta ${port}`))
+.get('/', (red,res) => {res.send("Olá meu nome é ondisco")})
+    .listen(port,host, () => console.log(`servidor está usando a porta ${port}`))
 client.login(token)
