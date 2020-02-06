@@ -56,7 +56,6 @@ client.on("guildMemberAdd", async newmember => {
 client.on("message", async message => {
     if (message.author.bot) return
     if (message.channel.type === "dm") return
-    console.log(message)
     if (message.content == "<@!617522102895116358>" || message.content == "<@617522102895116358>") {
         const embedmsg = new discord.RichEmbed()
         embedmsg.setTitle(`Olá ${message.author.username}! \nMeu nome é Ondisco logo a baixo tem minha descrição:`)
