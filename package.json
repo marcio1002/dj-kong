@@ -2,7 +2,7 @@
   "name": "ondisco",
   "version": "1.10.10",
   "description": "Um bot que toca musica nos canais de audio do Discord e outras funções simples.",
-  "main": "bot.js",
+  "main": "ondisco.js",
   "scripts": {
     "start": "nodemon  ondisco.js"
   },
