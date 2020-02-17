@@ -290,7 +290,6 @@ bot.on('message', async message => {
         op = option;
     }
 });
-
 bot.on("raw", async dados => {
     if (dados.t !== "MESSAGE_REACTION_ADD" && dados.t !== "MESSAGE_REACTION_REMOVE") return;
     if (dados.d.message_id !== "617843012617109515" && dados.d.channel_id !== "617843012617109515") return;
