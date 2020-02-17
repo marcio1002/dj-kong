@@ -1,43 +1,35 @@
-/* global process, __dirname */
-
 const discord = require("discord.js");
-const client = new discord.Client();
+const bot = new discord.Client();
 const config = require("./config.json");
 const express = require("express");
 const port = process.env.PORT || 23011;
-const host = 0.0;
-const ytdl = require('ytdl-core');
-const ytSearch = require('yt-search');
-const fs = require('fs');
 const token = process.env.token || config.token;
 const prefix = process.env.prefix || config.prefix;
+const ytdl = require('ytdl-core');
+const ytSearch = require('yt-search');
 
-client.on("ready", () => {
-    console.log(`Bot Online, com ${client.users.size} usuários, ${client.channels.size} canais e ${client.guilds.size} servidores.`);
+bot.on("ready", () => {
+    console.log(`Bot Online, com ${bot.users.size} usuários, ${bot.channels.size} canais e ${bot.guilds.size} servidores.`);
 });
 
-client.on('error', console.error);
+bot.on('error', console.error);
 
-client.on("presenceUpdate", async presenceupdate => {
-    client.user.setActivity('Digite !dhelp para mais informações.');
-
+bot.on("presenceUpdate", async presenceupdate => {
+    bot.user.setActivity('Digite !dhelp para mais informações.');
 });
-
-client.on("guildCreate", guild => {
+bot.on("guildCreate", guild => {
     console.log(`O bot entrou  no servidor: ${guild.name} (id ${guild.id}). população: ${guild.memberCount} membros.`);
-    client.user.setActivity(`Estou em ${client.guilds.size} servidores`);
+    bot.user.setActivity(`Estou em ${bot.guilds.size} servidores`);
 });
-
-client.on("guildDelete", guild => {
+bot.on("guildDelete", guild => {
     console.log(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`);
-    client.user.setActivity(`Agora estou em ${client.guilds.size} servidores.`);
 });
 
-client.on("guildMemberAdd", async newmember => {
-    canal = client.channels.get('622940693022638090');
-    guild = client.guilds.get('565566718446141450');
+bot.on("guildMemberAdd", async newmember => {
+    canal = bot.channels.get('622940693022638090');
+    guild = bot.guilds.get('565566718446141450');
     if (newmember.guild !== guild) return;
-    if (newmember.user === client.user.bot) return;
+    if (newmember.user === bot.user.bot) return;
 
     let embed = new discord.RichEmbed();
     embed.setTitle(newmember.user.tag)
@@ -49,9 +41,9 @@ client.on("guildMemberAdd", async newmember => {
         .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256");
 
     canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embed);
-    console.log(`Novo membro \nEmbed enviada no servidor ${newmember.guild.name}`);
 });
-client.on("message", async message => {
+
+bot.on('message', async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
     if (message.content === "<@!617522102895116358>" || message.content === "<@617522102895116358>") {
@@ -63,8 +55,8 @@ client.on("message", async message => {
             .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256");
         return message.channel.send(embedmsg);
     }
-    if (!message.content.startsWith(prefix)) return;
 
+    if (!message.content.startsWith(prefix)) return;
     const mentionUser = message.mentions.users.first();
     const memberMentions = message.guild.member(mentionUser);
     const arguments = message.content.split(' ');
@@ -75,26 +67,20 @@ client.on("message", async message => {
     let op;
     const { author, createdTimestamp, channel, member: { voiceChannel } } = message;
 
-    argsObject = {
-        "!d": author + " Você esqueceu dos argumentos, Digite ``!dhelp`` "
-    };
+    argsObject = {"!d": author + " Você esqueceu dos argumentos, Digite ``!dhelp`` "};
+    if (argsObject[message.content]) channel.send(argsObject[message.content]);
 
-    if (argsObject[message.content]) {
-        channel.send(argsObject[message.content]);
-    }
     switch (comando) {
         case "avatar":
+            embedMusic.setColor(colorRadomEx())
+            .setTimestamp(createdTimestamp);
             if (mentionUser) {
-                embedMusic.setColor(colorRadomEx())
-                    .setTimestamp(createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${memberMentions.user.displayAvatarURL})**`)
+                    embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${memberMentions.user.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
                     .setAuthor(author.tag, author.displayAvatarURL);
             } else {
-                embedMusic.setColor(colorRadomEx())
-                    .setTimestamp(createdTimestamp)
-                    .setDescription(`<:image:633071783414726666>** [Baixar avatar](${author.displayAvatarURL})**`)
+                embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${author.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(author.displayAvatarURL)
                     .setAuthor(author.tag, author.displayAvatarURL);
@@ -123,7 +109,7 @@ client.on("message", async message => {
             m.delete(35000);
             break;
         case "play":
-            if (!voiceChannel) return channel.send(`<:erro:630429351678312506> <@${author.id}> só posso conceder essa função se você estiver conectado em um canal de voz`);
+            if (!voiceChannel) return channel.send(`<:erro:630429351678312506> <@${author.id}> só posso iniciar você estiver conectado em um canal de voz`);
             if (voiceChannel.joinable === false || voiceChannel.speakable === false) return channel.send(`<:alert:630429039785410562> <@${author.id}> Não tenho permissão para ingressar ou enviar audio nesse canal.`);
             if (voiceChannel.muted) return channel.send(`<@${author.id}>  não posso enviar audio nesse canal de voz, canal de voz mudo.`);
             if (!voiceChannel.memberPermissions(author.id)) return;
@@ -133,14 +119,14 @@ client.on("message", async message => {
 
             arguments.shift();
             ytSearch(arguments.join(" "), async function (err, videoInfo) {
-                if(!videoInfo) return channel.send("<@" + author.id + "> Digite o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Venom `` ");
+                if(!videoInfo) return channel.send("<@" + author.id + "> Digite o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Sing For The Moment `` ");
                 if (err) console.log(err);
 
                 const listVideos = videoInfo.videos;
                 let option = 1;
                 let cont = 1;
                 let optionTitle = [];
-
+                
                 const optEmbed = new discord.RichEmbed()
                         .setColor("#A331B6");
                 optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` a ``10``");
@@ -264,14 +250,6 @@ client.on("message", async message => {
 
             channel.send(embedMusic);
             break;
-        case "rep":
-            if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
-            if (!voiceChannel) return;
-            if (!voiceChannel.connection.receivers[0]) return;
-            const queue = voiceChannel.connection.receivers[0];
-            voiceChannel.connection.playStream(await ytdl(queue));
-            break;
-
             function colorRadomEx() {
                 let letters = "123456789ABCDEFGH";
                 color = "#";
@@ -279,15 +257,6 @@ client.on("message", async message => {
                     color += letters[Math.floor(Math.random() * 12)];
                 }
                 return color;
-            }
-
-            function selectOption(arg) {
-                const numbers = "12345678910";
-                if (!arg || arg.length === 0) return channel.send(`Nenhuma opção escolhida`);
-                if (arg.length > 2) return console.log(`O tamanho do caractere foi excedido pra :${arguments.length} caracteres`);
-                if (!numbers.includes(arg)) return console.log("Só é aceito números");
-                const option = Number(arg) - 1;
-                op = option;
             }
             function playMusic(connection, music) {
                 if (connection.receivers[0]) {
@@ -312,13 +281,21 @@ client.on("message", async message => {
                 }
             }
     }
-
+    function selectOption(arg) {
+        const numbers = "12345678910";
+        if (!arg || arg.length === 0) return channel.send(`Nenhuma opção escolhida`);
+        if (arg.length > 2) return console.log(`O tamanho do caractere foi excedido pra :${arguments.length} caracteres`);
+        if (!numbers.includes(arg)) return console.log("Só é aceito números");
+        const option = Number(arg) - 1;
+        op = option;
+    }
 });
-client.on("raw", async dados => {
+
+bot.on("raw", async dados => {
     if (dados.t !== "MESSAGE_REACTION_ADD" && dados.t !== "MESSAGE_REACTION_REMOVE") return;
     if (dados.d.message_id !== "617843012617109515" && dados.d.channel_id !== "617843012617109515") return;
 
-    let servidor = client.guilds.get("565566718446141450");
+    let servidor = bot.guilds.get("565566718446141450");
     let membro = servidor.members.get(dados.d.user_id);
     let cargo1 = servidor.roles.get("571713968834347065");
     let cargo2 = servidor.roles.get("571713974626680842");
@@ -346,5 +323,5 @@ client.on("raw", async dados => {
 });
 express()
     .get('/', (req, res) => { res.send("Olá meu nome é ondisco"); })
-    .listen(port, host, () => console.log(`servidor está usando a porta ${port}`));
-client.login(token);
+    .listen(port);
+bot.login(token);
