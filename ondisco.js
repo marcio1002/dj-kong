@@ -24,7 +24,6 @@ bot.on("guildCreate", guild => {
 bot.on("guildDelete", guild => {
     console.log(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`);
 });
-
 bot.on("guildMemberAdd", async newmember => {
     canal = bot.channels.get('622940693022638090');
     guild = bot.guilds.get('565566718446141450');
@@ -42,19 +41,21 @@ bot.on("guildMemberAdd", async newmember => {
 
     canal.send(` Bem vindo(a) !  \\😃  <@${newmember.user.id}>`, embed);
 });
-
 bot.on('message', async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
     if (message.content === "<@!617522102895116358>" || message.content === "<@617522102895116358>") {
+
         const embedmsg = new discord.RichEmbed();
         embedmsg.setTitle(`Olá ${message.author.username}! \nMeu nome é Ondisco logo a baixo tem minha descrição:`)
             .setDescription("**prefixo:** **``!d``** \n **função do Ondisco:** **``Divertir os usuarios do Discord tocando músicas nos canais de voz``** \n **Criador do Ondisco:** **``Marcio#1506``**")
             .setColor('#B955D4')
             .setTimestamp(message.createdTimestamp)
             .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256");
-        return message.channel.send(embedmsg);
+        message.channel.send(embedmsg);
     }
+    const content = ['music', 'musics', 'músicas', 'música', 'songs', 'sons', 'Eu vou ouvir música', 'ondisco', 'discoteca'];
+    if (content.includes(message.content.toLocaleLowerCase())) return message.react('648556667364966400');
 
     if (!message.content.startsWith(prefix)) return;
     const mentionUser = message.mentions.users.first();
@@ -65,11 +66,7 @@ bot.on('message', async message => {
     const embedMusic = new discord.RichEmbed()
         .setColor("#A331B6");
     let op;
-    let music;
     const { author, createdTimestamp, channel, member: { voiceChannel } } = message;
-
-    argsObject = { "!d": author + " Você esqueceu dos argumentos, Digite ``!dhelp`` " };
-    if (argsObject[message.content]) channel.send(argsObject[message.content]);
 
     switch (comando) {
         case "avatar":
@@ -91,12 +88,12 @@ bot.on('message', async message => {
         case "help":
             const embedHelp = new discord.RichEmbed();
             embedHelp.setColor("#AD25D7")
-                .setTitle("**```Help```**")
+                .setTitle("<:que:648555789119914005> **```Help```**")
                 .setTimestamp(createdTimestamp)
                 .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n ----------------------------------------------------------")
                 .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                 .addField("``avatar``", "Comando para visualizar o avatar do perfil")
-                .addField("😀", "Comandos para ouvir música")
+                .addField("<:streamvideo:633071783393755167>", "Comandos para ouvir música")
                 .addBlankField()
                 .addField("**``play``**", "inicia a música", true)
                 .addField("**``leave``**", "Finalizar a música e sai do canal", true)
@@ -114,7 +111,6 @@ bot.on('message', async message => {
             if (voiceChannel.joinable === false || voiceChannel.speakable === false) return channel.send(`<:alert:630429039785410562> <@${author.id}> Não tenho permissão para ingressar ou enviar audio nesse canal.`);
             if (voiceChannel.muted) return channel.send(`<@${author.id}>  não posso enviar audio nesse canal de voz, canal de voz mudo.`);
             if (!voiceChannel.memberPermissions(author.id)) return;
-
             const memberPermission = voiceChannel.memberPermissions(author.id);
             if (!memberPermission.has("CONNECT") || !memberPermission.has("ADMINISTRATOR")) return channel.send(`<@${author.id}> Você não tem permissão para conectar nesse canal de voz`);
 
@@ -236,27 +232,21 @@ bot.on('message', async message => {
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : channel.send(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 4`);
 
         case "skip":
-            const { receivers } = voiceChannel.connection
+            const { receivers } = voiceChannel.connection;
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return;
             if (!receivers[0]) return;
-             const dispatcher = await voiceChannel.connection.playStream(ytdl(receivers[0]));
+            const dispatcher = await voiceChannel.connection.playStream(ytdl(receivers[0]));
             embedMusic.setTitle("música pulada");
-
             channel.send(embedMusic);
 
-            dispatcher.on('end', () => {
-                playMusic(voiceChannel.connection, receivers);
+            dispatcher.stream.on("end", () => {
+                if (voiceChannel.members.size <= 1) voiceChannel.connection.disconnect();
+                music = receivers[0];
+                receivers.shift();
+                if (!receivers[0]) return;
+                voiceChannel.connection.playStream(ytdl(receivers[0]));
             });
-            break;
-        case "rep":
-
-            if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
-            if (!voiceChannel) return;
-            if (!music) return;
-            if (!dispatcher) return;
-            await ytdl(music);
-            dispatcher.stream.on('end', () => playMusic(voiceChannel.connection, receivers));
             break;
             function colorRadomEx() {
                 let letters = "123456789ABCDEFGH";
@@ -281,6 +271,7 @@ bot.on('message', async message => {
                         channel.send(embedMusic);
                     });
                     connection.dispatcher.stream.on("end", () => {
+                        if (voiceChannel.members.size <= 1) connection.disconnect();
                         if (connection.speaking) {
                             connection.receivers.push("https://www.youtube.com" + music['url']);
                             embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
@@ -303,36 +294,6 @@ bot.on('message', async message => {
         if (!numbers.includes(arg)) return console.log("Só é aceito números");
         const option = Number(arg) - 1;
         op = option;
-    }
-});
-bot.on("raw", async dados => {
-    if (dados.t !== "MESSAGE_REACTION_ADD" && dados.t !== "MESSAGE_REACTION_REMOVE") return;
-    if (dados.d.message_id !== "617843012617109515" && dados.d.channel_id !== "617843012617109515") return;
-
-    let servidor = bot.guilds.get("565566718446141450");
-    let membro = servidor.members.get(dados.d.user_id);
-    let cargo1 = servidor.roles.get("571713968834347065");
-    let cargo2 = servidor.roles.get("571713974626680842");
-
-    if (dados.t === "MESSAGE_REACTION_ADD") {
-        if (dados.d.emoji.name === "🅰") {
-            if (membro.roles.has(cargo1)) return;
-            membro.addRole(cargo1);
-        } else if (dados.d.emoji.name === "🇧") {
-            if (membro.roles.has(cargo2)) return;
-            membro.addRole(cargo2);
-        }
-    }
-    if (dados.t === "MESSAGE_REACTION_REMOVE") {
-        if (dados.d.emoji.name === "🅰") {
-            if (membro.roles.has(cargo1)) return;
-            console.log("removeu cargo");
-            membro.removeRole(cargo1);
-        } else if (dados.d.emoji.name === "🇧") {
-            if (membro.roles.has(cargo2)) return;
-            console.log("Removeu cargo");
-            membro.removeRole(cargo2);
-        }
     }
 });
 express().listen(port);
