@@ -65,17 +65,18 @@ bot.on('message', async message => {
     const embedMusic = new discord.RichEmbed()
         .setColor("#A331B6");
     let op;
+    let music;
     const { author, createdTimestamp, channel, member: { voiceChannel } } = message;
 
-    argsObject = {"!d": author + " Você esqueceu dos argumentos, Digite ``!dhelp`` "};
+    argsObject = { "!d": author + " Você esqueceu dos argumentos, Digite ``!dhelp`` " };
     if (argsObject[message.content]) channel.send(argsObject[message.content]);
 
     switch (comando) {
         case "avatar":
             embedMusic.setColor(colorRadomEx())
-            .setTimestamp(createdTimestamp);
+                .setTimestamp(createdTimestamp);
             if (mentionUser) {
-                    embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${memberMentions.user.displayAvatarURL})**`)
+                embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${memberMentions.user.displayAvatarURL})**`)
                     .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
                     .setImage(memberMentions.user.displayAvatarURL)
                     .setAuthor(author.tag, author.displayAvatarURL);
@@ -119,16 +120,16 @@ bot.on('message', async message => {
 
             arguments.shift();
             ytSearch(arguments.join(" "), async function (err, videoInfo) {
-                if(!videoInfo) return channel.send("<@" + author.id + "> Digite o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Sing For The Moment `` ");
+                if (!videoInfo) return channel.send("<@" + author.id + "> Digite o nome da musica que deseja tocar. \n exe: ``!dplay Eminem Sing For The Moment `` ");
                 if (err) console.log(err);
 
                 const listVideos = videoInfo.videos;
                 let option = 1;
                 let cont = 1;
                 let optionTitle = [];
-                
+
                 const optEmbed = new discord.RichEmbed()
-                        .setColor("#A331B6");
+                    .setColor("#A331B6");
                 optEmbed.setTitle("Selecione a musica que deseja tocar digitando um numero entre ``1`` a ``10``");
 
                 for (const video of listVideos) {
@@ -165,7 +166,6 @@ bot.on('message', async message => {
         case "leave":
             if (!voiceChannel.connection) return channel.send(`<@${author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`);
             if (!voiceChannel) return channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso sair do canal de voz você está ausente.`);
-
             embedMusic.setTitle("Desconectado do canal ``" + voiceChannel.name + "``")
                 .setColor(colorRadomEx());
             voiceChannel.connection.disconnect();
@@ -177,7 +177,7 @@ bot.on('message', async message => {
             if (!voiceChannel) return channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso pausar a musica você está ausente no canal de voz`);
             embedMusic.setColor(colorRadomEx());
             embedMusic.setDescription("<:pause:633071783465058334> paused");
-            if (voiceChannel.connection.speaking === true) {
+            if (voiceChannel.connection.speaking) {
                 voiceChannel.connection.dispatcher.pause();
                 channel.send(embedMusic);
             } else {
@@ -190,12 +190,9 @@ bot.on('message', async message => {
             if (!voiceChannel) return;
             embedMusic.setDescription("<:play:633088252940648480> ")
                 .setColor(colorRadomEx());
-
             if (voiceChannel.connection.dispatcher.paused) {
                 voiceChannel.connection.dispatcher.resume();
-                channel.send(embedMusic);
-            } else {
-                return console.log("erro! não pode continuar a musica pausada");
+                return channel.send(embedMusic);
             }
             break;
         case "stop":
@@ -239,16 +236,27 @@ bot.on('message', async message => {
             return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : channel.send(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 4`);
 
         case "skip":
+            const { receivers } = voiceChannel.connection
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return;
-            voiceChannel.connection.receivers.shift();
-            console.log(voiceChannel.connection.receivers);
-            if (!voiceChannel.connection.receivers[0]) return;
-
-            voiceChannel.connection.playStream(await ytdl(voiceChannel.connection.receivers[0]));
+            if (!receivers[0]) return;
+             const dispatcher = await voiceChannel.connection.playStream(ytdl(receivers[0]));
             embedMusic.setTitle("música pulada");
 
             channel.send(embedMusic);
+
+            dispatcher.on('end', () => {
+                playMusic(voiceChannel.connection, receivers);
+            });
+            break;
+        case "rep":
+
+            if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
+            if (!voiceChannel) return;
+            if (!music) return;
+            if (!dispatcher) return;
+            await ytdl(music);
+            dispatcher.stream.on('end', () => playMusic(voiceChannel.connection, receivers));
             break;
             function colorRadomEx() {
                 let letters = "123456789ABCDEFGH";
@@ -259,7 +267,7 @@ bot.on('message', async message => {
                 return color;
             }
             function playMusic(connection, music) {
-                if (connection.receivers[0]) {
+                if (connection.dispatcher) {
                     connection.receivers.push("https://www.youtube.com" + music['url']);
                     embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
                     channel.send(embedMusic);
@@ -273,9 +281,16 @@ bot.on('message', async message => {
                         channel.send(embedMusic);
                     });
                     connection.dispatcher.stream.on("end", () => {
-                        connection.receivers.shift();
-                        if (!connection.receivers[0]) return;
-                        connection.playStream(ytdl(connection.receivers[0]));
+                        if (connection.speaking) {
+                            connection.receivers.push("https://www.youtube.com" + music['url']);
+                            embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
+                            channel.send(embedMusic);
+                        } else {
+                            music = connection.receivers[0];
+                            connection.receivers.shift();
+                            if (!connection.receivers[0]) return;
+                            connection.playStream(ytdl(connection.receivers[0]));
+                        }
                     });
                     connection.dispatcher.stream.on('error', error => console.log(error));
                 }
@@ -284,7 +299,7 @@ bot.on('message', async message => {
     function selectOption(arg) {
         const numbers = "12345678910";
         if (!arg || arg.length === 0) return channel.send(`Nenhuma opção escolhida`);
-        if (arg.length > 2) return console.log(`O tamanho do caractere foi excedido pra :${arguments.length} caracteres`);
+        if (arg.length > 2) return console.log(`O tamanho do caractere foi excedido pra :${arg.length} caracteres`);
         if (!numbers.includes(arg)) return console.log("Só é aceito números");
         const option = Number(arg) - 1;
         op = option;
@@ -320,7 +335,5 @@ bot.on("raw", async dados => {
         }
     }
 });
-express()
-    .get('/', (req, res) => { res.send("Olá meu nome é ondisco"); })
-    .listen(port);
+express().listen(port);
 bot.login(token);
