@@ -3,8 +3,8 @@ const bot = new discord.Client();
 const config = require("./config.json");
 const express = require("express");
 const port = process.env.PORT || 23011;
-const token = process.env.token || config.token;
-const prefix = process.env.prefix || config.prefix;
+const token = process.env.TOKEN || config.token;
+const prefix = process.env.PREFIX || config.prefix;
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 
@@ -54,9 +54,6 @@ bot.on('message', async message => {
             .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256");
         message.channel.send(embedmsg);
     }
-    const content = ['music', 'musics', 'músicas', 'música', 'songs', 'sons', 'Eu vou ouvir música', 'ondisco', 'discoteca'];
-    if (content.includes(message.content.toLocaleLowerCase())) return message.react('648556667364966400');
-
     if (!message.content.startsWith(prefix)) return;
     const mentionUser = message.mentions.users.first();
     const memberMentions = message.guild.member(mentionUser);
