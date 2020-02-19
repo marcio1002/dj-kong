@@ -6,22 +6,25 @@
   "scripts": {
     "start": "nodemon  ondisco.js"
   },
-  "keywords": [],
-  "author": "444527298016837634",
+  "keywords": [
+    "bot",
+    "music-bot",
+    "discord-bot",
+    "nodejs",
+    "discordjs"
+  ],
+  "author": "marcio1002",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcio1002/bot-Ondisco.git"
+  },
   "license": "ISC",
   "dependencies": {
-    "add": "^2.0.6",
-    "axios": "^0.19.2",
-    "cool-ascii-faces": "^1.3.4",
     "discord.js": "^11.5.1",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
-    "node-modules": "^1.0.1",
-    "node-opus": "^0.3.2",
-    "require-dir": "^1.2.0",
-    "uuid": "^3.3.3",
-    "yt-search": "^0.4.1",
-    "ytdl-core": "^1.0.3"
+    "yt-search": "^1.1.2",
+    "ytdl-core": "^1.0.9"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"
