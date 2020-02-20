@@ -255,22 +255,22 @@ bot.on('message', async message => {
             }
             function playMusic(connection, music) {
                 if (connection.dispatcher) {
-                    connection.receivers.push("https://www.youtube.com" + music['url']);
+                    connection.receivers.push( music['url']);
                     embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
                     channel.send(embedMusic);
                 } else {
-                    connection.receivers.push("https://www.youtube.com" + music['url']);
-                    connection.playStream(ytdl(connection.receivers[0]))
+                    connection.receivers.push( music['url']);
+                    connection.playStream(ytdl(connection.receivers[0]));
                     connection.dispatcher.on("start", () => {
-                        const video_url = music["videoId"];
+                        const video_url = music['url'];
                         embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
-                            .setDescription(`Duração: ${music["timestamp"]} \n [Video](https://www.youtube.com/watch?v=${video_url})`);
+                            .setDescription(`Duração: ${music["timestamp"]} \n [Video](${video_url})`);
                         channel.send(embedMusic);
                     });
                     connection.dispatcher.stream.on("end", () => {
                         if (voiceChannel.members.size <= 1) connection.disconnect();
                         if (connection.speaking) {
-                            connection.receivers.push("https://www.youtube.com" + music['url']);
+                            connection.receivers.push( music['url']);
                             embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
                             channel.send(embedMusic);
                         } else {
