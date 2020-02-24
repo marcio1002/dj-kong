@@ -12,9 +12,7 @@ bot.on("ready", () => {
     console.log(`Bot Online, com ${bot.users.size} usuários, ${bot.channels.size} canais e ${bot.guilds.size} servidores.`);
 });
 
-bot.on('error', console.error);
-
-bot.on("presenceUpdate", async presenceupdate => {
+bot.on("presenceUpdate", async () => {
     bot.user.setActivity('Digite !dhelp para mais informações.');
 });
 bot.on("guildCreate", guild => {
@@ -45,7 +43,6 @@ bot.on('message', async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
     if (message.content === "<@!617522102895116358>" || message.content === "<@617522102895116358>") {
-
         const embedmsg = new discord.RichEmbed();
         embedmsg.setTitle(`Olá ${message.author.username}! \nMeu nome é Ondisco logo a baixo tem minha descrição:`)
             .setDescription("**prefixo:** **``!d``** \n **função do Ondisco:** **``Divertir os usuarios do Discord tocando músicas nos canais de voz``** \n **Criador do Ondisco:** **``Marcio#1506``**")
@@ -60,27 +57,27 @@ bot.on('message', async message => {
     const arguments = message.content.split(' ');
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const comando = args.shift().toLowerCase();
-    const embedMusic = new discord.RichEmbed()
+    const embedSong = new discord.RichEmbed()
         .setColor("#A331B6");
     let op;
+    let SongPlayed = [];
     const { author, createdTimestamp, channel, member: { voiceChannel } } = message;
 
     switch (comando) {
         case "avatar":
-            embedMusic.setColor(colorRadomEx())
-                .setTimestamp(createdTimestamp);
+            embedSong.setColor(colorRadomEx())
+                .setTimestamp(createdTimestamp)
+                .setAuthor(author.tag, author.displayAvatarURL)
+                .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256");
             if (mentionUser) {
-                embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${memberMentions.user.displayAvatarURL})**`)
-                    .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+                embedSong.setDescription(`<:image:633071783414726666>** [Download do avatar](${memberMentions.user.displayAvatarURL})**`)
                     .setImage(memberMentions.user.displayAvatarURL)
-                    .setAuthor(author.tag, author.displayAvatarURL);
+
             } else {
-                embedMusic.setDescription(`<:image:633071783414726666>** [Download do avatar](${author.displayAvatarURL})**`)
-                    .setFooter("Ondisco", "https://cdn.discordapp.com/app-icons/617522102895116358/eb1d3acbd2f4c4697a6d8e0782c8673c.png?size=256")
+                embedSong.setDescription(`<:image:633071783414726666>** [Download do avatar](${author.displayAvatarURL})**`)
                     .setImage(author.displayAvatarURL)
-                    .setAuthor(author.tag, author.displayAvatarURL);
             }
-            channel.send(embedMusic);
+            channel.send(embedSong);
             break;
         case "help":
             const embedHelp = new discord.RichEmbed();
@@ -145,12 +142,12 @@ bot.on('message', async message => {
                     .then(async sellect => {
                         if (sellect.first().content === "cancel") return channel.send("Música cancelada");
                         await selectOption(sellect.first().content);
-                        let music = listVideos[op];
-                        if (!music) return;
+                        let song = listVideos[op];
+                        if (!song) return;
                         const voiceConnection = voiceChannel.join();
 
                         voiceConnection.then(connection => {
-                            playMusic(connection, music);
+                            playMusic(connection,song);
                         });
                     })
                     .catch(console.error);
@@ -159,20 +156,19 @@ bot.on('message', async message => {
         case "leave":
             if (!voiceChannel.connection) return channel.send(`<@${author.id}>, <:huuum:648550001298898944> não posso sair do canal de voz ,se eu não estou nele.`);
             if (!voiceChannel) return channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso sair do canal de voz você está ausente.`);
-            embedMusic.setTitle("Desconectado do canal ``" + voiceChannel.name + "``")
-                .setColor(colorRadomEx());
+            embedSong.setTitle("Desconectado do canal ``" + voiceChannel.name + "``")
             voiceChannel.connection.disconnect();
-            channel.send(embedMusic);
+            channel.send(embedSong);
             break;
 
         case "pause":
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return channel.send(` <:erro:630429351678312506> Desculpe <@${author.id}> , não posso pausar a musica você está ausente no canal de voz`);
-            embedMusic.setColor(colorRadomEx());
-            embedMusic.setDescription("<:pause:633071783465058334> paused");
+            embedSong.setColor(colorRadomEx());
+            embedSong.setDescription("<:pause:633071783465058334> paused");
             if (voiceChannel.connection.speaking) {
                 voiceChannel.connection.dispatcher.pause();
-                channel.send(embedMusic);
+                channel.send(embedSong);
             } else {
                 return channel.send(`<@${author.id}>  <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`);
             }
@@ -181,98 +177,93 @@ bot.on('message', async message => {
         case "back":
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return;
-            embedMusic.setDescription("<:play:633088252940648480> ")
+            embedSong.setDescription("<:play:633088252940648480> ")
                 .setColor(colorRadomEx());
             if (voiceChannel.connection.dispatcher.paused) {
                 voiceChannel.connection.dispatcher.resume();
-                return channel.send(embedMusic);
+                return channel.send(embedSong);
             }
             break;
         case "stop":
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return;
-            embedMusic.setDescription("<:stop:648561120155795466> stopped");
+            embedSong.setDescription("<:stop:648561120155795466> stopped");
             if (voiceChannel.connection.speaking) {
                 voiceChannel.connection.dispatcher.end();
-                return channel.send(embedMusic);
+                return channel.send(embedSong);
             } else {
                 return channel.send(`<@${author.id}> <:huuum:648550001298898944> nenhuma musica tocando nesse canal!`);
             }
 
         case "vol":
             let numberVol = parseInt(arguments[1]);
-            embedMusic.setColor(colorRadomEx());
+            embedSong.setColor(colorRadomEx());
 
             if (!voiceChannel || !numberVol || !voiceChannel.connection) return;
 
             switch (numberVol) {
                 case 0:
-                    embedMusic.setDescription("<:silentmode:633076689202839612>");
-                    channel.send(embedMusic);
+                    embedSong.setDescription("<:silentmode:633076689202839612>");
+                    channel.send(embedSong);
                     break;
                 case 1:
-                    embedMusic.setDescription("<:lowvolume:633076130626404388>");
-                    channel.send(embedMusic);
+                    embedSong.setDescription("<:lowvolume:633076130626404388>");
+                    channel.send(embedSong);
                     break;
                 case 3:
-                    embedMusic.setDescription("<:mediumvolume:633076130668085248>");
-                    channel.send(embedMusic);
+                    embedSong.setDescription("<:mediumvolume:633076130668085248>");
+                    channel.send(embedSong);
                     break;
                 case 4:
-                    embedMusic.setDescription("\🥴  Volume máximo, Não recomendo a altura desse volume");
-                    channel.send(embedMusic);
+                    embedSong.setDescription("\🥴  Volume máximo, Não recomendo a altura desse volume");
+                    channel.send(embedSong);
                     break;
                 default:
                     voiceChannel.connection.dispatcher.setVolume(1);
                     break;
             }
-            return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(arguments[1]) : channel.send(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 4`);
+            return (numberVol >= 0 && numberVol <= 4) ? voiceChannel.connection.dispatcher.setVolume(numberVol) : channel.send(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 4`);
 
         case "skip":
-            const { receivers } = voiceChannel.connection;
             if (!voiceChannel.connection) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`);
             if (!voiceChannel) return;
+
+            const { receivers } = voiceChannel.connection;
             if (!receivers[0]) return;
             const dispatcher = await voiceChannel.connection.playStream(ytdl(receivers[0]));
-            embedMusic.setTitle("música pulada");
-            channel.send(embedMusic);
+            embedSong.setTitle("música pulada");
+            channel.send(embedSong);
 
             dispatcher.stream.on("end", () => {
                 if (voiceChannel.members.size <= 1) voiceChannel.connection.disconnect();
-                music = receivers[0];
                 receivers.shift();
                 if (!receivers[0]) return;
                 voiceChannel.connection.playStream(ytdl(receivers[0]));
             });
             break;
-            function colorRadomEx() {
-                let letters = "123456789ABCDEFGH";
-                color = "#";
-                for (let c = 0; c < 6; c++) {
-                    color += letters[Math.floor(Math.random() * 12)];
-                }
-                return color;
-            }
-            function playMusic(connection, music) {
+           async function playMusic(connection, song) {
+                const videoUrl = song['url'];
+                const videoTitle = song['title'];
+                embedSong.setThumbnail(song['image']);
                 if (connection.dispatcher) {
-                    connection.receivers.push( music['url']);
-                    embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
-                    channel.send(embedMusic);
+                    connection.receivers.push(videoUrl);
+                    
+                    embedSong.setDescription(`**foi adicionado na fila:** \n [${videoTitle}](${videoUrl}) `);
+                    channel.send(embedSong);
                 } else {
-                    connection.receivers.push( music['url']);
-                    connection.playStream(ytdl(connection.receivers[0]));
-                    connection.dispatcher.on("start", () => {
-                        const video_url = music['url'];
-                        embedMusic.setTitle('Tocando <a:Ondisco:630470764004638720> ``' + music['title'] + '``')
-                            .setDescription(`Duração: ${music["timestamp"]} \n [Video](${video_url})`);
-                        channel.send(embedMusic);
+                    connection.receivers.push(videoUrl);
+                    const dispatcher = await connection.playStream(ytdl(connection.receivers[0]));
+                    dispatcher.on("start", () => {
+                        embedSong.setTitle('Tocando <a:Ondisco:630470764004638720> ``'+ videoTitle +'``')
+                            .setDescription(`Duração: ${song["timestamp"]} \n [Video](${videoUrl})`);
+                        channel.send(embedSong);
                     });
-                    connection.dispatcher.stream.on("end", () => {
+                    dispatcher.stream.on("end", () => {
                         if (voiceChannel.members.size <= 1) connection.disconnect();
                         if (connection.speaking) {
-                            connection.receivers.push( music['url']);
-                            embedMusic.setTitle(' ``' + music['title'] + '`` foi adicionado na fila');
-                            channel.send(embedMusic);
+                            connection.receivers.push(videoUrl);
+                            embedSong.setDescription(`**foi adicionado na fila:** \n [${videoTitle}](${videoUrl}) `);
+                            channel.send(embedSong);
                         } else {
                             music = connection.receivers[0];
                             connection.receivers.shift();
@@ -284,6 +275,14 @@ bot.on('message', async message => {
                 }
             }
     }
+    function colorRadomEx() {
+        let letters = "123456789ABCDEFGH";
+        color = "#";
+        for (let c = 0; c < 6; c++) {
+            color += letters[Math.floor(Math.random() * 12)];
+        }
+        return color;
+    }
     function selectOption(arg) {
         const numbers = "12345678910";
         if (!arg || arg.length === 0) return channel.send(`Nenhuma opção escolhida`);
@@ -293,5 +292,6 @@ bot.on('message', async message => {
         op = option;
     }
 });
+bot.on('error', console.error);
 express().listen(port);
 bot.login(token);
