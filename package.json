@@ -13,12 +13,12 @@
     "nodejs",
     "discordjs"
   ],
-  "author": "marcio1002",
+  "author": "marcio <marcioalemao190@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marcio1002/bot-Ondisco.git"
   },
-  "license": "ISC",
+  "license": "BSD",
   "dependencies": {
     "discord.js": "^11.5.1",
     "download-file": "^0.1.5",
