@@ -1,6 +1,6 @@
 {
   "name": "ondisco",
-  "version": "1.10.10",
+  "version": "1.5.10",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "ondisco.js",
   "scripts": {
