@@ -18,7 +18,7 @@
     "type": "git",
     "url": "https://github.com/marcio1002/bot-Ondisco.git"
   },
-  "license": "BSD",
+  "license": "GNU",
   "dependencies": {
     "discord.js": "^11.5.1",
     "download-file": "^0.1.5",
