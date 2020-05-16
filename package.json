@@ -4,7 +4,8 @@
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "ondisco.js",
   "scripts": {
-    "start": "nodemon  ondisco.js"
+    "start": "node  ondisco.js",
+    "dev": "nodemon ondisco.js"
   },
   "keywords": [
     "bot",
@@ -20,10 +21,11 @@
   },
   "license": "GNU",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "@discordjs/opus": "discordjs/opus",
+    "discord.js": "^12.2.0",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
-    "node-opus": "^0.3.3",
+    "node": "^13.13.0",
     "yt-search": "^1.1.2",
     "ytdl-core": "^2.1.0"
   },
