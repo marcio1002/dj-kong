@@ -1,0 +1,63 @@
+Licença pública gratuita do Aladdin (Versão 9, 18 de setembro de 2000)
+
+    Copyright (C) 1994, 1995, 1997, 1998, 1999, 2000 Aladdin Enterprises, Menlo Park, Califórnia, EUA Todos os direitos reservados.
+
+    NOTA: Esta licença não é a mesma que nenhuma das licenças GNU publicadas pela Free Software Foundation. Seus termos são substancialmente diferentes dos das Licenças GNU. Se você estiver familiarizado com as Licenças GNU, leia esta licença com cuidado extra.
+    A Aladdin Enterprises concede a qualquer pessoa a permissão para aplicar esta Licença ao seu próprio trabalho, desde que toda a Licença (incluindo os avisos acima e este parágrafo) seja copiada sem alterações, adições ou exclusões, exceto a alteração do primeiro parágrafo da Seção 0 para incluir uma descrição adequada do trabalho ao qual a licença está sendo aplicada e da pessoa ou entidade que detém os direitos autorais do trabalho e, se a Licença estiver sendo aplicada a um trabalho criado em um país que não seja os Estados Unidos , substituindo o primeiro parágrafo da Seção 6 por uma referência apropriada às leis do país apropriado.
+
+    de Código Aberto: entre outras coisas, impõe restrições à distribuição do Programa, incluindo especificamente a venda do Programa. Embora a Aladdin Enterprises respeite e apóie a filosofia da Definição de Código Aberto, e compartilhe o desejo do projeto GNU de manter o software licenciado redistribuível livremente na forma de fonte e de objeto, acreditamos que as licenças de Código Aberto impedem injustamente que os desenvolvedores de software útil sejam compensados proporcionalmente quando outros lucram financeiramente com seu trabalho. Esta Licença tenta garantir que aqueles que recebem, redistribuem e contribuam para o Programa licenciado de acordo com as filosofias de Código Aberto e Software Livre tenham o direito de fazê-lo,
+
+0. Assunto
+
+    Esta licença se aplica ao programa de computador conhecido como "AFPL Ghostscript". O "Programa", abaixo, refere-se a esse programa. O Programa é um trabalho protegido por direitos autorais cujos direitos autorais são detidos pela artofcode LLC, localizada em Benicia, Califórnia (o "Licenciante"). Observe que o AFPL Ghostscript não é o programa conhecido como "GNU Ghostscript" nem a versão do Ghostscript disponível para licenciamento comercial da Artifex Software Inc.
+
+    Um "trabalho baseado no Programa" significa o Programa ou qualquer trabalho derivado do Programa, conforme definido na Lei de Direitos Autorais dos Estados Unidos de 1976, como tradução ou modificação.
+
+    MODIFICANDO OU DISTRIBUINDO O PROGRAMA (OU QUALQUER TRABALHO BASEADO NO PROGRAMA), VOCÊ INDICA SUA ACEITAÇÃO DESTA LICENÇA PARA FAZER ISSO, E TODOS OS SEUS TERMOS E CONDIÇÕES PARA CÓPIA, DISTRIBUIÇÃO OU MODIFICAÇÃO DO PROGRAMA OU TRABALHOS BASEADOS NESTE. Nada além desta licença concede a você permissão para modificar ou distribuir o programa ou suas obras derivadas. ESTAS AÇÕES SÃO PROIBIDAS POR LEI. SE VOCÊ NÃO ACEITAR ESTES TERMOS E CONDIÇÕES, NÃO MODIFIQUE OU DISTRIBUA O PROGRAMA.
+
+1. Licenças.
+
+    O Licenciante concede a você os seguintes direitos, desde que cumpra todas as restrições estabelecidas nesta Licença e desde que você distribua uma cópia não modificada desta Licença com o Programa:
+
+    (a) Você pode copiar e distribuir cópias literais (ou seja, literalmente) do código-fonte do Programa à medida que você o recebe em todo o mundo, em qualquer meio.
+    (b) Você pode modificar o Programa, criar trabalhos baseados no Programa e distribuir cópias do mesmo por todo o mundo, em qualquer meio.
+2. Restrições.
+
+    Esta licença está sujeita às seguintes restrições:
+
+    (a) A distribuição do Programa ou qualquer trabalho baseado no Programa por uma organização comercial a terceiros é proibida se algum pagamento for feito em conexão com essa distribuição, seja diretamente (como no pagamento por uma cópia do Programa) ou indiretamente (como pagamento por algum serviço relacionado ao Programa ou pagamento por algum produto ou serviço que inclua uma cópia do Programa "sem cobrança"; estes são apenas exemplos, e não uma enumeração exaustiva de atividades proibidas). Os seguintes métodos de distribuição envolvendo pagamento não devem, por si só, violar esta restrição:
+    (i) Publicação do Programa em um serviço de armazenamento e recuperação de informações de acesso público pelo qual é recebida uma taxa pela recuperação de informações (como um serviço on-line), desde que a taxa não dependa de conteúdo (ou seja, a taxa seria o mesmo para recuperar o mesmo volume de informações que consiste em dados aleatórios) e que o acesso ao serviço e ao Programa está disponível independentemente de qualquer outro produto ou serviço. Um exemplo de serviço que não se enquadra nesta seção é um serviço on-line que é operado por uma empresa e que está disponível apenas para clientes dessa empresa. (Esta não é uma enumeração exaustiva.)
+    (ii) Distribuir o Programa em mídia removível legível por computador, desde que os arquivos que contenham o Programa sejam reproduzidos integralmente e literalmente em tais mídias, que todas as informações nessas mídias sejam redistribuíveis para fins não comerciais, sem ônus, e que tais mídias sejam distribuídos sozinhos (exceto na documentação que os acompanha), independentemente de qualquer outro produto ou serviço. Exemplos de tais mídias incluem CD-ROM, fita magnética e mídia de armazenamento óptico. (Não se destina a ser uma lista exaustiva.) Um exemplo de distribuição que não se enquadra nesta seção é um CD-ROM incluído em um livro ou revista. (Esta não é uma enumeração exaustiva.)
+    (b) Atividades que não sejam cópia, distribuição e modificação do Programa não estão sujeitas a esta Licença e estão fora de seu escopo. O uso funcional (em execução) do Programa não é restrito, e qualquer saída produzida através do uso do Programa está sujeita a esta licença somente se seu conteúdo constituir um trabalho baseado no Programa (independentemente de ter sido realizado pela execução do Programa).
+    (c) Você deve atender a todas as condições a seguir com relação a qualquer trabalho que distribua ou publique que, no todo ou em parte contenha ou seja derivado do Programa ou de qualquer parte dele ("o Trabalho"):
+    (i) Se você modificou o Programa, deve fazer com que o Trabalho envie avisos importantes, informando que você modificou os arquivos do Programa e a data de qualquer alteração. Em cada arquivo de origem que você modificou, você deve incluir um aviso importante de que modificou o arquivo, incluindo seu nome, seu endereço de e-mail (se houver) e a data e o objetivo da alteração;
+    (ii) Você deve fazer com que a Obra seja licenciada como um todo e sem ônus para todos os terceiros sob os termos desta Licença;
+    (iii) Se a Obra normalmente lê comandos interativamente quando executada, você deve fazer com que, a cada vez que a Obra inicie a operação, imprima ou exiba um anúncio, incluindo um aviso de direitos autorais apropriado e um aviso de que não há garantia (ou, dizendo: que você fornece uma garantia). Esse aviso também deve indicar que os usuários podem redistribuir a Obra apenas sob as condições desta Licença e informar ao usuário como visualizar a cópia desta Licença incluída na Obra. (Exceções: se o Programa é interativo, mas normalmente imprime ou exibe esse anúncio apenas a pedido de um usuário, como em uma "caixa Sobre", o Trabalho é obrigado a imprimir ou exibir o aviso apenas nas mesmas circunstâncias;
+    (iv) Você deve acompanhar o Trabalho com o código-fonte legível por máquina correspondente completo, entregue em uma mídia normalmente usada para intercâmbio de software. O código fonte de um trabalho significa a forma preferida do trabalho para fazer modificações nele. Para um trabalho executável, código-fonte completo significa todo o código-fonte de todos os módulos que ele contém, além de todos os arquivos de definição de interface associados, além dos scripts usados ​​para controlar a compilação e instalação do código executável. Se você distribuir com o Work qualquer componente normalmente distribuído (na forma de origem ou binária) com os principais componentes (compilador, kernel etc.) do sistema operacional no qual o executável é executado,
+    (v) Se você distribuir qualquer material escrito ou impresso com a Obra, esse material deverá incluir uma cópia escrita desta Licença ou uma indicação escrita importante de que a Obra está coberta por esta Licença e instruções escritas para impressão e / ou exibir a cópia da licença no meio de distribuição;
+    (vi) Você não pode impor mais restrições ao exercício do destinatário dos direitos aqui concedidos.
+    Se a distribuição de código executável ou de objeto for feita, oferecendo a capacidade equivalente de copiar de um local designado, oferecer uma capacidade equivalente de copiar o código-fonte do mesmo local conta como a distribuição do código-fonte, mesmo que terceiros não sejam obrigados a copie o código fonte junto com o código do objeto.
+
+3. Reserva de direitos.
+
+    Nenhum direito é concedido ao Programa, exceto conforme expressamente estabelecido neste documento. Você não pode copiar, modificar, sublicenciar ou distribuir o Programa, exceto conforme expressamente fornecido sob esta Licença. Qualquer tentativa de copiar, modificar, sublicenciar ou distribuir o Programa será anulada e cancelará automaticamente seus direitos sob esta Licença. No entanto, as partes que receberam cópias ou direitos de você sob esta Licença não terão suas licenças rescindidas enquanto essas partes permanecerem em total conformidade.
+
+4. Outras restrições.
+
+    Se a distribuição e / ou uso do Programa for restrita em determinados países por qualquer motivo, o Licenciante poderá adicionar uma limitação explícita à distribuição geográfica, excluindo esses países, de modo que a distribuição seja permitida apenas nos países não excluídos. Nesse caso, esta Licença incorpora a limitação como se estivesse escrita no corpo desta Licença.
+
+5. Limitações.
+
+    O PROGRAMA É FORNECIDO A VOCÊ "COMO ESTÁ", SEM GARANTIA. NÃO HÁ GARANTIA PARA O PROGRAMA, EXPRESSA OU IMPLÍCITA, INCLUINDO, MAS NÃO SE LIMITANDO A, AS GARANTIAS IMPLÍCITAS DE COMERCIALIZAÇÃO E ADEQUAÇÃO A UM PROPÓSITO ESPECÍFICO E NÃO INFRACÇÃO DE DIREITOS DE TERCEIROS. O RISCO INTEIRO DA QUALIDADE E DESEMPENHO DO PROGRAMA ESTÁ COM VOCÊ. DEVE O PROGRAMA PROVAR DEFEITO, VOCÊ ASSUME O CUSTO DE TODA A MANUTENÇÃO, REPARO OU CORREÇÃO NECESSÁRIA.
+
+    EM NENHUM CASO A MENOS QUE A LEI APLICÁVEL EXIGIDA, OU CONCORDA EM ESCRITAR A LICENCIANTE, OU QUALQUER OUTRA PARTE QUE PODE MODIFICAR E / OU REDISTRIBUIR O PROGRAMA COMO PERMITIDO ACIMA, SERÁ RESPONSÁVEL POR DANOS, INCLUINDO QUALQUER CONSIDERAÇÕES GERAIS OU ESPECIAIS DECORRENTES DO USO OU INCAPACIDADE DE UTILIZAR O PROGRAMA (INCLUINDO MAS NÃO SE LIMITANDO A PERDA DE DADOS OU DADOS QUE SÃO RENDEROS PRECISOS OU PERDAS SUSTENTADAS POR VOCÊ OU TERCEIROS OU UMA FALHA DO PROGRAMA DE OPERAR COM OUTROS PROGRAMAS), MESMO O TITULAR OU OUTRO PARTIDO FOI AVISADO DA POSSIBILIDADE DE TAIS DANOS.
+
+6. Geral.
+
+    Esta licença é regida pelas leis do estado da Califórnia, EUA, excluindo regras de escolha de lei.
+
+    Se qualquer parte desta Licença estiver em conflito com a lei, essa parte deverá ser interpretada em seu sentido mais amplo, consistente com a lei, e nenhuma outra parte da Licença será afetada.
+
+    Para usuários do governo dos Estados Unidos, o Programa é fornecido com DIREITOS RESTRITOS. Se você é uma unidade ou agência do Governo dos Estados Unidos ou está adquirindo o Programa para qualquer unidade ou agência, aplica-se o seguinte:
+
+    Se a unidade ou agência for o Departamento de Defesa ("DOD"), o Programa e sua documentação serão classificados como "software comercial de computador" e "documentação comercial de software de computador" respectivamente e, de acordo com a Seção 227.7202 do DFAR, o Governo está adquirindo o Programa e sua documentação de acordo com os termos desta Licença. Se a unidade ou agência for diferente do DOD, o Programa e sua documentação serão classificados como "software comercial para computadores" e "documentação comercial para software para computadores" respectivamente e, de acordo com a Seção 12.212 da FAR, o Governo estará adquirindo o Programa e sua documentação de acordo com com os termos desta licença.

@@ -6,12 +6,15 @@
     "configurations": [
         {
             "type": "node",
-            "request": "attach",
-            "name": "Launch debug nodemon",
-            "protocol": "inspector",
+            "request": "launch",
+            "name": "Launch Nodemon",
+            "runtimeExecutable": "nodemon",
+            "restart": true,
+            "outFiles": ["${workspaceFolder}/src/comands/*.js"],
             "skipFiles": [
                 "<node_internals>/**"
-            ]
+            ],
+            "program": "${workspaceFolder}/ondisco.js"
         }
     ]
 }

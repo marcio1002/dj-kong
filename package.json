@@ -3,6 +3,8 @@
   "version": "1.5.10",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "ondisco.js",
+  "license": "Aladdin",
+  "private": true,
   "scripts": {
     "start": "node  ondisco.js",
     "dev": "nodemon ondisco.js"
@@ -14,22 +16,17 @@
     "nodejs",
     "discordjs"
   ],
-  "author": "marcio <marcioalemao190@gmail.com>",
+  "author": "Marcio Alemao <marcioalemao190@gmail.com> (https://github.com/marcio1002)",
   "repository": {
     "type": "git",
     "url": "https://github.com/marcio1002/bot-Ondisco.git"
   },
-  "license": "GNU",
   "dependencies": {
-    "@discordjs/opus": "discordjs/opus",
-    "discord.js": "^12.2.0",
+    "@discordjs/opus": "github:discordjs/opus",
+    "discord.js": "^12.0.0",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
-    "node": "^13.13.0",
-    "yt-search": "^1.1.2",
+    "scrape-yt": "^1.4.0",
     "ytdl-core": "^2.1.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.1"
   }
 }

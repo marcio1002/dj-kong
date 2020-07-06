@@ -1,16 +1,17 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
-const 
-    comands  = require("./src/comands/comands");
-    config = require("./config.json");
-    express = require("express");
-    port = process.env.PORT || 23011;
-    token = (config.token)? config.token : process.env.TOKEN;
-    prefix = (config.prefix)? config.prefix : process.env.PREFIX ;
+const comands =  require("./src/comands/comands");
+
+const config = require("./config.json");
+const express = require("express");
+const port = process.env.PORT || 3539;
+const token = (config.token)? config.token : process.env.TOKEN;
+const prefix = (config.prefix)? config.prefix : process.env.PREFIX ;
 
 bot.on("ready", () => {
     console.log(`Bot Online, com ${bot.users.cache.size} usuários, ${bot.channels.cache.size} canais e ${bot.guilds.cache.size} servidores.`);
 });
+
 
 bot.on("presenceUpdate", async () => {
     const temporaria = "Digite !dhelp para mais informações.";
@@ -18,12 +19,12 @@ bot.on("presenceUpdate", async () => {
 });
 
 bot.on("guildCreate", guild => {
-    console.log(`O bot entrou  no servidor: ${guild.name} (id ${guild.id}). população: ${guild.memberCount} membros.`);
+    console.info(`O bot entrou  no servidor: ${guild.name} (id ${guild.id}). população: ${guild.memberCount} membros.`);
     bot.user.setActivity(`Estou em ${bot.guilds.cache.size} servidores`);
 });
 
 bot.on("guildDelete", guild => {
-    console.log(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`);
+    console.info(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`);
 });
 
 bot.on("guildMemberAdd", async newmember => {
@@ -54,6 +55,7 @@ bot.on('message', async message => {
         .setTimestamp(message.createdTimestamp)
         .setFooter(bot.user.username, bot.user.avatarURL());
 
+    const    
         embedSong = new Discord.MessageEmbed()
         .setColor("#B955D4")
         .setTimestamp(message.createdTimestamp)
@@ -64,6 +66,7 @@ bot.on('message', async message => {
         embedSong
             .setTitle(`Olá ${message.author.username}! \nMeu nome é Ondisco logo a baixo tem minha descrição:`)
             .setDescription("**prefixo:** **``!d``** \n **função do Ondisco:** **``Divertir os usuarios do Discord tocando músicas nos canais de voz``** \n **Criador do Ondisco:** **``Marcio#1506``**")
+            .setFooter("Copyright (C) 2000 Aladdin Enterprises, EUA Todos os direitos reservados.")
         message.channel.send(embedSong);
     }
     if (!message.content.startsWith(prefix)) return;
@@ -91,7 +94,7 @@ bot.on('message', async message => {
 
         "help": () => comands.help(messageProps),
 
-        "play": () => comands.play(messageProps),
+        "play": () => comands.play(messageProps)    ,
 
         "leave": () => comands.leave(messageProps),
 
