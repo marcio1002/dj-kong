@@ -1,6 +1,6 @@
 {
   "name": "ondisco",
-  "version": "1.5.15",
+  "version": "1.5.18",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "ondisco.js",
   "license": "Aladdin",
