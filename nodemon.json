@@ -1,5 +1,0 @@
-{
-    "execMap": {
-        "mjs": "nodemon --inspect"
-    }
-}
