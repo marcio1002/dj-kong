@@ -1,6 +1,6 @@
 {
   "name": "ondisco",
-  "version": "1.5.18",
+  "version": "1.6.20",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "ondisco.js",
   "license": "Aladdin",
@@ -16,7 +16,7 @@
     "nodejs",
     "discordjs"
   ],
-  "author": "Marcio Alemao <marcioalemao190@gmail.com> (https://github.com/marcio1002)",
+  "author": "Marcio Alemão <marcioalemao190@gmail.com> (https://github.com/marcio1002)",
   "repository": {
     "type": "git",
     "url": "https://github.com/marcio1002/bot-Ondisco.git"
