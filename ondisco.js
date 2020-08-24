@@ -31,6 +31,7 @@ bot.on('message', async message => {
     if (message.content === "<@!617522102895116358>" || message.content === "<@617522102895116358>") {
         embed
             .setTitle(`Olá ${message.author.username}! \nMeu nome é Ondisco logo a baixo tem minha descrição:`)
+            .setDescription("**prefixo:** **``!d``** \n **função do Ondisco:** **``Divertir os usuários do Discord tocando músicas nos canais de voz``** \n **Criador do Ondisco:** **``Marcio#1506``** \n[Copyright (C) 2000 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)");
         (await message.channel.send(embed)).delete({ timeout: 25000 })
     }
     if (message.author.bot || message.channel.type === "dm" || !message.content.startsWith(prefix)) return
