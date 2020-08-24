@@ -19,31 +19,30 @@ module.exports =  Commands = {
     },
 
     avatar(messageProps) {
-        const { embedSong, mentionUser, memberMentions, message: { channel, author } } = messageProps
+        const { embed, mentionUser, memberMentions, message: { channel, author } } = messageProps
         let avatar
-        embedSong
+        embed
             .setFooter(`${author.username} \t✦\t ${cmdImplemts.getDate()} ás ${cmdImplemts.getTimeStamp()}`,author.avatarURL())
             .setColor(cmdImplemts.colorRadomEx())
 
-        if (mentionUser) {
+        if (mentionUser)
             avatar = memberMentions.user.displayAvatarURL({ size: 1024, dynamic: true })
-
-        } else {
+        else 
             avatar = author.displayAvatarURL({ size: 1024, dynamic: true })
-        }
-        embedSong
+        
+        embed
             .setDescription(`<:image:633071783414726666>** [Baixar avatar](${avatar})**`)
             .setImage(avatar)
 
-        channel.send(embedSong)
+        channel.send(embed)
     },
 
     async server(messageProps) {
-        const { embedSong, message: { channel, author, guild } } = messageProps
+        const { embed, message: { channel, author, guild } } = messageProps
         let avatar = guild.splashURL() || guild.iconURL()
         let date = guild.createdAt.toLocaleDateString().split("-").reverse().join("-")
-        embedSong
-            .setFooter(author.username, author.avatarURL())
+        embed
+            .setFooter(`${author.username} \t✦\t ${cmdImplemts.getDate()} ás ${cmdImplemts.getTimeStamp()}`,author.avatarURL())
             .setColor(cmdImplemts.colorRadomEx())
             .setTitle(`${guild.name}`)
             .setDescription(`
@@ -59,18 +58,17 @@ module.exports =  Commands = {
                 **Servidor verificado** ${guild.verified ? "sim" : "não"}\n
                 **Nível do prêmio do servidor:** ${guild.premiumTier}\n
             `)
-            .setThumbnail(avatar)
-        const m = await channel.send(embedSong)
-        m.delete({ timeout: 55000 })
+            .setThumbnail(avatar);
+            (await channel.send(embed)).delete({ timeout: 55000 })
     },
 
     async help(messageProps) {
-        const { embedHelp, message: { channel,author,createdAt } } = messageProps
+        const { embed, message: { channel,author,createdAt } } = messageProps
        
-        embedHelp
+        embed
             .setTitle("<:que:648555789119914005> **```Help```**")
             .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8)")
-            .addField("<:music:648556667364966400> Comandos personalizados", "━━━━━━━━━━━━━━━━━━━━━", false)
+            .addField("<:music:648556667364966400> Comandos", "━━━━━━━━━━━━━━━━━━━━━", false)
             .addFields(
                 { name: "``avatar``", value: "Visualizar e baixar o avatar do perfil", inline: true },
                 { name: "``server``", value: "Descrição do servidor", inline: true },
@@ -88,14 +86,12 @@ module.exports =  Commands = {
             )
             .setFooter(`${author.username} \t✦\t ${cmdImplemts.getDate()} ás ${cmdImplemts.getTimeStamp()}`,author.avatarURL());
 
-        const m = await channel.send(embedHelp)
-        m.delete({ timeout: 55000 })
+        (await channel.send(embed)).delete({ timeout: 55000 })
     },
 
     async search(content, optSearch = { maxResults: 10 }) {
 
-        let option = 0
-        let optionsInfo = []
+        let option = 0, optionsInfo = []
         optSearch.key = yt_key
 
         songQueues = await yt(content, optSearch)
@@ -109,7 +105,7 @@ module.exports =  Commands = {
     },
 
     async play(messageProps) {
-        const { voiceChannel,bot, args, embedSong, message: { channel, author } } = messageProps
+        const { voiceChannel, args, embed, message: { channel, author } } = messageProps
 
         if (!voiceChannel) return channel.send(`<:erro:630429351678312506> <@${author.id}> só posso tocar a música se você estiver conectado em um canal de voz`)
         if (voiceChannel.joinable === false || voiceChannel.speakable === false) return channel.send(`<:alert:630429039785410562> <@${author.id}> Não tenho permissão para ingressar ou enviar audio nesse canal.`)
@@ -121,113 +117,107 @@ module.exports =  Commands = {
 
         let options = await this.search(args.join(" ").toLocaleLowerCase())
 
-        embedSong
+        embed
             .setTitle("Selecione a música que deseja tocar digitando um numero entre ``1`` a ``10``")
-            .setDescription(options)
+            .setDescription(options);
 
-        const msg = await messageProps.message.reply(embedSong)
+        let msg = await messageProps.message.reply(embed)
 
-        msg.delete({ timeout: 80000 })
+            msg.delete({ timeout: 80000 })
+            msg.channel.awaitMessages(res => res.author.id === author.id && !isNaN(Number(res.content)) || res.content == "cancel", { max: 1, time: 80000 })
+                .then(async select => {
+                    if (select.first().content === "cancel") return channel.send("Música cancelada")
 
-        const filter = res => res.author.id === author.id && !isNaN(Number(res.content)) || res.content == "cancel"
+                    song = songQueues.results[await cmdImplemts.selectOption(select.first().content)]
+                    if (!song) return
 
-        msg.channel.awaitMessages(filter, { max: 1, time: 80000 })
-            .then(async select => {
-                if (select.first().content === "cancel") return channel.send("Música cancelada")
-
-                song = songQueues.results[await cmdImplemts.selectOption(select.first().content)]
-                if (!song) return
-
-                voiceChannel.join().then(connection => (
-                    conn = connection,
-                    this.playMusic(messageProps)
-                ))
-                    .catch(err => channel.send("<:ata:648556666903724052> Esse disco está arranhado"))
-            })
-            .catch(err => channel.send("<:huuum:648550001298898944>  Qual música será que ele(a) escolheu!"))
+                    voiceChannel.join().then(connection => (
+                        conn = connection,
+                        this.playMusic(messageProps)
+                    ))
+                        .catch(err => channel.send("<:ata:648556666903724052> Esse disco está arranhado"))
+                })
+                .catch(err => channel.send("<:huuum:648550001298898944>  Qual música será que ele(a) escolheu!"))
     },
 
     leave(messageProps) {
-        const { voiceChannel, embedSong, message: { channel, author } } = messageProps
+        const { voiceChannel, embed, message: { channel, author } } = messageProps
 
         if (!voiceChannel || !conn) return
 
-        embedSong.setTitle("Desconectado do canal ``" + voiceChannel.name + "``").setFooter("")
+        embed.setTitle("Desconectado do canal ``" + voiceChannel.name + "``")
 
         conn.disconnect()
 
-        channel.send(embedSong)
+        channel.send(embed)
     },
 
     pause(messageProps) {
-        const { voiceChannel, embedSong, message: { channel, author } } = messageProps
+        const { voiceChannel, embed, message: { channel, author } } = messageProps
 
-        if (!voiceChannel) return
-        if (!conn) return channel.send(`<:erro:630429351678312506> <@${author.id}> Não estou conectado no canal de voz para conceder essa função`)
+        if (!voiceChannel || !conn) return
 
         if (speaking) {
-            embedSong
+            embed
                 .setDescription("<:pause:633071783465058334> ")
                 .setColor(cmdImplemts.colorRadomEx())
-                .setFooter("")
-
+                
             dispatcher.pause(true)
-            channel.send(embedSong)
+            channel.send(embed)
         } else {
             return channel.send(`<@${author.id}>  <:huuum:648550001298898944> nenhuma música tocando nesse canal!`)
         }
     },
 
     unpause(messageProps) {
-        const { voiceChannel, embedSong, message: { channel } } = messageProps
+        const { voiceChannel, embed, message: { channel } } = messageProps
 
         if (!voiceChannel || !conn) return
 
         if (dispatcher.paused) {
             dispatcher.resume()
-            embedSong
+            embed
                 .setColor(cmdImplemts.colorRadomEx())
                 .setDescription("<:play:633088252940648480> Back")
-                .setFooter("")
-            return channel.send(embedSong)
+                ;
+            channel.send(embed)
         }
     },
 
     stop(messageProps) {
-        const { voiceChannel, embedSong, message: { channel, author } } = messageProps
+        const { voiceChannel, embed, message: { channel, author } } = messageProps
 
         if (!voiceChannel || !conn) return
 
         if (speaking) {
-            embedSong
+            embed
                 .setDescription("<:stop:648561120155795466> Stopped")
-                .setFooter("")
+                
             speaking = false
             dispatcher.destroy()
-            channel.send(embedSong)
-            this.finish({ channel, embedSong })
+            channel.send(embed)
+            this.finish({ channel, embed, voiceChannel })
         } else {
             return channel.send(`<@${author.id}> <:huuum:648550001298898944> nenhuma música tocando nesse canal!`)
         }
     },
 
     vol(messageProps) {
-        const { voiceChannel, args, embedSong, message: { channel, author } } = messageProps
+        const { voiceChannel, args, embed, message: { channel, author } } = messageProps
 
-        if (!args || isNaN(Number(args[0]))) return
-        if (!voiceChannel || !conn) return
+        if (!voiceChannel || !conn || !args || isNaN(Number(args[0]))) return
 
         let numberVol = Number(args[0])
         let description
 
         switch (numberVol) {
-            case -0||0:
+            case numberVol<0||0:
                 description = "<:silentmode:633076689202839612>"
                 break
-            case 1:
+            case 1||2:
                 description = "<:mediumvolume:633076130668085248>"
                 break
-            case 2||3:
+            case 3:
                 description = "\🥴  Volume máximo, Não recomendo a altura desse volume"
                 break
             default:
@@ -235,64 +225,58 @@ module.exports =  Commands = {
                 conn.dispatcher.setVolume(0.5)
                 break
         }
-        channel.send(embedSong.setDescription(description).setFooter(""))
+        channel.send(embed.setDescription(description))
 
         if(numberVol >= 0 && numberVol <= 3) dispatcher.setVolume(numberVol)
     },
 
     skip(messageProps) {
-        const {message: {channel}, embedSong, voiceChannel } = messageProps
+        const {message: {channel}, embed, voiceChannel } = messageProps
         if (!voiceChannel || !conn) return
 
         speaking = false
         dispatcher.destroy()
-        this.finish({ channel, embedSong })
+        this.finish({ channel, embed ,voiceChannel})
     },
 
     async replay(messageProps) {
-        const {message: { channel }, embedSong, voiceChannel } = messageProps
+        const {message: { channel }, embed, voiceChannel } = messageProps
 
         if (!voiceChannel || !conn || !before) return
 
-        dispatcher = await conn.play(ytdl(before.url), { volume: 0.5 })
-
         conn.on('error', err => (conn.disconnect(), console.error(err)))
+            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
 
-        conn.on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
-
-        dispatcher.on("error", err => conn.disconnect())
-
-        dispatcher.on("start", () => {
+        dispatcher = await conn.play(ytdl(before.url), { volume: 0.5 })
+        .on("error", err => conn.disconnect())
+        .on("start", () => {
             speaking = true 
-            embedSong
-            .setDescription(`[Link do vídeo](${before.url})`)
-            .setTitle("Tocando <a:Ondisco:630470764004638720> \n**``" + before.title + "``**")
-            .setThumbnail(before.image.url)
+            embed
+                .setDescription(`[Link do vídeo](${before.url})`)
+                .setTitle("Tocando <a:Ondisco:630470764004638720> \n**``" + before.title + "``**")
+                .setThumbnail(before.image.url)
 
-            channel.send(embedSong)
+            channel.send(embed)
         })
-
-        dispatcher.on("finish", () => {
+        .on("finish", () => {
             if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
-            this.finish({ channel, embedSong,voiceChannel })
+            this.finish({ channel, embed, voiceChannel })
         })
     },
 
     list(messageProps) {
-        const { embedSong, message: { channel }, voiceChannel } = messageProps
+        const { embed, message: { channel }} = messageProps
         songQueues = []
-        songInfo.forEach((obj, index) => {
-            if (index != 0) songQueues.push("<:pastaMusic:630461639208075264> **``" + obj.title + "``** \n")
-        })
+        songInfo.forEach((obj, index) => index != 0 && songQueues.push("<:pastaMusic:630461639208075264> **``" + obj.title + "``** \n"))
 
-        embedSong
+        embed
             .setTitle("Lista de músicas na fila")
             .setDescription(songQueues.length ? songQueues : "**``Lista vazia``**")
-        channel.send(embedSong)
+        channel.send(embed)
     },
 
     async playMusic(messageProps) {
-        const { embedSong, message: { channel }, voiceChannel } = messageProps
+        const { embed, message: { channel }, voiceChannel } = messageProps
 
         if (!voiceChannel || !conn) return
 
@@ -303,58 +287,52 @@ module.exports =  Commands = {
         })
 
         if (speaking) {
-            embedSong
+            embed
                 .setDescription("**Foi adicionado na fila:** \n **``" + song.title + "``** ")
                 .setThumbnail(song.thumbnails.medium.url)
                 .setTitle("")
 
-            return channel.send(embedSong)
+            return channel.send(embed)
         }
 
-        dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
 
         conn.on('error', err => (conn.disconnect(), console.error(err)))
+            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
 
-        conn.on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
-
-        dispatcher.on("error", err => conn.disconnect())
-
-        dispatcher.on("start", () => this.sendMessage({ channel, embedSong }))
-
-        dispatcher.on("finish", () => {
-            if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
-            this.finish({ channel, embedSong,voiceChannel })
-        })
+        dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
+            .on("error", err => conn.disconnect())
+            .on("start", () => this.sendMessage({ channel, embed }))
+            .on("finish", () => {
+                if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
+                this.finish({ channel, embed,voiceChannel })
+            })
     },
 
     sendMessage(data) {
-        const { channel, embedSong } = data
+        const { channel, embed } = data
         speaking = true
-        embedSong
+        embed
             .setDescription(`[Link do vídeo](${songInfo[0].url})`)
             .setTitle("Tocando <a:Ondisco:630470764004638720> \n**``" + songInfo[0].title + "``**")
             .setThumbnail(songInfo[0].image.url)
 
-        channel.send(embedSong)
+        channel.send(embed)
     },
 
     async finish(data) {
         speaking = false
         before = songInfo.shift()
         if (songInfo.length == 0) return
-        dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
-
+        
         conn.on('error', err => (conn.disconnect(), console.error(err)))
+            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
 
-        conn.on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
-
-        dispatcher.on("error", err => conn.disconnect())
-
-        dispatcher.on("start", () => this.sendMessage(data))
-
-        dispatcher.on("finish", () => {
-            if (data.voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
-            this.finish(data)
-        })
+        dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
+            .on("error", err => conn.disconnect())
+            .on("start", () => this.sendMessage(data))
+            .on("finish", () => {
+                if (data.voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
+                this.finish(data)
+            })
     }
 }
