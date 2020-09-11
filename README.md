@@ -3,7 +3,7 @@
 
 #### Um bot com funções de tocar música nos canais de voz do discord.
 
-<img src="https://cdn.discordapp.com/avatars/617522102895116358/93a4b52d2cffaa844f40631abfcfe456.webp?size=1024" align="right" />
+<img src="https://cdn.discordapp.com/avatars/617522102895116358/93a4b52d2cffaa844f40631abfcfe456.webp?size=1024" width="25%" align="right" />
 
 ***
 #### Documentação
