@@ -10,12 +10,13 @@ let before
 let conn = null
 let speaking = false
 let dispatcher
+let alert = 0
 
 module.exports =  Commands = {
 
-    findCommand(command, props) {
-        if(!this[command] && typeof this[command] != "function")  return
-        this[command](props)
+    findCommand(method, props) {
+        if(!this[method] || typeof this[method] != "function")  return
+        this[method](props)
     },
 
     avatar(messageProps) {
@@ -68,7 +69,7 @@ module.exports =  Commands = {
         embed
             .setTitle("<:que:648555789119914005> **```Help```**")
             .setDescription("Adicione o **``Ondisco``** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8)")
-            .addField("<:music:648556667364966400> Comandos", "━━━━━━━━━━━━━━━━━━━━━", false)
+            .addField("<:music:648556667364966400> Comandos", "━━━━━━━━━━━━━━", false)
             .addFields(
                 { name: "``avatar``", value: "Visualizar e baixar o avatar do perfil", inline: true },
                 { name: "``server``", value: "Descrição do servidor", inline: true },
@@ -105,14 +106,18 @@ module.exports =  Commands = {
     },
 
     async play(messageProps) {
-        const { voiceChannel, args, embed, message: { channel, author } } = messageProps
-
+        const { voiceChannel, args, embed,bot, message: { channel, author } } = messageProps
+        let member = null
         if (!voiceChannel) return channel.send(`<:erro:630429351678312506> <@${author.id}> só posso tocar a música se você estiver conectado em um canal de voz`)
-        if (voiceChannel.joinable === false || voiceChannel.speakable === false) return channel.send(`<:alert:630429039785410562> <@${author.id}> Não tenho permissão para ingressar ou enviar audio nesse canal.`)
+        member = voiceChannel.permissionsFor(bot.user.id)
+        if(!member) return
+        if (!member.has("CONNECT")) return channel.send(`<@${author.id}> Não tem permissão para conectar nesse canal de voz`)
+        if (!member.has("SPEAK")) return channel.send(`<@${author.id}> Não tenho permissão para falar nesse canale de voz`)
+        if (!member.has("USE_VAD")  && alert == 0) {
+            alert += 1
+            channel.send("<:alert:630429039785410562>  ``Estou sem permissão para usar detecção de voz isso pode afetar minha transmissão``")
+        }
         if (voiceChannel.muted) return channel.send(`<@${author.id}>  não posso enviar audio nesse canal de voz, canal de voz mudo.`)
-        if (!voiceChannel.permissionsFor(author.id)) return
-        const member = voiceChannel.permissionsFor(author.id)
-        if (!member.has("CONNECT") || !member.has("ADMINISTRATOR")) return channel.send(`<@${author.id}> Você não tem permissão para conectar nesse canal de voz`)
         if (args.length == 0) return channel.send("<@" + author.id + "> Digite o nome da música que deseja tocar. \n exe: ``!dplay Elmore - One Man Town`` ")
 
         let options = await this.search(args.join(" ").toLocaleLowerCase())
@@ -133,7 +138,7 @@ module.exports =  Commands = {
 
                     voiceChannel.join().then(connection => (
                         conn = connection,
-                        this.playMusic(messageProps)
+                        this.reproduce(messageProps)
                     ))
                         .catch(err => channel.send("<:ata:648556666903724052> Esse disco está arranhado"))
                 })
@@ -178,8 +183,7 @@ module.exports =  Commands = {
             dispatcher.resume()
             embed
                 .setColor(cmdImplemts.colorRadomEx())
-                .setDescription("<:play:633088252940648480> Back")
-                ;
+                .setDescription("<:play:633088252940648480> Back");
             channel.send(embed)
         }
     },
@@ -192,11 +196,10 @@ module.exports =  Commands = {
         if (speaking) {
             embed
                 .setDescription("<:stop:648561120155795466> Stopped")
-                
-            speaking = false
+            
             dispatcher.destroy()
             channel.send(embed)
-            this.finish({ channel, embed, voiceChannel })
+            this.finish(messageProps)
         } else {
             return channel.send(`<@${author.id}> <:huuum:648550001298898944> nenhuma música tocando nesse canal!`)
         }
@@ -210,33 +213,33 @@ module.exports =  Commands = {
         let numberVol = Number(args[0])
         let description
 
+        if(numberVol < 0 || numberVol > 3) return channel.send(embed.setDescription(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 3`))
+
         switch (numberVol) {
-            case numberVol<0||0:
+            case 0:
                 description = "<:silentmode:633076689202839612>"
                 break
-            case 1||2:
-                description = "<:mediumvolume:633076130668085248>"
+            case 1:
+                description = "<:lowvolume:633076130626404388>"
+                break;
+            case 2:
+                description = "<:autovolume:633076130668085248>"
                 break
             case 3:
                 description = "\🥴  Volume máximo, Não recomendo a altura desse volume"
                 break
-            default:
-                description = `<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 3`
-                conn.dispatcher.setVolume(0.5)
-                break
         }
-        channel.send(embed.setDescription(description))
 
-        if(numberVol >= 0 && numberVol <= 3) dispatcher.setVolume(numberVol)
+        dispatcher.setVolume(numberVol)
+        channel.send(embed.setDescription(description))
     },
 
     skip(messageProps) {
-        const {message: {channel}, embed, voiceChannel } = messageProps
+        const { voiceChannel } = messageProps
         if (!voiceChannel || !conn) return
 
-        speaking = false
         dispatcher.destroy()
-        this.finish({ channel, embed ,voiceChannel})
+        this.finish(messageProps)
     },
 
     async replay(messageProps) {
@@ -248,16 +251,16 @@ module.exports =  Commands = {
             .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
 
         dispatcher = await conn.play(ytdl(before.url), { volume: 0.5 })
-        .on("error", err => conn.disconnect())
-        .on("start", () => {
-            speaking = true 
-            embed
-                .setDescription(`[Link do vídeo](${before.url})`)
-                .setTitle("Tocando <a:Ondisco:630470764004638720> \n**``" + before.title + "``**")
-                .setThumbnail(before.image.url)
+            .on("error", err => conn.disconnect())
+            .on("start", () => {
+                speaking = true 
+                embed
+                    .setDescription(`[Link do vídeo](${before.url})`)
+                    .setTitle("Tocando <a:Ondisco:630470764004638720> \n**``" + before.title + "``**")
+                    .setThumbnail(before.image.url)
 
-            channel.send(embed)
-        })
+                channel.send(embed)
+            })
         .on("finish", () => {
             if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
             this.finish({ channel, embed, voiceChannel })
@@ -267,7 +270,7 @@ module.exports =  Commands = {
     list(messageProps) {
         const { embed, message: { channel }} = messageProps
         songQueues = []
-        songInfo.forEach((obj, index) => index != 0 && songQueues.push("<:pastaMusic:630461639208075264> **``" + obj.title + "``** \n"))
+        songInfo.forEach((song, index) => index != 0 && songQueues.push("<:pastaMusic:630461639208075264> **``" + song.title + "``** \n"))
 
         embed
             .setTitle("Lista de músicas na fila")
@@ -275,16 +278,17 @@ module.exports =  Commands = {
         channel.send(embed)
     },
 
-    async playMusic(messageProps) {
+    async reproduce(messageProps) {
         const { embed, message: { channel }, voiceChannel } = messageProps
 
         if (!voiceChannel || !conn) return
 
-        songInfo.push({
-            title: song.title,
-            image: song.thumbnails.medium,
-            url: song.link,
-        })
+        if(song)
+            songInfo.push({
+                title: song.title,
+                image: song.thumbnails.medium,
+                url: song.link,
+            })
 
         if (speaking) {
             embed
@@ -296,20 +300,17 @@ module.exports =  Commands = {
         }
 
 
-        conn.on('error', err => (conn.disconnect(), console.error(err)))
-            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
+        conn.on('error', err => conn.disconnect())
+            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null, song = null ))
 
         dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
             .on("error", err => conn.disconnect())
-            .on("start", () => this.sendMessage({ channel, embed }))
-            .on("finish", () => {
-                if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
-                this.finish({ channel, embed,voiceChannel })
-            })
+            .on("start", () => this.sendMessage(messageProps))
+            .on("finish", () => this.finish(messageProps))
     },
 
-    sendMessage(data) {
-        const { channel, embed } = data
+    sendMessage(messageProps) {
+        const { embed, message : { channel } } = messageProps
         speaking = true
         embed
             .setDescription(`[Link do vídeo](${songInfo[0].url})`)
@@ -319,20 +320,16 @@ module.exports =  Commands = {
         channel.send(embed)
     },
 
-    async finish(data) {
+    async finish(messageProps) {
+        const { voiceChannel } = messageProps
+
+        if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
+
         speaking = false
         before = songInfo.shift()
+        song = null
         if (songInfo.length == 0) return
         
-        conn.on('error', err => (conn.disconnect(), console.error(err)))
-            .on("disconnect", () => ( speaking = false, songInfo = [], conn = null ))
-
-        dispatcher = await conn.play(ytdl(songInfo[0].url), { volume: 0.5 })
-            .on("error", err => conn.disconnect())
-            .on("start", () => this.sendMessage(data))
-            .on("finish", () => {
-                if (data.voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
-                this.finish(data)
-            })
+        this.reproduce(messageProps)
     }
 }

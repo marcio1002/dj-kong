@@ -1,4 +1,4 @@
-# Bot-Ondisco<a href="https://github.com/marcio1002/bot-Ondisco"><img src="https://simpleicons.org/icons/github.svg" width="4%"  align="right"/></a>
+# Dj. Gorila <a href="https://github.com/marcio1002/bot-Ondisco"><img src="https://simpleicons.org/icons/github.svg" width="4%"  align="right"/></a>
 
 
 #### Um bot com funções de tocar música nos canais de voz do discord.
