@@ -3,3 +3,4 @@ npm-debug.log
 package-lock.json
 yarn-error.log
 config.json
+/src/commands/commandsDownload.js
