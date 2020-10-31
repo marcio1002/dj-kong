@@ -6,7 +6,7 @@
   "license": "Aladdin",
   "private": true,
   "scripts": {
-    "start": "node ",
+    "start": "node djgorila.js",
     "dev": "nodemon"
   },
   "keywords": [

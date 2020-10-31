@@ -64,7 +64,7 @@ module.exports = Commands = {
             .addFields(
                 { name: "``avatar``", value: "Visualizar e baixar o avatar do perfil", inline: true },
                 { name: "``serve``", value: "Descrição do servidor", inline: true },
-                { name: "``emj``", value: "Mandar emoji animado no canal.", inline: true },
+                { name: "``emj``", value: "Envia ao canal o emoji animado ou emoji personalizado, também envia emoji de outros servidores em que  o bot está.", inline: true },
                 { name: "**``Comandos streaming``**", value: "━━━━━━━━━━━━━━━", inline: false },
                 { name: "**``play``**", value: "inicia a música", inline: true },
                 { name: "**``leave``**", value: "Finalizar a música e sai do canal", inline: true },
@@ -83,13 +83,26 @@ module.exports = Commands = {
     },
 
     emj(messageProps) {
-        const { args, message: {channel, guild} } = messageProps
-
-        if(!args || args.length == 0) return channel.send('Digite o nome do emoji exem ``!dreact :emoji:``')
-        const emoji = guild.emojis.cache.find(emoji => emoji.name == args[0].match(/\w+[^\:\\;]/) || emoji.name == args[0].replace(/\w\d\S/g,'\$1'))
+        const {bot, args, message: {channel, guild} } = messageProps
         
+        if(!args || args.length == 0) return channel.send('Digite o nome do emoji exem ``!dreact :emoji:``')
+       
+        const filter = emoji => emoji.name == args[0].match(/\w+[^\:\\;]/)
+        let guildsEmoji
+        
+        let emoji = guild.emojis.cache.find(filter) || guild.emojis.cache.get(args[0])
+
+        bot.guilds.cache.find(guild => {
+            const { emojis } = guild
+            return (guildsEmoji =  emojis.cache.find(filter) || emojis.cache.get(args[0]))
+        })
+
         messageProps.message.delete({time: 500})
-        if(emoji) channel.send(emoji.animated ? `<a:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`)
+
+        if(emoji) 
+            channel.send(emoji.animated ? `<a:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`)
+        else if(guildsEmoji)
+            channel.send(guildsEmoji.animated ? `<a:${guildsEmoji.name}:${guildsEmoji.id}>` : `<:${guildsEmoji.name}:${guildsEmoji.id}>`)
     },
 
     emjinfo(messageProps) {
@@ -133,5 +146,9 @@ module.exports = Commands = {
 
     list(messageProps) {
         cmdMusic.list(messageProps)
+    },
+
+    down(messageProps) {
+        cmdDown.down(messageProps)
     }
 }

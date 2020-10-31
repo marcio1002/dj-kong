@@ -33,7 +33,7 @@ module.exports = {
     if (voiceChannel.muted) return channel.send(`<@${author.id}>  não posso enviar audio nesse canal de voz, canal de voz mudo.`)
     if (args.length == 0) return channel.send("<@" + author.id + "> Digite o nome da música que deseja tocar. \n exe: ``!dplay Elmore - One Man Town`` ")
 
-    let msg = await channel.send("Buscando...")
+    let msg = await channel.send("<a:load:771895739672428594>")
     let optionsInfo = await this.search(args.join(" ").toLocaleLowerCase())
 
     embed
@@ -162,15 +162,7 @@ module.exports = {
 
     dispatcher = await conn.play(ytdl(before.url,{filter: "audioandvideo"} ), { volume: 0.5 })
       .on("error", err => conn.disconnect())
-      .on("start", () => {
-        speaking = true
-        embed
-          .setDescription(`[Link do vídeo](${before.url})`)
-          .setTitle("Tocando <a:ondisco:630470764004638720> \n**``" + before.title + "``**")
-          .setThumbnail(before.image.url)
-
-        channel.send(embed)
-      })
+      .on("start", () => this.sendMessage(messageProps,before))
       .on("finish", () => {
         if (voiceChannel.members.size <= 1 || !conn) return conn.disconnect()
         this.finish(messageProps)
@@ -204,7 +196,7 @@ module.exports = {
 
     dispatcher = await conn.play(ytdl(songInfo[0].url,{filter: "audioandvideo"}), { volume: 0.5 })
       .on("error", err => (console.warn( "\033[1;31m" + err),conn.disconnect()))
-      .on("start", () => this.sendMessage(messageProps))
+      .on("start", () => this.sendMessage(messageProps,songInfo[0]))
       .on("finish", () => this.finish(messageProps))
   },
 
@@ -218,12 +210,12 @@ module.exports = {
     channel.send(embed)
   },
 
-  sendMessage({ embed, message: { channel } }) {
+  sendMessage({ embed, message: { channel } },songMessage) {
     speaking = true
     embed
-      .setDescription(`[Link do vídeo](${songInfo[0].url})`)
-      .setTitle("Tocando <a:ondisco:630470764004638720> \n**``" + songInfo[0].title + "``**")
-      .setThumbnail(songInfo[0].image.url)
+      .setDescription(`[Link do vídeo](${songMessage.url})`)
+      .setTitle("Tocando <a:song:771822822128353320> \n\n**``" + songMessage.title + "``**")
+      .setThumbnail(songMessage.image.url)
 
     channel.send(embed)
   },
