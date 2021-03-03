@@ -3,8 +3,8 @@ const bot = new Discord.Client
 const commands = require("./src/commands/commands")
 const express = require("express")()
 const port = process.env.PORT || 11826
-const token = require("./config.json").token || process.env.TOKEN
-const prefix = require("./config.json").prefix || process.env.PREFIX
+const token =  process.env.TOKEN
+const prefix =  process.env.PREFIX
 
 bot.on("ready", () => (
     console.clear(), 
