@@ -7,8 +7,9 @@ module.exports = {
 
     if (!voiceChannel || !conn) return
 
-    if (songs.get("dispatcher").paused) {
-      songs.get("dispatcher").resume()
+    if (songs.get("broadcastDispatcher").paused) {
+      
+      songs.get("broadcastDispatcher").resume()
 
       embed
         .setColor(implements.colorRadomEx())

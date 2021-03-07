@@ -1,7 +1,7 @@
 module.exports = {
   name: "ytvol",
   description: "Aumenta ou diminui o volume da reprodução que está tocando no momento.",
-  execute({ voiceChannel, args, embed, message: { channel, author } }) {
+  execute([{ voiceChannel, args, conn, songs, embed, message: { channel, author } },]) {
 
     if (!voiceChannel || !conn || !args || isNaN(Number(args[0]))) return
 
@@ -21,11 +21,11 @@ module.exports = {
         description = "<:autovolume:633076130668085248>"
         break
       case 3:
-        description = "\🥴  Volume máximo, Não recomendo a altura desse volume"
+        description = "\🥴  Volume máximo."
         break
     }
 
-    dispatcher.setVolume(numberVol)
+    songs.get("broadcastDispatcher").setVolume(numberVol)
     channel.send(embed.setDescription(description))
   },
 }

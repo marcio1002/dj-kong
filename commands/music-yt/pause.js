@@ -12,7 +12,8 @@ module.exports = {
         .setDescription("<:pause:633071783465058334> **Paused**")
         .setColor(implements.colorRadomEx())
 
-      songs.get("dispatcher").pause(true)
+      songs.get("broadcastDispatcher").pause(true)
+      
       channel.send(embed)
     } else {
       return channel.send(`<@${author.id}>  <:huuum:648550001298898944> nenhuma música tocando nesse canal!`)

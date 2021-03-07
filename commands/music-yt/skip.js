@@ -12,7 +12,7 @@ module.exports = {
       .setColor(implements.colorRadomEx())
       .setDescription("<:skip:633071783351812096> **Skipped**");
 
-    songs.get("dispatcher").destroy()
+    songs.get("broadcastDispatcher").destroy()
 
 
     finish(useProps)

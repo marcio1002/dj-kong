@@ -1,27 +1,37 @@
-const ytdl = require('ytdl-core')
-const { sendMessage , finish, disconnect} = require('../../modules/ytStateSong')
+const ytdl = require('ytdl-core-discord')
+const { sendMessage , finish, disconnect } = require('../../modules/ytStateSong')
 
 module.exports = {
   name: "ytr",
   description: "Retorna a reprodução de audio que estava tocando anteriormente.",
   async execute(useProps) {
     const [ messageProps, useMessageProps] = useProps
-    const { voiceChannel, conn, songs } = messageProps
+    const { voiceChannel, conn, songs, broadcast, message: { channel } } = messageProps
+    let current
 
-    if (!voiceChannel || !conn || songs.get("played").length == 0) return
+    if (!voiceChannel || !conn || songs.get("played") == null) return
 
-    songs.set("current", songs.get("played").shift())
+    current = songs.get("current")
+    songs.set("current", songs.get("played"))
+    songs.get("played", current)
     const { url } = songs.get("current")
-
-    useMessageProps(messageProps)
-
+    
     conn
-      .on('error',  _=> conn.disconnect() )
-      .on("disconnect", _=> disconnect(useProps))
+    .on('error',  _=> conn.disconnect() )
+    .on("disconnect", _=> disconnect(useProps))
 
-    dispatcher = await conn.play(ytdl(url), { volume: 0.5 })
+    broadcastDispatcher = await broadcast
+      .play(await ytdl(url, { filter: "audioonly" }), { volume: .8, type: "opus", highWaterMark: 80 })
+      .on("finish", _ => finish(useProps))
+
+    dispatcher = await conn
+      .play(broadcast)
       .on("error", err => conn.disconnect())
+      .on("failed", _ => channel.send("<:error:773623679459262525> Não foi possível reproduzir o áudio."))
       .on("start", _=> sendMessage(useProps))
-      .on("finish", _=> finish(useProps))
+
+      songs.set("broadcastDispatcher", broadcastDispatcher)
+      songs.set("dispatcher", dispatcher)
+      useMessageProps(messageProps)
   },
 }

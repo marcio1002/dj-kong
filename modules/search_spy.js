@@ -4,8 +4,7 @@ const spy = new Spotify({
   secret: process.env.SPOTIFY_SECRET
 })
 
-const search = async (options) => {
-  return await spy.search({type: options.type ?? 'track', query: options.query ?? ''})
-}
+const search = async (options) => await spy.search({type: options.type ?? 'track', query: options.query ?? ''})
+
 
 module.exports = search

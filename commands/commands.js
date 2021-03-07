@@ -6,19 +6,19 @@ const path = require("path").dirname(require('path').resolve(__dirname))
 
 module.exports = {
     async getCommands(dirName) {
-      fs
-        .readdirSync(`${path}${dirName}`, { encoding: 'utf8' })
-        .filter(f => !f.startsWith("commands"))
-        .forEach(file => {
-            if (fs.statSync(`${path}${dirName}/${file}`).isDirectory() && !['.', '..'].includes(file))
-                this.getCommands(`${dirName}/${file}`)
-            else {
-                const command = require(`${path}${dirName}/${file}`)
-                if(Array(command).every(v => v.name && v.description && typeof v.execute == "function"))
-                    collection.set(command.name,command)
-            }
-            
-        });
+        fs
+            .readdirSync(`${path}${dirName}`, { encoding: 'utf8' })
+            .filter(f => !f.startsWith("commands"))
+            .forEach(file => {
+                if (fs.statSync(`${path}${dirName}/${file}`).isDirectory() && !['.', '..'].includes(file))
+                    this.getCommands(`${dirName}/${file}`)
+                else {
+                    const command = require(`${path}${dirName}/${file}`)
+                    if (Array(command).every(v => v.name && v.description && typeof v.execute == "function"))
+                        collection.set(command.name, command)
+                }
+
+            });
     },
 
     set() {
@@ -29,5 +29,5 @@ module.exports = {
 
     has: command => collection.has(command),
 
-    listCommands: () => collection
+    listCommands: () => collection,
 }

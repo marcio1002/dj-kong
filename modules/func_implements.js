@@ -10,23 +10,12 @@ const implements = {
     },
 
     getTimeStamp() {
-        let d = (new Date(Date.now())).toLocaleTimeString().split(":")
-        return d
-                .slice(0,2)
-                .map(v => String(v).length == 1 ? `0${v}` : v )
-                .join(":")
+        return (new Date(Date.now())).toLocaleTimeString("pt-BR").split(":").filter((_, i) => i != 2).join(":")
     },
 
     getDate() {
-        let d = (new Date(Date.now())).toLocaleDateString().split("-").reverse()
-        return d
-            .filter(v => /\D/.test(v))
-            .map(v => String(v).length == 1 ? `0${v}` : v )
-            .join("-")
-            .replace("/","-")
-            .replace("/","-")
+        return (new Date(Date.now())).toLocaleDateString("pt-BR").split("/").join("-")
     }
-
 }
 
 module.exports = implements

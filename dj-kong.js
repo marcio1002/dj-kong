@@ -27,8 +27,9 @@ bot.on('message', async message => {
         embed
             .setTitle(`Olá ${message.author.username}! \nMeu nome é ${bot.user.username} logo a baixo tem minhas descrições:`)
             .setDescription(`**prefixo:** **\`\`${prefix}\`\`** \n **função:** **\`\`Fazer seu dia/sua noite mais feliz tocando suas músicas favoritas\`\`** \n **Criado por:** **\`\`Marcio#1506\`\`** \n[Copyright (C) 2000 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)`);
-        (await message.channel.send(embed)).delete({ timeout: 25000 })
+        return (await message.channel.send(embed)).delete({ timeout: 25000 })
     }
+    
     if (message.author.bot || message.channel.type === "dm" || !message.content.toLowerCase().startsWith(prefix)) return
 
     const
@@ -41,14 +42,15 @@ bot.on('message', async message => {
         songs: new Map([
             ['queues', []],
             ['current', null],
-            ['played', []],
+            ['played', null],
             ['speaking', false]
         ])
     })
 
-    useProps[0].embed = embed
+    useProps[0].embed = (new Discord.MessageEmbed()).setColor(implements.colorRadomEx())
     useProps[0].message = message
     useProps[0].voiceChannel = member.voice.channel
+    useProps[0].broadcast = bot.voice.createBroadcast()
     useProps[0].args = args
     useProps[0].bot = bot
     useProps[0].mentionUser = mentionUser
@@ -61,8 +63,9 @@ bot.on('message', async message => {
     commands.get(command, useProps)
 })
 
-express.get("/", (_, res) => res.send("ok"))
+express.get("/", (_, res) => res.status(200).send("ok"))
+
+bot.login(token)
 
 express.listen(port, (console.clear(), console.log(`http://${host}:${port}`)))
 
-bot.login(token)
