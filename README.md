@@ -1,4 +1,4 @@
-# Dj. Godzilla <a href="https://github.com/marcio1002/bot-Ondisco"><img src="https://simpleicons.org/icons/github.svg" width="4%"  align="right"/></a>
+# Dj. Kong <a href="https://github.com/marcio1002/bot-Ondisco"><img src="https://simpleicons.org/icons/github.svg" width="4%"  align="right"/></a>
 
 #### Um bot para o discord com funções de reprodução de aúdio nos canais de voz.
 ***
