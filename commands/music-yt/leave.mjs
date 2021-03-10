@@ -1,6 +1,6 @@
-module.exports = {
+const command = {
   name: "ytl",
-  description: "Finaliza a reprodução de audio e saí do canal de voz.",
+  description: "Saí do canal de voz.",
   execute([messageProps,]) {
     const { voiceChannel, conn, broadcast } = messageProps
 
@@ -11,3 +11,6 @@ module.exports = {
 
   }
 }
+
+
+export default command

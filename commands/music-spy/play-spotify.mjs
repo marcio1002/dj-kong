@@ -1,7 +1,9 @@
-const search = require("../../modules/search_spy")
-const spdl = require('spdl-core').default
+import search from "../../modules/search_spy.mjs"
+import Spdl from 'spdl-core'
 
-module.exports = {
+const spdl = Spdl.default
+
+const command = {
   name: "spyp",
   description: "Reproduz o audio ou adiciona na fila.",
   async execute([{ voiceChannel, args },]) {

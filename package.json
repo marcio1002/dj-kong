@@ -1,12 +1,12 @@
 {
   "name": "ondisco",
-  "version": "v2.0.0",
+  "version": "v2.1.0",
   "description": "Um bot que toca música nos canais de audio do Discord.",
-  "main": "dj-kong.js",
+  "main": "dj-kong.mjs",
   "license": "Aladdin",
-  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node dj-kong.js",
+    "start": "node dj-kong.m.js",
     "dev": "nodemon"
   },
   "keywords": [

@@ -1,6 +1,6 @@
-const implements = require('../../modules/func_implements')
+import helpers from '../../modules/helpers.mjs'
 
-module.exports = {
+const command  = {
   name: "ytps",
   description: "Pausa a reprodução.",
   execute([{ voiceChannel, conn, embed, songs, message: { channel, author } },]) {
@@ -10,14 +10,14 @@ module.exports = {
     if (songs.get("speaking")) {
       embed
         .setDescription("<:pause:633071783465058334> **Paused**")
-        .setColor(implements.colorRadomEx())
+        .setColor(helpers.colorRadomEx())
 
       songs.get("broadcastDispatcher").pause(true)
       
       channel.send(embed)
-    } else {
-      return channel.send(`<@${author.id}>  <:huuum:648550001298898944> nenhuma música tocando nesse canal!`)
     }
   }
 
 }
+
+export default command

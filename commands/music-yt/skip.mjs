@@ -1,7 +1,7 @@
-const implements = require('../../modules/func_implements')
-const { finish } = require("../../modules/ytStateSong")
+import helpers from '../../modules/helpers.mjs'
+import { finish } from "../../modules/ytStateSong.mjs"
 
-module.exports = {
+const command = {
   name: "ytsk",
   description: "Pula a reprodução e começa a próxima na lista se houver.",
   execute(useProps) {
@@ -9,7 +9,7 @@ module.exports = {
     if (!voiceChannel || !conn) return
 
     embed
-      .setColor(implements.colorRadomEx())
+      .setColor(helpers.colorRadomEx())
       .setDescription("<:skip:633071783351812096> **Skipped**");
 
     songs.get("broadcastDispatcher").destroy()
@@ -18,3 +18,5 @@ module.exports = {
     finish(useProps)
   }
 }
+
+export default command

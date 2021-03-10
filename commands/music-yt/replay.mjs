@@ -1,15 +1,15 @@
-const ytdl = require('ytdl-core-discord')
-const { sendMessage , finish, disconnect } = require('../../modules/ytStateSong')
+import ytdl from 'ytdl-core-discord'
+import { sendMessage , finish, disconnect } from '../../modules/ytStateSong.mjs'
 
-module.exports = {
+const command = {
   name: "ytr",
   description: "Retorna a reprodução de audio que estava tocando anteriormente.",
   async execute(useProps) {
     const [ messageProps, useMessageProps] = useProps
     const { voiceChannel, conn, songs, broadcast, message: { channel } } = messageProps
-    let current
+    let current,broadcastDispatcher,dispatcher
 
-    if (!voiceChannel || !conn || songs.get("played") == null) return
+    if (!voiceChannel || !conn || !broadcast || songs.get("played") == null) return
 
     current = songs.get("current")
     songs.set("current", songs.get("played"))
@@ -35,3 +35,5 @@ module.exports = {
       useMessageProps(messageProps)
   },
 }
+
+export default command

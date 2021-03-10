@@ -1,6 +1,6 @@
-module.exports = {
+const command = {
   name: "ytls",
-  description: "Lista todos os audios que estão na lista de espera.",
+  description: "Lista as músicas na fila de espera.",
   execute([{ embed, songs, message: { channel } },]) {
     let songQueues = []
 
@@ -15,3 +15,5 @@ module.exports = {
     channel.send(embed)
   }
 }
+
+export default command

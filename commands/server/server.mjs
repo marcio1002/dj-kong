@@ -1,6 +1,6 @@
-const implements = require('../../modules/func_implements')
+import helpers from '../../modules/helpers.mjs'
 
-module.exports = {
+const command = {
   name: "server",
   description: "Mostra informações do servidor",
   execute: async ([messageProps, useMessageProps]) => {
@@ -9,8 +9,8 @@ module.exports = {
         let avatar = guild.splashURL() ?? guild.iconURL()
         let date = guild.createdAt.toLocaleDateString().split("-").reverse().join("-")
         embed
-            .setFooter(`${author.username} \t✦\t ${implements.getDate()} ás ${implements.getTimeStamp()}`, author.avatarURL())
-            .setColor(implements.colorRadomEx())
+            .setFooter(`${author.username} \t✦\t ${helpers.getDate()} ás ${helpers.getTimeStamp()}`, author.avatarURL())
+            .setColor(helpers.colorRadomEx())
             .setTitle(`${guild.name}`)
             .setDescription(`
                 **Criador por:** <@${guild.ownerID}>\n
@@ -27,5 +27,7 @@ module.exports = {
             `)
             .setThumbnail(avatar);
         (await channel.send(embed)).delete({ timeout: 55000 })
-  },
+  }
 }
+
+export default command

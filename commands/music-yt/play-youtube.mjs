@@ -1,12 +1,13 @@
-const search = require("../../modules/search_yt")
-const { reproduce } = require("../../modules/ytStateSong")
-const permissionVoiceChannel = require("../../modules/permissionVoiceChannel")
+import search from "../../modules/search_yt.mjs"
+import { reproduce } from "../../modules/ytStateSong.mjs"
+import permissionVoiceChannel from "../../modules/permissionVoiceChannel.mjs"
+
 const prefix = process.env.PREFIX
 let result
 
-module.exports = {
+const command = {
   name: "ytp",
-  description: "Reproduz o audio ou adiciona na fila.",
+  description: "Reproduz a música ou adiciona na fila.",
   execute(useProps) {
     const { args, message: { channel, author } } = useProps[0]
     if (!permissionVoiceChannel(useProps)) return
@@ -58,7 +59,7 @@ module.exports = {
       this.listOptions(prev, next).then(async ops => {
         embed
           .setColor("#E62117")
-          .setTitle("Selecione a música que reproduzir no canal digitando um numero entre ``1`` a ``10``")
+          .setTitle("Selecione a música para reproduzir no canal voz digitando um numero entre ``1`` a ``10``")
           .setDescription(ops);
 
         msg.edit({ content: "", embed })
@@ -69,12 +70,13 @@ module.exports = {
 
       const filterEmjPrev = (reaction, user) => reaction.emoji.name == '\⬅️' && user.id == author.id
 
-      msg.awaitReactions(filterEmjPrev, { max: 1, time: 80000 })
+      msg
+        .awaitReactions(filterEmjPrev, { max: 1, maxEmojis: 1, maxUsers: 1, time: 80000 })
         .then(async _ => {
 
           embed
             .setColor("#E62117")
-            .setTitle("Selecione a música que deseja tocar digitando um numero entre ``1`` a ``10``")
+            .setTitle("Selecione a música para reproduzir no canal voz digitando um numero entre ``1`` a ``10``")
             .setDescription(await this.listOptions(prev -= 10, next -= 10));
 
           msg.edit({ content: "", embed })
@@ -84,12 +86,13 @@ module.exports = {
 
       const filterEmjNext = (reaction, user) => reaction.emoji.name == '\➡️' && user.id == author.id
 
-      msg.awaitReactions(filterEmjNext, { max: 1, time: 80000 })
-        .then(async reaction => {
+      msg
+        .awaitReactions(filterEmjNext, { max: 1, maxEmojis: 1, maxUsers: 1, time: 80000 })
+        .then(async r => {
 
           embed
             .setColor("#E62117")
-            .setTitle("Selecione a música que deseja tocar digitando um numero entre ``1`` a ``10``")
+            .setTitle("Selecione a música para reproduzir no canal voz digitando um numero entre ``1`` a ``10``")
             .setDescription(await this.listOptions(prev = next, next += 10));
 
           msg.edit({ content: "", embed })
@@ -101,7 +104,7 @@ module.exports = {
 
       msg.channel.awaitMessages(filter, { max: 1, time: 100000 })
         .then(select => {
-          if (select.first().content === "cancel") return channel.send("Cancelado")
+          if (select.first().content.toLowerCase() === "cancel") return channel.send("Cancelado")
 
           if (!(song = result.videos[Number(select.first().content) - 1])) return
 
@@ -134,3 +137,5 @@ module.exports = {
   }
 
 }
+
+export default command

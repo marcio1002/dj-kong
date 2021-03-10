@@ -1,7 +1,7 @@
-const implements = require('../../modules/func_implements')
+import helpers from '../../modules/helpers.mjs'
 
-module.exports = {
-  name: "ytrm",
+const command = {
+  name: "ytrs",
   description: "Retorna a reprodução pausada.",
   execute([{ voiceChannel, embed, conn, songs, message: { channel } },]) {
 
@@ -12,10 +12,12 @@ module.exports = {
       songs.get("broadcastDispatcher").resume()
 
       embed
-        .setColor(implements.colorRadomEx())
+        .setColor(helpers.colorRadomEx())
         .setDescription("<:play:633088252940648480> **Resuming**")
 
       channel.send(embed)
     }
   }
 }
+
+export default command

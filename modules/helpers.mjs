@@ -1,8 +1,8 @@
-const implements = {
+const helpers = {
 
     colorRadomEx() {
         let letters = "123456789ABCDEFGH";
-        color = "#";
+        let color = "#";
         for (let c = 0; c < 6; c++) 
             color += letters[Math.floor(Math.random() * 12)];
 
@@ -18,4 +18,4 @@ const implements = {
     }
 }
 
-module.exports = implements
+export default  helpers

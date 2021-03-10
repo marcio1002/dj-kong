@@ -1,4 +1,4 @@
-module.exports = {
+const command = {
   name: "emj",
   description: "Visualiza emojis animados e os que não são animados.",
   execute: ([messageProps,]) => {
@@ -24,3 +24,5 @@ module.exports = {
       channel.send(guildsEmoji.animated ? `<a:${guildsEmoji.name}:${guildsEmoji.id}>` : `<:${guildsEmoji.name}:${guildsEmoji.id}>`)
   }
 }
+
+export default command

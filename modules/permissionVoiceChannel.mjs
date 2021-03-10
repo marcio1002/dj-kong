@@ -25,4 +25,4 @@ const permissionVoiceChannel = ([messageProps,]) => {
   return true
 }
 
-module.exports  = permissionVoiceChannel
+export default permissionVoiceChannel

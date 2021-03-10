@@ -13,4 +13,4 @@ const propsState = (prop) =>  {
 }
 
 
-module.exports = propsState
+export default propsState

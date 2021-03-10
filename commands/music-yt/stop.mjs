@@ -1,6 +1,6 @@
-const { finish } = require("../../modules/ytStateSong")
+import { finish } from "../../modules/ytStateSong.mjs"
 
-module.exports = {
+const command = {
   name: "ytsp",
   description: "Finaliza a reprodução.",
   execute(useProps) {
@@ -20,3 +20,5 @@ module.exports = {
     }
   }
 }
+
+export default command

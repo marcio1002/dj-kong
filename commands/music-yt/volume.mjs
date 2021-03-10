@@ -1,4 +1,4 @@
-module.exports = {
+const command = {
   name: "ytvol",
   description: "Aumenta ou diminui o volume da reprodução que está tocando no momento.",
   execute([{ voiceChannel, args, conn, songs, embed, message: { channel, author } },]) {
@@ -8,7 +8,7 @@ module.exports = {
     let numberVol = Number(args[0])
     let description
 
-    if (numberVol < 0 || numberVol > 3) return channel.send(embed.setDescription(`<:erro:630429351678312506> <@${author.id}> Digite um numero de 0 a 3`))
+    if (numberVol < 0 || numberVol > 3) return channel.send(embed.setDescription(`<:alert:773624031626657833> <@${author.id}> Digite um numero de 0 a 3`))
 
     switch (numberVol) {
       case 0:
@@ -29,3 +29,5 @@ module.exports = {
     channel.send(embed.setDescription(description))
   },
 }
+
+export default command

@@ -1,6 +1,6 @@
-const implements = require("../../modules/func_implements")
+import helpers from '../../modules/helpers.mjs'
 
-module.exports = {
+const command = {
     name: "avatar",
     description: "Visualiza o avatar do usuário.",
     execute: ([messageProps,]) => {
@@ -8,8 +8,8 @@ module.exports = {
         let avatar
 
         embed
-            .setFooter(`${author.username} ✦ ${implements.getDate()} ás ${implements.getTimeStamp()}`, author.avatarURL())
-            .setColor(implements.colorRadomEx())
+            .setFooter(`${author.username} ✦ ${helpers.getDate()} ás ${helpers.getTimeStamp()}`, author.avatarURL())
+            .setColor(helpers.colorRadomEx())
 
         if (mentionUser)
             avatar = memberMentions.user.displayAvatarURL({ size: 1024, dynamic: true })
@@ -23,3 +23,5 @@ module.exports = {
         channel.send(embed)
     }
 }
+
+export default command

@@ -1,10 +1,12 @@
-require("dotenv/config")
-const Discord = require("discord.js")
+import 'dotenv/config.js'
+import express from 'express'
+import Discord from 'discord.js'
+import commands from './commands/commands.mjs'
+import helpers from './modules/helpers.mjs'
+import propsState from'./modules/propsState.mjs'
+
+const app = express()
 const bot = new Discord.Client
-const commands = require("./commands/commands")
-const implements = require("./modules/func_implements")
-const propsState = require("./modules/propsState")
-const express = require("express")()
 var port = process.env.PORT || Math.floor(Math.random() * 9999)
 var token = process.env.SECRET
 var prefix = process.env.PREFIX
@@ -21,7 +23,7 @@ bot.on("guildDelete", guild => console.info(`O bot foi removido do servidor: ${g
 
 bot.on('message', async message => {
     const { content, mentions, guild, member } = message
-    const embed = (new Discord.MessageEmbed()).setColor(implements.colorRadomEx())
+    const embed = (new Discord.MessageEmbed()).setColor(helpers.colorRadomEx())
 
     if ((new RegExp(`<@!?${bot.user.id}>`,'ig')).test(content)) {
         embed
@@ -33,9 +35,9 @@ bot.on('message', async message => {
     if (message.author.bot || message.channel.type === "dm" || !message.content.toLowerCase().startsWith(prefix)) return
 
     const
-        mentionUser = mentions.users.first()
-        memberMentions = guild.member(mentionUser)
-        args = content.slice(prefix.length).trim().split(/ +/g)
+        mentionUser = mentions.users.first(),
+        memberMentions = guild.member(mentionUser),
+        args = content.slice(prefix.length).trim().split(/ +/g),
         command = args.shift().toLowerCase()
 
     const useProps = propsState({
@@ -47,7 +49,7 @@ bot.on('message', async message => {
         ])
     })
 
-    useProps[0].embed = (new Discord.MessageEmbed()).setColor(implements.colorRadomEx())
+    useProps[0].embed = (new Discord.MessageEmbed()).setColor(helpers.colorRadomEx())
     useProps[0].message = message
     useProps[0].voiceChannel = member.voice.channel
     useProps[0].broadcast = bot.voice.createBroadcast()
@@ -63,9 +65,9 @@ bot.on('message', async message => {
     commands.get(command, useProps)
 })
 
-express.get("/", (_, res) => res.status(200).send("ok"))
+app.get("/", (_, res) => res.status(200).send("ok"))
 
 bot.login(token)
 
-express.listen(port, (console.clear(), console.log(`http://${host}:${port}`)))
+app.listen(port, (console.clear(), console.log(`http://${host}:${port}`)))
 
