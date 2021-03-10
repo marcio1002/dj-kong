@@ -6,7 +6,7 @@
   "license": "Aladdin",
   "type": "module",
   "scripts": {
-    "start": "node dj-kong.m.js",
+    "start": "node dj-kong.mjs",
     "dev": "nodemon"
   },
   "keywords": [

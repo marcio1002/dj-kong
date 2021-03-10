@@ -6,17 +6,17 @@ import ytdl from 'ytdl-core-discord'
       .setColor("#E62117")
       .setTitle(`Tocando <a:song:771822822128353320> \n\n**\`\`${songInfo.title}\`\`**`)
       .setThumbnail(songInfo.thumbnail)
-      .addFields(
-        { name: "**Duração**", value: songInfo.duration.timestamp, inline: true },
-        { name: "**Vídeo**", value: `[Acessar vídeo](${songInfo.url})`, inline: true },
-        { name: "**Canal**", value: `[${songInfo.author.name}](${songInfo.author.url})`, inline: true },
-      )
   }
 
   function sendEmbedQueue(songInfo) {
     return (new Discord.MessageEmbed())
       .setColor("#E62117")
       .setTitle(`**Adicionado na fila:** \n\n **\`\`${songInfo.title}\`\`** `)
+      .addFields(
+        { name: "**Duração**", value: songInfo.duration.timestamp, inline: true },
+        { name: "**Vídeo**", value: `[Acessar vídeo](${songInfo.url})`, inline: true },
+        { name: "**Canal**", value: `[${songInfo.author.name}](${songInfo.author.url})`, inline: true },
+      )
   }
 
   async function reproduce(useProps) {
