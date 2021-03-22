@@ -228,7 +228,6 @@ const command = {
                 })
                 .catch(_ => console.warn("Erro ao conectar no canal de voz"))
             })
-          .catch(_ => console.info("Usuário não escolheu a música"))
       },
       error: console.error
     })
