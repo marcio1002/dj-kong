@@ -90,7 +90,6 @@ const command = {
           .setDescription(await this.listOptions(prev = 0, next = 10, "<:youtube:817569761881227315>"))
 
         msg.edit({ content: "", embed })
-        msg.delete({ timeout: 100000 })
 
         emjNext = await msg.react('\➡️')
 
@@ -99,13 +98,13 @@ const command = {
 
         const filter = m => m.author.id === author.id && !isNaN(Number(m.content)) || m.content.toLowerCase() == "cancel"
 
-        msg.channel.awaitMessages(filter, { max: 1, time: 100000 })
-          .then(select => {
+        msg.channel.createMessageCollector(filter, { max: 1, maxUsers: 1, time: 100000 })
+          .on("collect", select => {
             msg.delete()
 
-            if (select.first().content.toLowerCase() === "cancel") return channel.send("Cancelado")
+            if (select.content.toLowerCase() === "cancel") return channel.send("Cancelado")
 
-            if (!(song = result[Number(select.first().content) - 1])) return
+            if (!(song = result[Number(select.content) - 1])) return
 
             result = null
             songs.set('queues', [...songs.get('queues'), song])
@@ -118,7 +117,6 @@ const command = {
               })
               .catch(_ => console.warn("Erro ao conectar no canal de voz"))
           })
-          .catch(_ => console.info("Usuário não escolheu a música"))
       },
       error: console.error
     })
@@ -197,7 +195,6 @@ const command = {
           .setDescription(await this.listOptions(prev = 0, next = 10, "<:spotify:817569762178629693>"))
 
         msg.edit({ content: "", embed })
-        msg.delete({ timeout: 100000 })
 
         emjNext = await msg.react('\➡️')
 
@@ -206,31 +203,31 @@ const command = {
 
         const filter = m => m.author.id === author.id && !isNaN(Number(m.content)) || m.content.toLowerCase() == "cancel"
 
-        msg.channel.awaitMessages(filter, { max: 1, time: 100000 })
-          .then(select => {
-            msg.delete()
+        msg.channel.createMessageCollector(filter, { max: 1, maxUsers: 1, time: 100000 })
+          .on("collect", select => {
+              msg.delete()
 
-            if (select.first().content.toLowerCase() === "cancel") return channel.send("Cancelado")
+              if (select.content.toLowerCase() === "cancel") return channel.send("Cancelado")
 
-            if (!(song = result[Number(select.first().content) - 1])) return
+              if (!(song = result[Number(select.content) - 1])) return
 
-            result = null
-            songs.set('queues', [...songs.get('queues'), {
-              url: song.external_urls.spotify,
-              title: song.name,
-              timestamp: helpers.songTimeStamp(song.duration_ms),
-              album: song.album
-            }])
-    
-    
-            voiceChannel.join()
-              .then(async connection => {
-                messageProps.conn = connection
-                setMessageProps(messageProps)
-                reproduce(useProps)
-              })
-              .catch(_ => console.warn("Erro ao conectar no canal de voz"))
-          })
+              result = null
+              songs.set('queues', [...songs.get('queues'), {
+                url: song.external_urls.spotify,
+                title: song.name,
+                timestamp: helpers.songTimeStamp(song.duration_ms),
+                album: song.album
+              }])
+      
+      
+              voiceChannel.join()
+                .then(async connection => {
+                  messageProps.conn = connection
+                  setMessageProps(messageProps)
+                  reproduce(useProps)
+                })
+                .catch(_ => console.warn("Erro ao conectar no canal de voz"))
+            })
           .catch(_ => console.info("Usuário não escolheu a música"))
       },
       error: console.error
