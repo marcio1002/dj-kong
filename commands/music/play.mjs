@@ -283,7 +283,7 @@ const command = {
   },
 
   async listOptions(pageStart, pageEnd, icon) {
-    let option = 0, optionsInfo
+    let option = pageStart, optionsInfo
 
     optionsInfo = result
       .slice(pageStart, pageEnd)
