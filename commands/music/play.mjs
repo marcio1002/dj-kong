@@ -19,17 +19,17 @@ const command = {
       embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${prefix}${this.name} spotify soja - prison blues\`**\n**\`${prefix}${this.name} URL\`**\n\n**Youtube**\n**\`${prefix}${this.name} youtube Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} URL\`**`)
     )
 
-    if (/(https|http):\/\/(www\.)?(.)+/.test(args.join(" "))){
+    if (/(https|http):\/\/(www\.)?(.)+/.test(args.join(" "))) {
       if (/(v=|youtu\.be\/)\b(.)+/.test(args.join(" ")))
         this.ytUrl(useProps)
       else if (/track\/\b(.)+(?=si=(.)+)?/)
         this.spyUrl(useProps)
     } else {
-      if (args[0] == "youtube" || args[0] != "youtube" && args[0] != "spotify"){
-        if(/(youtube)/i.test(args.join(" "))) args.shift()
+      if (args[0] == "youtube" || args[0] != "youtube" && args[0] != "spotify") {
+        if (/(youtube)/i.test(args.join(" "))) args.shift()
         this.ytQuery(useProps)
       } else if (args[0] == "spotify") {
-        if(/(spotify)/i.test(args.join(" "))) args.shift()
+        if (/(spotify)/i.test(args.join(" "))) args.shift()
         this.spyQuery(useProps)
       }
     }
@@ -109,13 +109,18 @@ const command = {
             result = null
             songs.set('queues', [...songs.get('queues'), song])
 
-            voiceChannel.join()
-              .then(connection => {
-                messageProps.conn = connection
-                setMessageProps(messageProps)
-                reproduce(useProps)
-              })
-              .catch(_ => console.warn("Erro ao conectar no canal de voz"))
+            if (!messageProps.conn)
+              voiceChannel.join()
+                .then(connection => {
+                  messageProps.conn = connection
+                  setMessageProps(messageProps)
+                  reproduce(useProps)
+                })
+                .catch(_ => console.warn("Erro ao conectar no canal de voz"))
+            else {
+              setMessageProps(messageProps)
+              reproduce(useProps)
+            }
           })
       },
       error: console.error
@@ -205,29 +210,33 @@ const command = {
 
         msg.channel.createMessageCollector(filter, { max: 1, maxUsers: 1, time: 100000 })
           .on("collect", select => {
-              msg.delete()
+            msg.delete()
 
-              if (select.content.toLowerCase() === "cancel") return channel.send("Cancelado")
+            if (select.content.toLowerCase() === "cancel") return channel.send("Cancelado")
 
-              if (!(song = result[Number(select.content) - 1])) return
+            if (!(song = result[Number(select.content) - 1])) return
 
-              result = null
-              songs.set('queues', [...songs.get('queues'), {
-                url: song.external_urls.spotify,
-                title: song.name,
-                timestamp: helpers.songTimeStamp(song.duration_ms),
-                album: song.album
-              }])
-      
-      
+            result = null
+            songs.set('queues', [...songs.get('queues'), {
+              url: song.external_urls.spotify,
+              title: song.name,
+              timestamp: helpers.songTimeStamp(song.duration_ms),
+              album: song.album
+            }])
+
+            if (!messageProps.conn)
               voiceChannel.join()
-                .then(async connection => {
+                .then(connection => {
                   messageProps.conn = connection
                   setMessageProps(messageProps)
                   reproduce(useProps)
                 })
                 .catch(_ => console.warn("Erro ao conectar no canal de voz"))
-            })
+            else {
+              setMessageProps(messageProps)
+              reproduce(useProps)
+            }
+          })
       },
       error: console.error
     })
