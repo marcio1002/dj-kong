@@ -1,5 +1,5 @@
 import yt from 'yt-search'
 
-const search = async (content) => await yt(content)
+const search = ({options, success, error}) => yt(options).then(success).catch(error)
 
 export default search

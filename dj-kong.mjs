@@ -28,7 +28,7 @@ bot.on('message', async message => {
     if ((new RegExp(`<@!?${bot.user.id}>`,'ig')).test(content)) {
         embed
             .setTitle(`Olá ${message.author.username}! \nMeu nome é ${bot.user.username} logo a baixo tem minhas descrições:`)
-            .setDescription(`**prefixo:** **\`\`${prefix}\`\`** \n **função:** **\`\`Fazer seu dia/sua noite mais feliz tocando suas músicas favoritas\`\`** \n **Criado por:** **\`\`Marcio#1506\`\`** \n[Copyright (C) 2000 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)`);
+            .setDescription(`**prefixo:** **\`\`${prefix}\`\`** \n **função:** **\`\`Fazer seu dia/sua noite mais feliz tocando suas músicas favoritas\`\`** \n **Criado por:** **\`\`Marcio#1506\`\`** \n[Copyright (C) 2021 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)`);
         return (await message.channel.send(embed)).delete({ timeout: 25000 })
     }
     

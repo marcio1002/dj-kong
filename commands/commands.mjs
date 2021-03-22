@@ -18,8 +18,17 @@ const commands = {
                     import(`${pathAbsolute}${dirName}/${file}`)
                         .then( command  => {
                             command = command.default ?? command
-                            if (Array(command).every(v => v.name && v.description && typeof v?.execute == "function"))
+                            if (Array(command).every(v => v.name && v.description && typeof v?.execute == "function")) {
                                 collection.set(command.name, command)
+
+                                switch (dirName.replace(/\/(.)+\//,"")) {
+                                    case "music": collection.set("commandsMusic", [...collection.get("commandsMusic") ?? [], command]); break;
+
+                                    default: collection.set("commandsOthers", [...collection.get("commandsOthers") ?? [], command]); break;
+
+                                }
+
+                            }
                         })
                         .catch(e => console.error(`ERROR: ${e}`))
                 }
@@ -35,7 +44,7 @@ const commands = {
 
     has: command => collection.has(command),
 
-    listCommands: () => collection,
+    getHelpCommands: _ => collection,
 }
 
 export default commands

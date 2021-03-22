@@ -1,8 +1,8 @@
 import helpers from '../../modules/helpers.mjs'
 
 const command = {
-  name: "ytrs",
-  description: "Retorna a reprodução pausada.",
+  name: "rs",
+  description: "Retorna a música pausada.",
   execute([{ voiceChannel, embed, conn, songs, message: { channel } },]) {
 
     if (!voiceChannel || !conn) return

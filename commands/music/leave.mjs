@@ -1,5 +1,5 @@
 const command = {
-  name: "ytl",
+  name: "lv",
   description: "Saí do canal de voz.",
   execute([messageProps,]) {
     const { voiceChannel, conn, broadcast } = messageProps

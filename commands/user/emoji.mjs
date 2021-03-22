@@ -1,11 +1,13 @@
+const prefix = process.env.PREFIX
+
 const command = {
   name: "emj",
-  description: "Visualiza emojis animados e os que não são animados.",
+  description: "Envia emojis animados no canal de mensagens.",
   execute: ([messageProps,]) => {
     const { bot, args, message: { channel, guild } } = messageProps
     let guildsEmoji, emoji, filter
 
-    if (!args || args.length == 0) return channel.send('Digite ou cole o emoji\nexem: ``!dreact :emoji:``')
+    if (!args || args.length == 0) return channel.send(`Digite ou cole o emoji\nexem: \`\`${prefix} :emoji:\`\``)
 
     filter = emoji => emoji.name == args[0].match(/\w+[^\:\\;]/)
 

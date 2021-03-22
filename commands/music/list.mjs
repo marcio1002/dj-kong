@@ -1,5 +1,5 @@
 const command = {
-  name: "ytls",
+  name: "ls",
   description: "Lista as músicas na fila de espera.",
   execute([{ embed, songs, message: { channel } },]) {
     let songQueues = []

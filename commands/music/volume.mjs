@@ -1,14 +1,14 @@
 const command = {
-  name: "ytvol",
-  description: "Aumenta ou diminui o volume da reprodução que está tocando no momento.",
+  name: "vol",
+  description: "Aumenta ou diminui o volume da música.",
   execute([{ voiceChannel, args, conn, songs, embed, message: { channel, author } },]) {
 
-    if (!voiceChannel || !conn || !args || isNaN(Number(args[0]))) return
+    if (!voiceChannel || !conn) return
 
     let numberVol = Number(args[0])
     let description
 
-    if (numberVol < 0 || numberVol > 3) return channel.send(embed.setDescription(`<:alert:773624031626657833> <@${author.id}> Digite um numero de 0 a 3`))
+    if (isNaN(numberVol) || numberVol < 0 || numberVol > 3) return channel.send(embed.setDescription(`<:alert:773624031626657833> <@${author.id}> Digite um numero de 0 a 3`))
 
     switch (numberVol) {
       case 0:

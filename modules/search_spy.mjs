@@ -1,11 +1,30 @@
-import Spotify from 'node-spotify-api'
+import Spotify from 'node-spotify-integration'
 
-const spy = new Spotify({
-  id: process.env.SPOTIFY_ID,
-  secret: process.env.SPOTIFY_SECRET
-})
+const spy = Spotify(
+  process.env.SPOTIFY_ID,
+  process.env.SPOTIFY_SECRET
+)
 
-const search = async (options) => await spy.search({type: options.type ?? 'track', query: options.query ?? ''})
+const spTracks = ({ query = null, urlId = null, success, error }) => {
+  if (urlId != null)
+    spy.tracks.byId(urlId).then(success).catch(error)
+  else
+    spy.tracks.search(query).then(success).catch(error)
 
+}
 
-export default search
+const spAlbums = ({ query = null, urlId = null, success, error }) => {
+  if (urlId)
+    spy.albums.byId(urlId).then(success).catch(error)
+  else
+    spy.albums.search(query).then(success).catch(error)
+}
+
+const spArtists = ({ query = null, urlId = null, success, error }) => {
+  if (urlId)
+    spy.artists.byId(urlId).then(success).catch(error)
+  else
+    spy.artists.search(query).then(success).catch(error)
+}
+
+export { spTracks, spAlbums, spArtists }

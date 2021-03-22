@@ -1,8 +1,8 @@
-import { finish } from "../../modules/ytStateSong.mjs"
+import { finish } from "../../modules/stateSong.mjs"
 
 const command = {
-  name: "ytsp",
-  description: "Finaliza a reprodução.",
+  name: "sp",
+  description: "Finaliza a música.",
   execute(useProps) {
     const [{voiceChannel, embed, songs, conn, broadcast, message: { channel } },] = useProps
     

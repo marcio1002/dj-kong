@@ -3,17 +3,17 @@ import helpers from '../../modules/helpers.mjs'
 const command = {
   name: "server",
   description: "Mostra informações do servidor",
-  execute: async ([messageProps, useMessageProps]) => {
-    const { embed, message: { channel, author, guild } } = messageProps
+  execute: async ([messageProps, setMessageProps]) => {
+    const { embed, message: { channel, author, guild, createdTimestamp } } = messageProps
 
         let avatar = guild.splashURL() ?? guild.iconURL()
-        let date = guild.createdAt.toLocaleDateString().split("-").reverse().join("-")
+        let date = guild.createdAt.toLocaleDateString("pt-BR")
         embed
-            .setFooter(`${author.username} \t✦\t ${helpers.getDate()} ás ${helpers.getTimeStamp()}`, author.avatarURL())
+            .setFooter(`${author.username}  ✦  ${helpers.getDate(createdTimestamp)} ás ${helpers.getTimeStamp(createdTimestamp)}`, author.avatarURL())
             .setColor(helpers.colorRadomEx())
             .setTitle(`${guild.name}`)
             .setDescription(`
-                **Criador por:** <@${guild.ownerID}>\n
+                **Criado por:** <@${guild.ownerID}>\n
                 **ID:** ${guild.id}\n
                 **Sigla:** ${guild.nameAcronym}\n
                 **Região:** ${guild.region}\n

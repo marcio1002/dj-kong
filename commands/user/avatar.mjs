@@ -2,13 +2,13 @@ import helpers from '../../modules/helpers.mjs'
 
 const command = {
     name: "avatar",
-    description: "Visualiza o avatar do usuário.",
+    description: "Mostra o avatar do perfil.",
     execute: ([messageProps,]) => {
-        const { embed, mentionUser, memberMentions, message: { channel, author } } = messageProps
+        const { embed, mentionUser, memberMentions, message: { channel, author, createdTimestamp } } = messageProps
         let avatar
 
         embed
-            .setFooter(`${author.username} ✦ ${helpers.getDate()} ás ${helpers.getTimeStamp()}`, author.avatarURL())
+            .setFooter(`${author.username} ✦ ${helpers.getDate(createdTimestamp)} ás ${helpers.getTimeStamp(createdTimestamp)}`, author.avatarURL())
             .setColor(helpers.colorRadomEx())
 
         if (mentionUser)
