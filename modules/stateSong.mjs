@@ -88,6 +88,7 @@ import { embedYoutubePlay, embedYoutubeQueue, embedSpotifyPlay, embedSpotifyQueu
     songs.set('queues', [])
     songs.set('current', null)
     songs.set('played', [])
+    delete messageProps.conn
 
     setMessageProps(messageProps)
   }
