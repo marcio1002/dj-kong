@@ -18,20 +18,20 @@ const command = {
     song = songs.get('current')
 
     conn
-    .on('error',  _=> conn.disconnect() )
-    .on('disconnect', _=> disconnect(useProps))
+    .once('error',  _=> conn.disconnect() )
+    .once('disconnect', _=> disconnect(useProps))
 
     broadcastDispatcher = helpers.isSpotify(song) ? await reproduceSpotify(song, useProps) :  await reproduceYoutube(song, useProps)
 
     dispatcher = await conn
       .play(broadcast)
-      .on('start', _ => sendMessage(useProps))
-      .on('error', _ => conn.disconnect())
-      .on('failed', _ => {
+      .once('start', _ => sendMessage(useProps))
+      .once('error', _ => conn.disconnect())
+      .once('failed', _ => {
         channel.send(
           (new Discord)
             .setColor(helpers.colorRadomEx())
-            .setDescription(`<:error:773623679459262525> Não foi possível reproduzir a música.\nA causa do erro pode ser pelo tempo da espera da conexão ou porque o vídeo sugerido é privado.`)
+            .setDescriptionce(`<:error:773623679459262525> Não foi possível reproduzir a música.\nA causa do erro pode ser pelo tempo da espera da conexão ou porque o vídeo sugerido é privado.`)
         )
       })
 

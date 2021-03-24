@@ -39,19 +39,14 @@ const command = {
     const [messageProps, setMessageProps] = useProps
     const { voiceChannel } = messageProps
 
-    if (!messageProps.conn)
-      voiceChannel
-        .join()
-        .then(connection => {
-          messageProps.conn = connection
-          setMessageProps(messageProps)
-          reproduce(useProps)
-        })
-        .catch(_ => console.warn('Erro ao conectar no canal de voz'))
-    else {
-      setMessageProps(messageProps)
-      reproduce(useProps)
-    }
+    voiceChannel
+      .join()
+      .then(connection => {
+        messageProps.conn = connection
+        setMessageProps(messageProps)
+        reproduce(useProps)
+      })
+      .catch(_ => console.warn('Erro ao conectar no canal de voz'))
   },
 
   collectReactionPrev({ msg, author, embed, icon }) {
@@ -144,7 +139,7 @@ const command = {
       options: { query: args.join(' ').toLowerCase(), limit: 20 },
       success: async data => {
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
-        
+
         result = data?.videos ?? []
 
         embed
