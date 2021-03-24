@@ -22,16 +22,16 @@ let idTime
 
 
     conn
-      .once('error', _ => conn.disconnect())
-      .once('disconnect', _ => disconnect())
+      .on('error', _ => conn.disconnect())
+      .on('disconnect', _ => disconnect())
 
     broadcastDispatcher = helpers.isSpotify(song) ? await reproduceSpotify(song, useProps) :  await reproduceYoutube(song, useProps)
 
     dispatcher = await conn
       .play(broadcast)
-      .once('start', _ => sendMessage(useProps))
-      .once('error', _ => conn.disconnect())
-      .once('failed', _ => {
+      .on('start', _ => sendMessage(useProps))
+      .on('error', _ => conn.disconnect())
+      .on('failed', _ => {
         channel.send( 
           (new Discord)
             .setColor(helpers.colorRadomEx())
@@ -47,13 +47,13 @@ let idTime
   async function reproduceYoutube(song, useProps) {
     return await useProps[0].broadcast
       .play(await ytdl(song.url, { filter: 'audioonly' }), { volume: .8, type: 'opus', highWaterMark: 70 })
-      .once('finish', _ => finish(useProps))
+      .on('finish', _ => finish(useProps))
   }
 
   async function reproduceSpotify(song, useProps) {
     return await useProps[0].broadcast
       .play(await spdl(song.url, { filter: 'audioonly', opusEncoded: true }), { volume: .8, type: 'opus', highWaterMark: 70 })
-      .once('finish', _ => finish(useProps))
+      .on('finish', _ => finish(useProps))
   }
 
   function sendMessage([{ songs, message: { channel } },]) {
