@@ -3,14 +3,14 @@ import fs from 'fs'
 import path from 'path'
 
 const collection = new Discord.Collection()
-const pathAbsolute = path.resolve("./")
+const pathAbsolute = path.resolve('./')
 
 
 const commands = {
     async getCommands(dirName) {
         fs
             .readdirSync(`${pathAbsolute}${dirName}`, { encoding: 'utf8' })
-            .filter(f => !f.startsWith("commands"))
+            .filter(f => !f.startsWith('commands'))
             .forEach(file => {
                 if (fs.statSync(`${pathAbsolute}${dirName}/${file}`).isDirectory() && !['.', '..'].includes(file))
                     this.getCommands(`${dirName}/${file}`)
@@ -18,13 +18,13 @@ const commands = {
                     import(`${pathAbsolute}${dirName}/${file}`)
                         .then( command  => {
                             command = command.default ?? command
-                            if (Array(command).every(v => v.name && v.description && typeof v?.execute == "function")) {
+                            if (Array(command).every(v => v.name && v.description && typeof v?.execute == 'function')) {
                                 collection.set(command.name, command)
 
-                                switch (dirName.replace(/\/(.)+\//,"")) {
-                                    case "music": collection.set("commandsMusic", [...collection.get("commandsMusic") ?? [], command]); break;
+                                switch (dirName.replace(/\/(.)+\//,'')) {
+                                    case 'music': collection.set('commandsMusic', [...collection.get('commandsMusic') ?? [], command]); break;
 
-                                    default: collection.set("commandsOthers", [...collection.get("commandsOthers") ?? [], command]); break;
+                                    default: collection.set('commandsOthers', [...collection.get('commandsOthers') ?? [], command]); break;
 
                                 }
 

@@ -1,18 +1,18 @@
 import helpers from '../../modules/helpers.mjs'
-import { finish } from "../../modules/stateSong.mjs"
+import { finish } from '../../modules/songState.mjs'
 
 const command = {
-  name: "sk",
-  description: "Pula a música e começa a próxima na lista se houver.",
+  name: 'sk',
+  description: 'Pula a música e começa a próxima na lista se houver.',
   execute(useProps) {
     const [{ voiceChannel, embed, conn, songs },] = useProps
     if (!voiceChannel || !conn) return
 
     embed
       .setColor(helpers.colorRadomEx())
-      .setDescription("<:skip:633071783351812096> **Skipped**");
+      .setDescription('<:skip:633071783351812096> **Skipped**');
 
-    songs.get("broadcastDispatcher").destroy()
+    songs.get('broadcastDispatcher').destroy()
 
 
     finish(useProps)

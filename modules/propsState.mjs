@@ -5,12 +5,16 @@ const setUpdate = (value) => {
     localeProp[0] = value
 }
 
-const propsState = (prop) =>  {
+const useState = (prop) =>  {
   if(localeProp === undefined)
     return localeProp = [prop, setUpdate]
   else
     return localeProp
 }
 
+const destroyState = (prop) => {
+  localeProp = undefined
+}
 
-export default propsState
+
+export { useState , destroyState }

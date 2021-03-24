@@ -1,18 +1,18 @@
-import { finish } from "../../modules/stateSong.mjs"
+import { finish } from '../../modules/songState.mjs'
 
 const command = {
-  name: "sp",
-  description: "Finaliza a música.",
+  name: 'sp',
+  description: 'Finaliza a música.',
   execute(useProps) {
     const [{voiceChannel, embed, songs, conn, broadcast, message: { channel } },] = useProps
     
     if (!voiceChannel || !conn || !broadcast) return
 
-    if (songs.get("speaking")) {
+    if (songs.get('speaking')) {
       embed
-        .setDescription("<:stop:648561120155795466> **Stopped**")
+        .setDescription('<:stop:648561120155795466> **Stopped**')
 
-      songs.get("dispatcher").destroy()
+      songs.get('dispatcher').destroy()
 
       channel.send(embed)
 
