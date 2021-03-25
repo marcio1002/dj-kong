@@ -3,13 +3,14 @@ import helpers from '../../modules/helpers.mjs'
 const command = {
   name: 'rs',
   description: 'Retorna a música pausada.',
-  execute([{ voiceChannel, embed, conn, songs, message: { channel } },]) {
+  execute([{ voiceChannel, embed, streaming, songs, message: { channel } },]) {
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !conn) return
+    if (!voiceChannel || !songsProps.connection) return
 
-    if (songs.get('broadcastDispatcher').paused) {
+    if (songsProps.broadcastDispatcher.paused) {
       
-      songs.get('broadcastDispatcher').resume()
+      songsProps.broadcastDispatcher.resume()
 
       embed
         .setColor(helpers.colorRadomEx())

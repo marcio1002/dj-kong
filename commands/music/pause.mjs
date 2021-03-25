@@ -3,16 +3,17 @@ import helpers from '../../modules/helpers.mjs'
 const command  = {
   name: 'ps',
   description: 'Pausa a música.',
-  execute([{ voiceChannel, conn, embed, songs, message: { channel, author } },]) {
+  execute([{ voiceChannel, embed, streaming , message: { channel, author } },]) {
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !conn || !songs.get('broadcastDispatcher') || !songs.get('dispatcher')) return
+    if (!voiceChannel || !songsProps.connection || !songsProps.broadcastDispatcher || !songsProps.dispatcher) return
 
-    if (songs.get('speaking') && !songs.get('broadcastDispatcher').paused) {
+    if (songsProps.speaking && !songsProps.broadcastDispatcher.paused) {
       embed
         .setDescription('<:pause:633071783465058334> **Paused**')
         .setColor(helpers.colorRadomEx())
 
-        songs.get('broadcastDispatcher').pause(true)
+        songsProps.broadcastDispatcher.pause(true)
       
       channel.send(embed)
     }

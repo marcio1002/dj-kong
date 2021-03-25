@@ -1,14 +1,16 @@
 const command = {
   name: 'lv',
   description: 'Saí do canal de voz.',
-  execute([messageProps,]) {
-    const { voiceChannel, conn, broadcast } = messageProps
+  async execute([messageProps,]) {
+    const { voiceChannel, streaming, broadcast, message } = messageProps
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !conn || !broadcast) return
+    if (!voiceChannel || !songsProps?.connection || !broadcast) return
 
-    broadcast.end()
-    conn.disconnect()
-
+    songsProps.broadcastDispatcher.destroy()
+    await songsProps.connection.disconnect()
+    
+    message.react('😢').then( v => (v.remove(),message.react('👋🏾')))    
   }
 }
 

@@ -7,26 +7,27 @@ const command = {
   description: 'Reproduz a música anterior.',
   async execute(useProps) {
     const [ messageProps, setMessageProps] = useProps
-    const { voiceChannel, conn, songs, broadcast, message: { channel } } = messageProps
-    let current,broadcastDispatcher,dispatcher, song
+    const { voiceChannel, streaming, broadcast, message: { channel } } = messageProps
+    let current,broadcastDispatcher,dispatcher
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !conn || !broadcast || songs.get('played') == null) return
+    if (!voiceChannel || !songsProps?.connection || !broadcast || songsProps.played == null) return
 
-    current = songs.get('current')
-    songs.set('current', songs.get('played'))
-    songs.set('played', current)
-    song = songs.get('current')
+    current = songsProps.current
+    songsProps.current = songsProps.played
+    songsProps.played = current
 
-    conn
-    .once('error',  _=> conn.disconnect() )
+
+    songsProps.connection
+    .once('error',  _=> songsProps.connection.disconnect() )
     .once('disconnect', _=> disconnect(useProps))
 
-    broadcastDispatcher = helpers.isSpotify(song) ? await reproduceSpotify(song, useProps) :  await reproduceYoutube(song, useProps)
+    broadcastDispatcher = helpers.isSpotify(songsProps.current) ? await reproduceSpotify(songsProps.current, useProps) :  await reproduceYoutube(songsProps.current, useProps)
 
-    dispatcher = await conn
+    dispatcher = await songsProps.connection
       .play(broadcast)
       .once('start', _ => sendMessage(useProps))
-      .once('error', _ => conn.disconnect())
+      .once('error', _ => songsProps.connection.disconnect())
       .once('failed', _ => {
         channel.send(
           (new Discord)
@@ -35,8 +36,8 @@ const command = {
         )
       })
 
-    songs.set('broadcastDispatcher', broadcastDispatcher)
-    songs.set('dispatcher', dispatcher)
+    songsProps.broadcastDispatcher = broadcastDispatcher
+    songsProps.dispatcher = dispatcher
     setMessageProps(messageProps)
   },
 }

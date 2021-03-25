@@ -3,7 +3,7 @@
   "version": "v2.2.2",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "dj-kong.mjs",
-  "license": "Aladdin",
+  "license": "mit",
   "type": "module",
   "scripts": {
     "start": "node dj-kong.mjs",

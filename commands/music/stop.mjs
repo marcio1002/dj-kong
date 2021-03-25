@@ -4,15 +4,16 @@ const command = {
   name: 'sp',
   description: 'Finaliza a música.',
   execute(useProps) {
-    const [{voiceChannel, embed, songs, conn, broadcast, message: { channel } },] = useProps
-    
-    if (!voiceChannel || !conn || !broadcast) return
+    const [{voiceChannel, embed, streaming, broadcast, message: { channel } },] = useProps
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (songs.get('speaking')) {
+    if (!voiceChannel || !songsProps.connection || !broadcast) return
+
+    if (songsPros.speaking) {
       embed
         .setDescription('<:stop:648561120155795466> **Stopped**')
 
-      songs.get('dispatcher').destroy()
+      songsProps.broadcastDispatcher.destroy()
 
       channel.send(embed)
 

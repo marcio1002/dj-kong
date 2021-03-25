@@ -14,17 +14,11 @@ var host = process.env.HOST ?? '0.0.0.0'
 
 
 bot.on('ready', () => {
-    let size = 0
     commands.set()
-    let userSize = bot.guilds.cache
-        .map(e => e.memberCount)
-        .reduce((prev, curr, i, arr) => {
-            size += curr
-            if(i == arr.length) return size
-        })
-    
+    let members = 0
+    bot.guilds.cache.each(u => { members += u.members.cache.size })
     bot.user.setPresence({ activity: { name: `Digite ${prefix}help para visualizar o menu de comandos.`, type: 'PLAYING', }, status: 'online' })
-    console.info(`Bot Online, com ${userSize} usuários, ${bot.channels.cache.size} canais e ${bot.guilds.cache.size} servidores.`)
+    console.info(`Bot Online com ${members} clientes, ${bot.channels.cache.size} canais e ${bot.guilds.cache.size} servidores.`)
 })
 
 bot.on('guildDelete', guild => console.info(`O bot foi removido do servidor: ${guild.name} \nid: ${guild.id}`))
@@ -50,12 +44,7 @@ bot.on('message', async message => {
             command = args.shift().toLowerCase()
 
         const useProps = useState({
-            songs: new Map([
-                ['queues', []],
-                ['current', null],
-                ['played', null],
-                ['speaking', false]
-            ])
+            streaming: new Discord.Collection()
         })
 
         useProps[0].embed = (new Discord.MessageEmbed()).setColor(helpers.colorRadomEx())

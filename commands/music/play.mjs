@@ -35,18 +35,37 @@ const command = {
     }
   },
 
-  sendConnection(useProps) {
+  sendConnection(useProps, data) {
     const [messageProps, setMessageProps] = useProps
-    const { voiceChannel } = messageProps
+    const { voiceChannel, streaming, message: { author, channel } } = messageProps
+    const streamConnection = streaming.get(voiceChannel?.id)
 
-    voiceChannel
-      .join()
-      .then(connection => {
-        messageProps.conn = connection
+    if (!streamConnection && streamConnection?.voiceChannel?.id !== voiceChannel?.id)
+      voiceChannel
+        .join()
+        .then(connection => {
+          streaming.set(connection.channel.id, {
+            connection,
+            voiceChannel,
+            authorConnection: author,
+            queues: [],
+            current: null,
+            played: null,
+            speaking: false
+          })
+
+          streaming.get(connection.channel.id).queues.push(data)
+
+          setMessageProps(messageProps)
+          reproduce(useProps)
+        })
+        .catch(_ => console.warn('Erro ao conectar no canal de voz'))
+    else {
+        streamConnection.queues.push(data)
         setMessageProps(messageProps)
         reproduce(useProps)
-      })
-      .catch(_ => console.warn('Erro ao conectar no canal de voz'))
+    }
+
   },
 
   collectReactionPrev({ msg, author, embed, icon }) {
@@ -99,7 +118,7 @@ const command = {
 
   async ytUrl(useProps) {
     const [messageProps,] = useProps
-    const { args, embed, songs, message: { channel, author } } = messageProps
+    const { args, embed, message: { channel, author } } = messageProps
     let msg, match
 
     match = args.join(' ').match(/(v=|youtu\.be\/)\b(.)+/)
@@ -115,9 +134,7 @@ const command = {
 
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
 
-        songs.set('queues', [...songs.get('queues'), data])
-
-        this.sendConnection(useProps)
+        this.sendConnection(useProps, data)
       },
       error: console.error
     })
@@ -125,7 +142,7 @@ const command = {
 
   async ytQuery(useProps) {
     const [messageProps,] = useProps
-    const { args, embed, songs, message: { channel, author } } = messageProps
+    const { args, embed, message: { channel, author } } = messageProps
 
     let msg, song
 
@@ -166,9 +183,7 @@ const command = {
 
             result = null
 
-            songs.set('queues', [...songs.get('queues'), song])
-
-            this.sendConnection(useProps)
+            this.sendConnection(useProps, song)
           })
       },
       error: console.error
@@ -177,7 +192,7 @@ const command = {
 
   async spyUrl(useProps) {
     const [messageProps,] = useProps
-    const { args, embed, songs, message: { channel, author } } = messageProps
+    const { args, embed, message: { channel, author } } = messageProps
     let msg, match
 
     match = args.join(' ').match(/track\/\b(.)+(?=si=(.)+)?/)
@@ -193,14 +208,12 @@ const command = {
 
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
 
-        songs.set('queues', [...songs.get('queues'), {
+        this.sendConnection(useProps, {
           url: data.external_urls.spotify,
           title: data.name,
           timestamp: helpers.songTimeStamp(data.duration_ms),
           album: data.album
-        }])
-
-        this.sendConnection(useProps)
+        })
       },
       error: console.error
     })
@@ -208,7 +221,7 @@ const command = {
 
   async spyQuery(useProps) {
     const [messageProps,] = useProps
-    const { args, embed, songs, message: { channel, author } } = messageProps
+    const { args, embed, message: { channel, author } } = messageProps
 
     let msg, song
 
@@ -249,14 +262,12 @@ const command = {
 
             result = null
 
-            songs.set('queues', [...songs.get('queues'), {
+            this.sendConnection(useProps, {
               url: song.external_urls.spotify,
               title: song.name,
               timestamp: helpers.songTimeStamp(song.duration_ms),
               album: song.album
-            }])
-
-            this.sendConnection(useProps)
+            })
           })
       },
       error: console.error

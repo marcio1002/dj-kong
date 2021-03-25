@@ -12,9 +12,4 @@ const useState = (prop) =>  {
     return localeProp
 }
 
-const destroyState = (prop) => {
-  localeProp = undefined
-}
-
-
-export { useState , destroyState }
+export { useState }

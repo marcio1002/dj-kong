@@ -5,17 +5,18 @@ const command = {
   name: 'sk',
   description: 'Pula a música e começa a próxima na lista se houver.',
   execute(useProps) {
-    const [{ voiceChannel, embed, conn, songs },] = useProps
-    if (!voiceChannel || !conn) return
+    const [{ voiceChannel, embed, streaming },] = useProps
+    const songsProps = streaming.get(voiceChannel?.id)
+
+    if (!voiceChannel || !songsProps.connection) return
 
     embed
       .setColor(helpers.colorRadomEx())
       .setDescription('<:skip:633071783351812096> **Skipped**');
 
-    songs.get('broadcastDispatcher').destroy()
+    songsProps.broadcastDispatcher.destroy()
 
-
-    finish(useProps)
+    finish(useProps, voiceChannel)
   }
 }
 

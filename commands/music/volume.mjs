@@ -1,9 +1,10 @@
 const command = {
   name: 'vol',
   description: 'Aumenta ou diminui o volume da música.',
-  execute([{ voiceChannel, args, conn, songs, embed, message: { channel, author } },]) {
+  execute([{ voiceChannel, args, streaming, embed, message: { channel, author } },]) {
+    const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !conn) return
+    if (!voiceChannel || !songsProps?.connection) return
 
     let numberVol = Number(args[0])
     let description
@@ -25,7 +26,7 @@ const command = {
         break
     }
 
-    songs.get('broadcastDispatcher').setVolume(numberVol)
+    songsProps.broadcastDispatcher.setVolume(numberVol)
     channel.send(embed.setDescription(description))
   },
 }

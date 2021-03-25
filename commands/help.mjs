@@ -35,13 +35,13 @@ const command = {
 
       msg = await channel.send(command.sendHelpEmbed(commandsOthers, { author, user }))
 
-      msg.delete({ timeout: 40000 })
-
       await msg.react('\🕹')
-      await msg.react('<:music:648556667364966400>')
+      await msg.react('<:music:824766010363084800>')
+      await msg.react('<:trash:824754345907585035>') //🗑
 
       command.commandsOthers({ commandsOthers, msg, author, user })
       command.commandsMusic({ commandsMusic, msg, author, user })
+      command.closeHelp({ msg, author })
     }
   },
   
@@ -49,16 +49,29 @@ const command = {
     const filter  = (reaction, msgAuthor) => reaction.emoji.name == '\🕹' && msgAuthor.id == author.id
     
     msg
-      .createReactionCollector(filter, { time: 30000 })
-      .on('collect', r => msg.edit({ content: '', embed: command.sendHelpEmbed(commandsOthers, { author, user }) }))
+      .createReactionCollector(filter, { time: 50000 })
+      .on('collect', r => {
+        r.users.remove(author.id)
+        msg.edit({ content: '', embed: command.sendHelpEmbed(commandsOthers, { author, user }) })
+      })
   },
 
   commandsMusic({ commandsMusic, msg, author, user }) {
-    const filter = (reaction, msgAuthor) => reaction.emoji.id == '648556667364966400' && msgAuthor.id == author.id
+    const filter = (reaction, msgAuthor) => reaction.emoji.id == '824766010363084800' && msgAuthor.id == author.id
 
     msg
-      .createReactionCollector(filter, { time: 30000 })
-      .on('collect', r => msg.edit({ content: '', embed: command.sendHelpEmbed(commandsMusic, { author, user }) }))
+      .createReactionCollector(filter, { time: 50000 })
+      .on('collect', r => {
+        r.users.remove(author.id)
+        msg.edit({ content: '', embed: command.sendHelpEmbed(commandsMusic, { author, user }) })
+      })
+  },
+
+  closeHelp({ msg, author }) {
+    const filter = (reaction, msgAuthor) => reaction.emoji.id == '824754345907585035' && msgAuthor.id == author.id
+    msg
+      .createReactionCollector(filter, { time: 100000 })
+      .on('collect', r => msg.delete())
   },
 
   sendHelpEmbed(commands, { author, user }) {

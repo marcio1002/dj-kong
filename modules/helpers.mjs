@@ -10,13 +10,16 @@ const helpers = {
     },
 
     getTimeStamp(createdTimestamp) {
-        let d = new Date(createdTimestamp ?? Date.now())
-        return [d.getHours(), d.getMinutes() ].map( n =>  n < 10 ? `0${n}` : n).join(":")
+        return (new Date(createdTimestamp ?? Date.now()))
+            .toLocaleTimeString('pt-Br',{ timeZone: 'America/Sao_Paulo'})
+            .replace(/:\d{2}$/,"")
     },
 
     getDate(createdTimestamp) {
-        let d = new Date(createdTimestamp ?? Date.now())
-        return [d.getDate(), d.getMonth() + 1, d.getFullYear()].map( n =>  n < 10 ? `0${n}` : n).join("-")
+        return (new Date(createdTimestamp ?? Date.now()))
+            .toLocaleDateString('pt-Br',{ timeZone: 'America/Sao_Paulo'})
+            .split("\/")
+            .join("-")
     },
 
     songTimeStamp(ms) {

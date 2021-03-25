@@ -3,103 +3,92 @@ import ytdl from 'ytdl-core-discord'
 import spdl from 'discord-spdl-core'
 import helpers from '../modules/helpers.mjs'
 import { embedYoutubePlay, embedYoutubeQueue, embedSpotifyPlay, embedSpotifyQueue } from './messageEmbed.mjs'
-import { destroyState } from '../modules/propsState.mjs'
-
-let idTime
 
   async function reproduce(useProps) {
     const [messageProps, setMessageProps] = useProps
-    let { voiceChannel, conn, broadcast, songs, message: { channel } } = messageProps
-    let song = null, broadcastDispatcher = null, dispatcher = null
+    let { voiceChannel, broadcast, streaming, message: { channel } } = messageProps
+    let songsProps = streaming.get(voiceChannel?.id), song = null, broadcastDispatcher = null, dispatcher = null
 
-    if (!voiceChannel || !conn || songs.get('queues').length == 0) return
+    if (!voiceChannel || !songsProps.connection || songsProps.queues.length == 0) return
 
-    if (songs.get('speaking')) {
-      song = songs.get('queues')[songs.get('queues').length - 1]
+    if (songsProps.speaking) {
+      song = songsProps.queues[songsProps.queues.length - 1]
       return channel.send(helpers.isSpotify(song) ? embedSpotifyQueue(song) : embedYoutubeQueue(song))
     } else
-      songs.set('current', song = songs.get('queues').shift())
+      songsProps.current = songsProps.queues.shift()
 
 
-    conn
-      .once('error', _ => conn.disconnect())
-      .once('disconnect', _ => disconnect())
+    songsProps.connection
+      .on('error', _ => songsProps.connection.disconnect())
+      .on('disconnect', _ => disconnect(useProps))
 
-    broadcastDispatcher = helpers.isSpotify(song) ? await reproduceSpotify(song, useProps) :  await reproduceYoutube(song, useProps)
+    broadcastDispatcher = helpers.isSpotify(songsProps.current) ? await reproduceSpotify(songsProps.current, useProps) :  await reproduceYoutube(songsProps.current, useProps)
 
-    dispatcher = await conn
+    dispatcher = await songsProps.connection
       .play(broadcast)
       .once('start', _ => sendMessage(useProps))
-      .once('error', _ => conn.disconnect())
-      .once('failed', _ => {
+      .on('error', _ => songsProps.connection.disconnect())
+      .on('failed', _ => {
         channel.send( 
           (new Discord)
             .setColor(helpers.colorRadomEx())
-            .setDescription(`<:error:773623679459262525> Não foi possível reproduzir a música.\nA causa do erro pode ser pelo tempo da espera da conexão ou porque o vídeo sugerido é privado.`)
+            .setDescription(`<:error:773623679459262525> Não foi possível reproduzir a música.\nA causa do erro pode ser pelo tempo da espera da conexão ou porque a música sugerida é privada.`)
         )
       })
 
-    songs.set('broadcastDispatcher', broadcastDispatcher)
-    songs.set('dispatcher', dispatcher)
+    songsProps.broadcastDispatcher = broadcastDispatcher
+    songsProps.dispatcher = dispatcher
     setMessageProps(messageProps)
   }
 
   async function reproduceYoutube(song, useProps) {
+    let voiceChannel = useProps[0].voiceChannel
+
     return await useProps[0].broadcast
-      .play(await ytdl(song.url, { filter: 'audioonly' }), { volume: .8, type: 'opus', highWaterMark: 70 })
-      .once('finish', _ => finish(useProps))
+      .play(await ytdl(song.url, { filter: 'audioonly' }), { volume: .9, type: 'opus', highWaterMark: 70 })
+      .on('finish', _ => finish(useProps, voiceChannel))
   }
 
   async function reproduceSpotify(song, useProps) {
+    let voiceChannel = useProps[0].voiceChannel
+
     return await useProps[0].broadcast
-      .play(await spdl(song.url, { filter: 'audioonly', opusEncoded: true }), { volume: .8, type: 'opus', highWaterMark: 70 })
-      .once('finish', _ => finish(useProps))
+      .play(await spdl(song.url, { filter: 'audioonly', opusEncoded: true }), { volume: .9, type: 'opus', highWaterMark: 70 })
+      .on('finish', _ => finish(useProps, voiceChannel))
   }
 
-  function sendMessage([{ songs, message: { channel } },]) {
-    songs.set('speaking', true)
+  function sendMessage([{ voiceChannel, streaming, message: { channel } },]) {
+    let songsProps = streaming.get(voiceChannel?.id)
+    songsProps.speaking = true
+
     channel.send( 
-        helpers.isSpotify(songs.get('current')) ? 
-          embedSpotifyPlay(songs.get('current')) : 
-          embedYoutubePlay(songs.get('current'))
+        helpers.isSpotify(songsProps.current) ? 
+          embedSpotifyPlay(songsProps.current) : 
+          embedYoutubePlay(songsProps.current)
     )
   }
 
-  async function finish(useProps) {
+  async function finish(useProps, voiceChannel) {
     const [messageProps, setMessageProps] = useProps
-    const { voiceChannel, conn, songs, bot } = messageProps
-    
-    if (!voiceChannel || !conn) return
+    const { streaming } = messageProps
+    let songsProps = streaming.get(voiceChannel?.id)
 
-    songs.set('speaking', false)
-    songs.set('played', songs.get('current'))
-    songs.set('current', null)
+    if (!voiceChannel || !songsProps?.connection) return
+
+    messageProps.voiceChannel = voiceChannel
+    songsProps.speaking = false
+    songsProps.played = songsProps.current
+    songsProps.current = null
 
     setMessageProps(messageProps)
 
-    if(!idTime) {
-      idTime = setInterval(async () => {
-        if (!voiceChannel || !conn) return clearInterval(idTime)
-    
-        if (voiceChannel.members?.size <= 1 && voiceChannel.members.get(bot.user.id)) {
-          clearInterval(idTime)
-          conn.disconnect()
-        }
-
-        if(voiceChannel.members?.size <= 1 && !voiceChannel.members.get(bot.user.id)) 
-          clearInterval(idTime)
-
-      }, 60000)
-    }
-    
-
-    if ([null, 0].includes(songs.get('queues')?.length)) return
+    if ([null, 0].includes(songsProps.queues.length)) return
 
     reproduce(useProps)
   }
 
-  function disconnect() {
-    destroyState()
+  function disconnect([{ streaming, voiceChannel },]) {
+    streaming.delete(voiceChannel?.id)
   }
 
 

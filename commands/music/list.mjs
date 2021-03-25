@@ -1,11 +1,12 @@
 const command = {
   name: 'ls',
   description: 'Lista as músicas na fila de espera.',
-  execute([{ embed, songs, message: { channel } },]) {
-    let songQueues = []
+  execute([{ voiceChannel, embed, streaming , message: { channel } },]) {
+    let songQueues = [], songsProps = streaming.get(voiceChannel?.id)
+    if(!voiceChannel || songsProps?.connection) return
 
-    songs
-    .get('queues')
+    songsProps
+    .queues
     .forEach(song => songQueues.push(`<:pastaMusic:630461639208075264> [**\`\`${song.title}\`\`**](${song.url}) \n`))
 
     embed
