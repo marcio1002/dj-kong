@@ -17,7 +17,10 @@ const command = {
           .setTitle(`**${commandInfo.name}**`)
           .setDescription(`${commandInfo.description}`);
 
-        (await channel.send(embed)).delete({ timeout: 40000 })
+        msg = await channel.send(embed)
+
+        await msg.react('<:trash:824754345907585035>')
+        command.closeHelp({ msg, author })
       }
     } else {
       commandInfo = commands.getHelpCommands()
@@ -37,7 +40,7 @@ const command = {
 
       await msg.react('\🕹')
       await msg.react('<:music:824766010363084800>')
-      await msg.react('<:trash:824754345907585035>') //🗑
+      await msg.react('<:trash:824754345907585035>')
 
       command.commandsOthers({ commandsOthers, msg, author, user })
       command.commandsMusic({ commandsMusic, msg, author, user })

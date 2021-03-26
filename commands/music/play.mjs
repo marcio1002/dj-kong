@@ -37,7 +37,7 @@ const command = {
 
   sendConnection(useProps, data) {
     const [messageProps, setMessageProps] = useProps
-    const { voiceChannel, streaming, message: { author, channel } } = messageProps
+    const { voiceChannel, streaming, broadcast, message: { author, channel } } = messageProps
     const streamConnection = streaming.get(voiceChannel?.id)
 
     if (!streamConnection && streamConnection?.voiceChannel?.id !== voiceChannel?.id)
@@ -47,6 +47,8 @@ const command = {
           streaming.set(connection.channel.id, {
             connection,
             voiceChannel,
+            broadcast,
+            channel,
             authorConnection: author,
             queues: [],
             current: null,
@@ -176,8 +178,6 @@ const command = {
         msg.channel
           .createMessageCollector(filter, { max: 1, maxUsers: 1, time: 100000 })
           .on('collect', select => {
-            msg.delete()
-
             if (select.content.toLowerCase() === 'cancel') return channel.send('Cancelado')
             if (!(song = result[Number(select.content) - 1])) return
 
@@ -185,6 +185,7 @@ const command = {
 
             this.sendConnection(useProps, song)
           })
+          .on('end', _=> msg.delete())
       },
       error: console.error
     })
@@ -255,8 +256,6 @@ const command = {
         msg.channel
           .createMessageCollector(filter, { max: 1, maxUsers: 1, time: 100000 })
           .on('collect', select => {
-            msg.delete()
-
             if (select.content.toLowerCase() === 'cancel') return channel.send('Cancelado')
             if (!(song = result[Number(select.content) - 1])) return
 
@@ -269,6 +268,7 @@ const command = {
               album: song.album
             })
           })
+          .on('end', _=> msg.delete())
       },
       error: console.error
     })

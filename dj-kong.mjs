@@ -62,7 +62,7 @@ bot.on('message', async message => {
 
         commands.get(command, useProps)
     } catch (ex) {
-        console.log(`Error:\n${ex}`)
+        console.log(`ERROR:\n${ex}`)
     }
 })
 

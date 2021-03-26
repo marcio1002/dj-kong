@@ -3,7 +3,7 @@ import helpers from '../../modules/helpers.mjs'
 const command  = {
   name: 'ps',
   description: 'Pausa a música.',
-  execute([{ voiceChannel, embed, streaming , message: { channel, author } },]) {
+  execute([{ voiceChannel, embed, streaming , message: { channel } },]) {
     const songsProps = streaming.get(voiceChannel?.id)
 
     if (!voiceChannel || !songsProps.connection || !songsProps.broadcastDispatcher || !songsProps.dispatcher) return

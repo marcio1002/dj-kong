@@ -7,7 +7,7 @@ function embedYoutubePlay({ title, thumbnail, url, duration, author }) {
     .setThumbnail(thumbnail)
     .addFields(
       { name: '**Duração**', value: duration.timestamp, inline: true },
-      { name: '**Vídeo**', value: `[Ver no youtube](${url})`, inline: true },
+      { name: '**Vídeo**', value: `[Ouvir no youtube](${url})`, inline: true },
       { name: '**Canal**', value: `[${author.name}](${author.url})`, inline: true },
     )
 }

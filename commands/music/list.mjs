@@ -3,7 +3,7 @@ const command = {
   description: 'Lista as músicas na fila de espera.',
   execute([{ voiceChannel, embed, streaming , message: { channel } },]) {
     let songQueues = [], songsProps = streaming.get(voiceChannel?.id)
-    if(!voiceChannel || songsProps?.connection) return
+    if(!voiceChannel || !songsProps?.connection) return
 
     songsProps
     .queues
