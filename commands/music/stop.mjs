@@ -9,7 +9,7 @@ const command = {
 
     if (!voiceChannel || !songsProps.connection || !broadcast) return
 
-    if (songsPros.speaking) {
+    if (songsProps.speaking) {
       embed
         .setDescription('<:stop:648561120155795466> **Stopped**')
 
