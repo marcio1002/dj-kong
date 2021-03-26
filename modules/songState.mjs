@@ -9,7 +9,7 @@ import { embedYoutubePlay, embedYoutubeQueue, embedSpotifyPlay, embedSpotifyQueu
     let { voiceChannel, broadcast, streaming, message: { channel } } = messageProps
     let songsProps = streaming.get(voiceChannel?.id), song = null, broadcastDispatcher = null, dispatcher = null
 
-    if (!voiceChannel || !songsProps.connection || songsProps.queues.length == 0) return
+    if (!voiceChannel || !songsProps?.connection || songsProps?.queues?.length == 0) return
 
     if (songsProps.speaking) {
       song = songsProps.queues[songsProps.queues.length - 1]

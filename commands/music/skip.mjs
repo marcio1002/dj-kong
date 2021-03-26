@@ -8,7 +8,7 @@ const command = {
     const [{ voiceChannel, embed, streaming },] = useProps
     const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !songsProps.connection) return
+    if (!voiceChannel || !songsProps?.connection) return
 
     embed
       .setColor(helpers.colorRadomEx())

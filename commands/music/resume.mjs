@@ -6,7 +6,7 @@ const command = {
   execute([{ voiceChannel, embed, streaming, songs, message: { channel } },]) {
     const songsProps = streaming.get(voiceChannel?.id)
 
-    if (!voiceChannel || !songsProps.connection) return
+    if (!voiceChannel || !songsProps?.connection) return
 
     if (songsProps.broadcastDispatcher.paused) {
       
