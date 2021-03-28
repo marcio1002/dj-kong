@@ -1,6 +1,7 @@
 const command = {
   name: 'vol',
   description: 'Aumenta ou diminui o volume da música.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}vol + (1 a 3)\`\`\``,
   execute([{ voiceChannel, args, streaming, embed, message: { channel, author } },]) {
     const songsProps = streaming.get(voiceChannel?.id)
 

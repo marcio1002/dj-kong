@@ -3,34 +3,34 @@ import { spTracks } from '../../modules/search_spy.mjs'
 import { reproduce } from '../../modules/songState.mjs'
 import permissionVoiceChannel from '../../modules/permissionVoiceChannel.mjs'
 import helpers from '../../modules/helpers.mjs'
-const prefix = process.env.PREFIX
 
 let result, emjNext, emjPrev, next = 10, prev = 0
 
 const command = {
   name: 'p',
   description: 'Reproduz a música ou adiciona na fila.',
+  exemple: `\n**Como usar:**\n**Spotify**\n\`\`\`\n${PREFIX}!p spotify soja - prison blues\n${PREFIX}!p URL\`\`\`\n**Youtube**\n\`\`\`${PREFIX}!p youtube Isaac gracie - hollow crown\n${PREFIX}!p Isaac gracie - hollow crown\n${PREFIX}!p URL\`\`\``,
   execute(useProps) {
     let { args, embed, message: { channel, author } } = useProps[0]
 
     if (!permissionVoiceChannel(useProps)) return
 
     if (args.length == 0) return channel.send(
-      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${prefix}${this.name} spotify soja - prison blues\`**\n**\`${prefix}${this.name} URL\`**\n\n**Youtube**\n**\`${prefix}${this.name} youtube Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} URL\`**`)
+      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${PREFIX}${command.name} spotify soja - prison blues\`**\n**\`${PREFIX}${command.name} URL\`**\n\n**Youtube**\n**\`${PREFIX}${command.name} youtube Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} URL\`**`)
     )
 
     if (/(https|http):\/\/(www\.)?(.)+/.test(args.join(' '))) {
       if (/(v=|youtu\.be\/)\b(.)+/.test(args.join(' ')))
-        this.ytUrl(useProps)
+        command.ytUrl(useProps)
       else if (/track\/\b(.)+(?=si=(.)+)?/)
-        this.spyUrl(useProps)
+        command.spyUrl(useProps)
     } else {
       if (args[0] == 'youtube' || args[0] != 'youtube' && args[0] != 'spotify') {
         if (/(youtube)/i.test(args.join(' '))) args.shift()
-        this.ytQuery(useProps)
+        command.ytQuery(useProps)
       } else if (args[0] == 'spotify') {
         if (/(spotify)/i.test(args.join(' '))) args.shift()
-        this.spyQuery(useProps)
+        command.spyQuery(useProps)
       }
     }
   },
@@ -63,9 +63,9 @@ const command = {
         })
         .catch(_ => console.warn('Erro ao conectar no canal de voz'))
     else {
-        streamConnection.queues.push(data)
-        setMessageProps(messageProps)
-        reproduce(useProps)
+      streamConnection.queues.push(data)
+      setMessageProps(messageProps)
+      reproduce(useProps)
     }
 
   },
@@ -83,7 +83,7 @@ const command = {
         embed
           .setColor('#E62117')
           .setTitle('Selecione a música para reproduzir no canal voz digitando um numero entre ``1`` a ``10``')
-          .setDescription(await this.listOptions(prev -= 10, next -= 10, icon));
+          .setDescription(await command.listOptions(prev -= 10, next -= 10, icon));
 
         msg.edit({ content: '', embed })
       })
@@ -102,7 +102,7 @@ const command = {
         embed
           .setColor('#E62117')
           .setTitle('Selecione a música para reproduzir no canal voz digitando um numero entre ``1`` a ``10``')
-          .setDescription(await this.listOptions(prev = next, next += 10, icon));
+          .setDescription(await command.listOptions(prev = next, next += 10, icon));
 
         msg.edit({ content: '', embed })
       })
@@ -129,17 +129,15 @@ const command = {
 
     msg = await channel.send('<a:load:771895739672428594>')
 
-    search({
-      options: { videoId: match[0].replace(match[1], '') },
-      success: data => {
+    search({videoId: match[0].replace(match[1], '')})
+      .then(data => {
         msg.delete()
 
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
 
-        this.sendConnection(useProps, data)
-      },
-      error: console.error
-    })
+        command.sendConnection(useProps, data)
+      })
+      .catch(console.error)
   },
 
   async ytQuery(useProps) {
@@ -149,14 +147,13 @@ const command = {
     let msg, song
 
     if (args.length == 0) return channel.send(
-      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${prefix}${this.name} spotify soja - prison blues\`**\n**\`${prefix}${this.name} URL\`**\n\n**Youtube**\n**\`${prefix}${this.name} youtube Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} URL\`**`)
+      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${PREFIX}${command.name} spotify soja - prison blues\`**\n**\`${PREFIX}${command.name} URL\`**\n\n**Youtube**\n**\`${PREFIX}${command.name} youtube Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} URL\`**`)
     )
 
     msg = await channel.send('<a:load:771895739672428594>')
 
-    search({
-      options: { query: args.join(' ').toLowerCase(), limit: 20 },
-      success: async data => {
+    search({ query: args.join(' ').toLowerCase(), limit: 20 })
+      .then(async data => {
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
 
         result = data?.videos ?? []
@@ -164,14 +161,14 @@ const command = {
         embed
           .setColor('#E62117')
           .setTitle('Selecione a música para reproduzir no canal voz.\nVocê pode cancelar digitando `cancel`.\n')
-          .setDescription(await this.listOptions(prev = 0, next = 10, '<:youtube:817569761881227315>'))
+          .setDescription(await command.listOptions(prev = 0, next = 10, '<:youtube:817569761881227315>'))
 
         msg.edit({ content: '', embed })
 
         emjNext = await msg.react('\➡️')
 
-        this.collectReactionNext({ msg, author, embed, icon: '<:youtube:817569761881227315>' })
-        this.collectReactionPrev({ msg, author, embed, icon: '<:youtube:817569761881227315>' })
+        command.collectReactionNext({ msg, author, embed, icon: '<:youtube:817569761881227315>' })
+        command.collectReactionPrev({ msg, author, embed, icon: '<:youtube:817569761881227315>' })
 
         const filter = m => m.author.id === author.id && !isNaN(Number(m.content)) || m.content.toLowerCase() == 'cancel'
 
@@ -183,12 +180,11 @@ const command = {
 
             result = null
 
-            this.sendConnection(useProps, song)
+            command.sendConnection(useProps, song)
           })
-          .on('end', _=> msg.delete())
-      },
-      error: console.error
-    })
+          .on('end', _ => msg.delete())
+      })
+      .catch(console.error)
   },
 
   async spyUrl(useProps) {
@@ -209,7 +205,7 @@ const command = {
 
         if (data.error) return channel.send(embed.setDescription('<:error:773623679459262525> não foi possível reproduzir essa música.'))
 
-        this.sendConnection(useProps, {
+        command.sendConnection(useProps, {
           url: data.external_urls.spotify,
           title: data.name,
           timestamp: helpers.songTimeStamp(data.duration_ms),
@@ -227,7 +223,7 @@ const command = {
     let msg, song
 
     if (args.length == 0) return channel.send(
-      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${prefix}${this.name} spotify soja - prison blues\`**\n**\`${prefix}${this.name} URL\`**\n\n**Youtube**\n**\`${prefix}${this.name} youtube Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} Isaac gracie - hollow crown\`**\n**\`${prefix}${this.name} URL\`**`)
+      embed.setDescription(`<@${author.id}>, digite o título da música ou a url.\n\n**Exemplos**:\n\n**Spotify**\n**\`${PREFIX}${command.name} spotify soja - prison blues\`**\n**\`${PREFIX}${command.name} URL\`**\n\n**Youtube**\n**\`${PREFIX}${command.name} youtube Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} Isaac gracie - hollow crown\`**\n**\`${PREFIX}${command.name} URL\`**`)
     )
 
     msg = await channel.send('<a:load:771895739672428594>')
@@ -242,14 +238,14 @@ const command = {
         embed
           .setColor('#E62117')
           .setTitle('Selecione a música para reproduzir no canal voz.\nVocê pode cancelar digitando `cancel`.\n')
-          .setDescription(await this.listOptions(prev = 0, next = 10, '<:spotify:817569762178629693>'))
+          .setDescription(await command.listOptions(prev = 0, next = 10, '<:spotify:817569762178629693>'))
 
         msg.edit({ content: '', embed })
 
         emjNext = await msg.react('\➡️')
 
-        this.collectReactionNext({ msg, author, embed, icon: '<:spotify:817569762178629693>' })
-        this.collectReactionPrev({ msg, author, embed, icon: '<:spotify:817569762178629693>' })
+        command.collectReactionNext({ msg, author, embed, icon: '<:spotify:817569762178629693>' })
+        command.collectReactionPrev({ msg, author, embed, icon: '<:spotify:817569762178629693>' })
 
         const filter = m => m.author.id === author.id && !isNaN(Number(m.content)) || m.content.toLowerCase() == 'cancel'
 
@@ -261,14 +257,14 @@ const command = {
 
             result = null
 
-            this.sendConnection(useProps, {
+            command.sendConnection(useProps, {
               url: song.external_urls.spotify,
               title: song.name,
               timestamp: helpers.songTimeStamp(song.duration_ms),
               album: song.album
             })
           })
-          .on('end', _=> msg.delete())
+          .on('end', _ => msg.delete())
       },
       error: console.error
     })

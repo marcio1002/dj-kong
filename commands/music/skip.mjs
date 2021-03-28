@@ -4,6 +4,7 @@ import { finish } from '../../modules/songState.mjs'
 const command = {
   name: 'sk',
   description: 'Pula a música e começa a próxima na lista se houver.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}sk\`\`\``,
   execute(useProps) {
     const [{ voiceChannel, embed, streaming },] = useProps
     const songsProps = streaming.get(voiceChannel?.id)

@@ -1,6 +1,7 @@
 const command = {
   name: 'lv',
   description: 'Saí do canal de voz.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}lv\`\`\``,
   async execute([messageProps,]) {
     const { voiceChannel, streaming, broadcast, message } = messageProps
     const songsProps = streaming.get(voiceChannel?.id)

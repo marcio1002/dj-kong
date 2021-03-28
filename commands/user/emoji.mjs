@@ -1,8 +1,7 @@
-const prefix = process.env.PREFIX
-
 const command = {
   name: 'emj',
   description: 'Envia emojis animados no canal de mensagens.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}emj\`\`\``,
   execute: ([messageProps,]) => {
     const { bot, args, message: { channel, guild } } = messageProps
     let guildsEmoji, emoji, filter

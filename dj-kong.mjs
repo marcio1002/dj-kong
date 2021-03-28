@@ -7,17 +7,17 @@ import { useState } from './modules/propsState.mjs'
 
 const app = express()
 const bot = new Discord.Client
-var port = process.env.PORT || Math.floor(Math.random() * 9999)
-var token = process.env.SECRET
-var prefix = process.env.PREFIX
-var host = process.env.HOST ?? '0.0.0.0'
+const PORT = process.env.PORT || Math.floor(Math.random() * 9999)
+const TOKEN = process.env.SECRET
+const host = process.env.HOST ?? '0.0.0.0'
+global.PREFIX = process.env.PREFIX
 
 
 bot.on('ready', () => {
     commands.set()
     let members = 0
     bot.guilds.cache.each(u => { members += u.members.cache.size })
-    bot.user.setPresence({ activity: { name: `Digite ${prefix}help para visualizar o menu de comandos.`, type: 'PLAYING', }, status: 'online' })
+    bot.user.setPresence({activity: { type: 'LISTENING', name: ` música com pessoas legais.\nDigite ${PREFIX}help para mostrar o menu de comandos.` }, status: 'online' })
     console.info(`Bot Online com ${members} clientes, ${bot.channels.cache.size} canais e ${bot.guilds.cache.size} servidores.`)
 })
 
@@ -31,16 +31,16 @@ bot.on('message', async message => {
         if ((new RegExp(`^<@!?${bot.user.id}>$`, 'ig')).test(content)) {
             embed
                 .setTitle(`Olá ${message.author.username}! \nMeu nome é ${bot.user.username} logo a baixo tem minhas descrições:`)
-                .setDescription(`**prefixo:** **\`\`${prefix}\`\`** \n **função:** **\`\`Fazer seu dia/sua noite mais feliz tocando suas músicas favoritas\`\`** \n **Criado por:** **\`\`Marcio#1506\`\`** \n[Copyright (C) 2021 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)`);
+                .setDescription(`**prefixo:** **\`\`${PREFIX}\`\`** \n **função:** **\`\`Fazer seu dia/sua noite mais feliz tocando suas músicas favoritas\`\`** \n **Criado por:** **\`\`Marcio#1506\`\`** \n[Copyright (C) 2021 Aladdin Enterprises](https://github.com/marcio1002/bot-Ondisco/blob/master/LICENCE.md)`);
             return (await message.channel.send(embed)).delete({ timeout: 25000 })
         }
 
-        if (message.author.bot || message.channel.type === 'dm' || !message.content.toLowerCase().startsWith(prefix)) return
+        if (message.author.bot || message.channel.type === 'dm' || !message.content.toLowerCase().startsWith(PREFIX)) return
 
         const
             mentionUser = mentions.users.first(),
             memberMentions = guild.member(mentionUser),
-            args = content.slice(prefix.length).trim().split(/ +/g),
+            args = content.slice(PREFIX.length).trim().split(/ +/g),
             command = args.shift().toLowerCase()
 
         const useProps = useState({
@@ -68,7 +68,7 @@ bot.on('message', async message => {
 
 app.get('/', (_, res) => res.status(200).send('ok'))
 
-bot.login(token)
+bot.login(TOKEN)
 
-app.listen(port, (console.clear(), console.log(`http://${host}:${port}`)))
+app.listen(PORT, (console.clear(), console.log(`http://${host}:${PORT}`)))
 

@@ -3,6 +3,7 @@ import helpers from '../../modules/helpers.mjs'
 const command = {
   name: 'rs',
   description: 'Retorna a música pausada.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}rs\`\`\``,
   execute([{ voiceChannel, embed, streaming, songs, message: { channel } },]) {
     const songsProps = streaming.get(voiceChannel?.id)
 

@@ -2,12 +2,10 @@ import Discord from 'discord.js'
 import helpers from '../modules/helpers.mjs'
 import commands from './commands.mjs'
 
-const prefix = process.env.PREFIX
-
-
 const command = {
   name: 'help',
-  description: `Mostra o menu de ajuda \n\`${prefix}help ou ${prefix}help + comando\`.`,
+  description: `Mostra o menu de ajuda.`,
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}help ou ${PREFIX}help + comando\`\`\``,
   execute: async ([{ embed, args, message: { channel, author }, bot: { user } },]) => {
     let commandInfo, msg = null
 
@@ -15,7 +13,7 @@ const command = {
       if (commandInfo = commands.getHelpCommands().get(args.join(' ').toLowerCase())) {
         embed
           .setTitle(`**${commandInfo.name}**`)
-          .setDescription(`${commandInfo.description}`);
+          .setDescription(`${commandInfo.description}\n${commandInfo.exemple}`);
 
         msg = await channel.send(embed)
 
@@ -81,7 +79,7 @@ const command = {
     return (new Discord.MessageEmbed())
       .setColor(helpers.colorRadomEx())
       .setTitle('<:que:648555789119914005> **```Help```**')
-      .setDescription(`Adicione o **${user.username}** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=8) \n\n**\`\`Prefixo:\`\`** ${prefix}\n\n**\`Comandos\`**`)
+      .setDescription(`Adicione o **${user.username}** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=3891789633) \n\n**\`\`Prefixo:\`\`** ${PREFIX}\n\n**\`Comandos\`**`)
       .addFields(commands)
   }
 }

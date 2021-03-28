@@ -3,6 +3,7 @@ import helpers from '../../modules/helpers.mjs'
 const command  = {
   name: 'ps',
   description: 'Pausa a música.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}ps\`\`\``,
   execute([{ voiceChannel, embed, streaming , message: { channel } },]) {
     const songsProps = streaming.get(voiceChannel?.id)
 

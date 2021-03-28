@@ -5,6 +5,7 @@ import { play, disconnect, reproduceSpotify, reproduceYoutube } from '../../modu
 const command = {
   name: 'rp',
   description: 'Reproduz a música anterior.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}rp\`\`\``,
   async execute(useProps) {
     const [messageProps,] = useProps, { voiceChannel, streaming } = messageProps, songsProps = streaming.get(voiceChannel?.id)
     let current

@@ -3,6 +3,7 @@ import { finish } from '../../modules/songState.mjs'
 const command = {
   name: 'sp',
   description: 'Finaliza a música.',
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}sp\`\`\``,
   execute(useProps) {
     const [{voiceChannel, embed, streaming, broadcast, message: { channel } },] = useProps
     const songsProps = streaming.get(voiceChannel?.id)

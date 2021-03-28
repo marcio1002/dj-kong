@@ -3,6 +3,7 @@ import helpers from '../../modules/helpers.mjs'
 const command = {
     name: 'avatar',
     description: 'Mostra o avatar do perfil.',
+    exemple:`\n**Como usar:**\n\`\`\`${PREFIX}avatar\`\`\``,
     execute: ([messageProps,]) => {
         const { embed, mentionUser, memberMentions, message: { channel, author, createdTimestamp } } = messageProps
         let avatar
