@@ -17,7 +17,7 @@ bot.on('ready', () => {
     commands.set()
     let members = 0
     bot.guilds.cache.each(u => { members += u.members.cache.size })
-    bot.user.setPresence({activity: { type: 'LISTENING', name: ` música com pessoas legais.\nDigite ${PREFIX}help para mostrar o menu de comandos.` }, status: 'online' })
+    bot.user.setPresence({activity: { type: 'LISTENING', name: `${bot.user.username}. Digite ${PREFIX}help para obter o menu de ajuda.` }, status: 'online' })
     console.info(`Bot Online com ${members} clientes, ${bot.channels.cache.size} canais e ${bot.guilds.cache.size} servidores.`)
 })
 

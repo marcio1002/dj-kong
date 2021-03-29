@@ -19,7 +19,7 @@ const command = {
 
       channel.send(embed)
 
-      finish(useProps)
+      finish(useProps, voiceChannel)
     }
   }
 }
