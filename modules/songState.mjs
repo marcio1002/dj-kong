@@ -78,7 +78,7 @@ async function finish(useProps, voiceChannel) {
 
     if(voiceChannel?.members?.size == 1 && voiceChannel.members.get(bot.user.id) )
       songsProps.connection.disconnect()
-  },60000)
+  }, 90000)
 
   if ([null, 0].includes(songsProps.queues.length)) return
 

@@ -4,9 +4,9 @@ const command = {
   exemple: `\n**Como usar:**\n\`\`\`${PREFIX}remove + número\nou\n${PREFIX}remove + título\`\`\``,
   async execute([messageProps, setMessageProps]) {
     let { voiceChannel, embed, args, streaming, message: { channel, author } } = messageProps
-    let songsProps = streaming.get(voiceChannel?.id), value, msg, index
+    let songsProps = streaming.get(voiceChannel?.id), value, msg, index, eventReaction
 
-    if (!voiceChannel || !songsProps?.connection) return
+    if (!voiceChannel || !songsProps?.connection || songsProps?.queues?.length == 0) return
     if (args.length == 0) return channel.send( embed.setDescription(`<@${author.id}>, você precisa selecionar a música para remover. Digite \`${PREFIX}help ${command.name}\` para obter ajuda.`) )
 
     args = args.join(' ')
@@ -25,14 +25,18 @@ const command = {
       await msg.react('<:check:825582630158204928>')
       await msg.react('<:error:773623679459262525>')
 
-      const filter = (reaction, msgAuthor) => reaction.emoji.id == "825582630158204928" && msgAuthor.id == author.id
+      const filter = (reaction, msgAuthor) => ['825582630158204928', '773623679459262525'].includes(reaction.emoji.id) && msgAuthor.id == author.id
 
-      msg
+      eventReaction = msg
         .createReactionCollector(filter, { max: 1, time: 50000 })
-        .on('collect', _ => {
-          if(songsProps.queues.splice(index, 1).length > 0) channel.send('Removido \\👍🏾')
+        .on('collect', r => {
+          if(r.emoji.id == "773623679459262525")
+            eventReaction.stop()
+          else
+            if(songsProps.queues.splice(index, 1).length > 0) channel.send('Removido \\👍🏾')
         })
         .on('end', _=> msg.delete())
+        
     } else 
       (await channel.send(`Não achei essa música na lista.`)).delete({ timeout: 8000 })
 

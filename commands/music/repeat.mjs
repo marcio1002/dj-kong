@@ -10,13 +10,15 @@ const command = {
     const [messageProps,] = useProps, { voiceChannel, streaming } = messageProps, songsProps = streaming.get(voiceChannel?.id)
     let current
 
-    if (!voiceChannel || !songsProps?.connection || !songsProps.broadcast) return
+    if (!voiceChannel || !songsProps?.connection || !songsProps?.broadcast) return
+
+    if(songsProps.speaking && songsProps.current && songsProps.played) songsProps.queues.unshift(songsProps.current)
 
     current = songsProps.current
     songsProps.current = songsProps.played ?? songsProps.current
     songsProps.played = current
 
-    if(songsProps.current == null) return
+    if(!songsProps.current) return
 
     songsProps.connection
       .once('error', _ => songsProps.connection.disconnect())
