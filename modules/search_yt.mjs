@@ -1,9 +1,9 @@
 import yt from 'yt-search'
 
 const search = (options) => {
-  return new Promise((resolve, reject) => {
+  return new Promise( async (resolve, reject) => {
     try {
-      yt(options).then(resolve).catch(reject)
+      resolve(await yt(options))
     } catch (error) {
       reject(error)
     }
