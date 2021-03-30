@@ -3,7 +3,7 @@
   "version": "v2.2.2",
   "description": "Um bot que toca música nos canais de audio do Discord.",
   "main": "dj-kong.mjs",
-  "license": "mit",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "start": "node dj-kong.mjs",
@@ -26,16 +26,14 @@
     "url": "https://github.com/marcio1002/dj-kong"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "0.5",
     "discord-spdl-core": "^1.0.2",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "download-file": "^0.1.5",
     "express": "^4.17.1",
-    "node-spotify-api": "^1.1.1",
     "node-spotify-integration": "^0.0.7",
-    "yt-search": "^2.7.3",
-    "ytdl-core": "^4.5.0",
-    "ytdl-core-discord": "^1.2.5"
+    "yt-search": "2.7.5",
+    "ytdl-core-discord": "^1.3"
   }
 }
