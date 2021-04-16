@@ -1,7 +1,7 @@
 const command = {
   name: 'emj',
   description: 'Envia emojis animados no canal de mensagens.',
-  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}emj\`\`\``,
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}emj :nome_do_emoji:\`\`\``,
   execute: ([messageProps,]) => {
     const { bot, args, message: { channel, guild } } = messageProps
     let guildsEmoji, emoji, filter

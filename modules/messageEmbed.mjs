@@ -34,11 +34,34 @@ function embedSpotifyPlay({ title, timestamp, url, album }) {
     )
 }
 
-function embedSpotifyQueue({ title, timestamp, url, album }) {
+function embedSpotifyQueue({ title, album }) {
   return (new Discord.MessageEmbed())
     .setColor('#1DB954')
     .setThumbnail(album.images[1].url)
     .setTitle(`**Adicionado na fila:** \n\n **\`\`${title}\`\`** `)
 }
 
-export { embedYoutubePlay, embedYoutubeQueue, embedSpotifyPlay, embedSpotifyQueue }
+function embedPlaylist({ title, thumbnail, description, color }) {
+  return (new Discord.MessageEmbed())
+    .setColor(color)
+    .setThumbnail(thumbnail)
+    .setTitle(title)
+    .setDescription(description)
+}
+
+function embedListOptions(options, color) {
+  return (new Discord.MessageEmbed())
+    .setColor(color)
+    .setTitle('Selecione a música para tocar no canal de áudio.\nDigitando o número do índice para seleciona-lo:\n\n')
+    .setDescription(options);
+}
+
+
+export {
+  embedYoutubePlay,
+  embedYoutubeQueue,
+  embedSpotifyPlay,
+  embedSpotifyQueue,
+  embedListOptions,
+  embedPlaylist,
+}

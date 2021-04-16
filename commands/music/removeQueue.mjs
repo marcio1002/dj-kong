@@ -1,7 +1,8 @@
 const command = {
   name: 'remove',
-  description: 'Remove a música escolhida da lista de espera.',
+  description: 'Remove uma música da playlist.',
   exemple: `\n**Como usar:**\n\`\`\`${PREFIX}remove + número\nou\n${PREFIX}remove + título\`\`\``,
+  
   async execute([messageProps, setMessageProps]) {
     let { voiceChannel, embed, args, streaming, message: { channel, author } } = messageProps
     let songsProps = streaming.get(voiceChannel?.id), value, msg, index, eventReaction

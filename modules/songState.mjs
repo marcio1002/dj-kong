@@ -33,7 +33,7 @@ function sendMessage([{ streaming },], voiceChannel) {
   songsProps.speaking = true
 
   songsProps.channel.send(
-    helpers.isSpotify(songsProps.current) ?
+    helpers.isSpotifyURL(songsProps.current.url) ?
       embedSpotifyPlay(songsProps.current) :
       embedYoutubePlay(songsProps.current)
   )
@@ -97,7 +97,7 @@ async function reproduce(useProps) {
 
   if (songsProps.speaking) {
     song = songsProps.queues[songsProps.queues.length - 1]
-    return songsProps.channel.send(helpers.isSpotify(song) ? embedSpotifyQueue(song) : embedYoutubeQueue(song))
+    return songsProps.channel.send(helpers.isSpotifyURL(song.url) ? embedSpotifyQueue(song) : embedYoutubeQueue(song))
   } else
     songsProps.current = songsProps.queues.shift()
 
@@ -106,7 +106,7 @@ async function reproduce(useProps) {
     .once('error', _ => songsProps.connection.disconnect())
     .once('disconnect', _ => disconnect(useProps))
 
-  helpers.isSpotify(songsProps.current) ? 
+  helpers.isSpotifyURL(songsProps.current.url) ? 
     reproduceSpotify(songsProps.current, useProps).then(broadcastDispatcher => play(useProps, broadcastDispatcher)) : 
     reproduceYoutube(songsProps.current, useProps).then(broadcastDispatcher => play(useProps, broadcastDispatcher))  
 }

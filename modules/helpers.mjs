@@ -1,12 +1,7 @@
 const helpers = {
 
     colorRadomEx() {
-        let letters = "123456789ABCDEFGH";
-        let color = "#";
-        for (let c = 0; c < 6; c++) 
-            color += letters[Math.floor(Math.random() * 12)];
-
-        return color;
+        return '#' + (Math.floor(Math.random()*0xFFFFFF<<0)).toString(16)
     },
 
     getTimeStamp(createdTimestamp) {
@@ -25,11 +20,32 @@ const helpers = {
     songTimeStamp(ms) {
         const minutes = Math.floor(ms / 60000);
         const seconds = ((ms % 60000) / 1000).toFixed(0);
-        return [minutes, seconds < 10 ? `0 ${seconds}` : seconds].join(":")
+        return [minutes, seconds.padStart(2,'0')].join(":")
     },
 
-    isSpotify(songs) {
-        return /(https|http)?\/\/(open\.spotify\.com)/.test(songs.url)
+    isSpotifyURL(url) {
+        return /(https|http)?\/\/(www\.)?(open\.spotify\.com)\/(track|album|artist)/.test(url)
+    },
+
+    isYoutubeURL(url) {
+        return /(https|http):\/\/(www\.)?(youtube\.com|youtu\.be){1}/.test(url)
+    },
+
+    formatSpTrack(data) {
+        return {
+            url: data.external_urls.spotify,
+            title: data.name,
+            timestamp: helpers.getTimeStamp(data.duration_ms),
+            album: helpers.formatSpAlbum(data.album)
+          }
+    },
+    formatSpAlbum({ name, images, artists, external_urls }) {
+        return {
+            name,
+            images,
+            artists,
+            external_urls
+        }
     }
 
 }

@@ -24,7 +24,7 @@ const command = {
       .once('error', _ => songsProps.connection.disconnect())
       .once('disconnect', _ => disconnect(useProps))
 
-      helpers.isSpotify(songsProps.current) ? 
+      helpers.isSpotifyURL(songsProps.current) ? 
         reproduceSpotify(songsProps.current, useProps).then(broadcastDispatcher => play(useProps, broadcastDispatcher)) : 
         reproduceYoutube(songsProps.current, useProps).then(broadcastDispatcher => play(useProps, broadcastDispatcher))  
   },
