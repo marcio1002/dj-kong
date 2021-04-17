@@ -40,7 +40,7 @@ const command = {
       .slice(p, n)
       .map(video => `**${option += 1}** ➜ <:youtube:817569761881227315> **\`${video.title ?? video.name}\`** \n`)
 
-    return optionsInfo.length !== 0 ? optionsInfo : `\`Não encontrei ${searchTitle}\``
+    return optionsInfo.length !== 0 ? optionsInfo : `Nenhum resultado relacionado a "${searchTitle}" `
   },
 
   async ytUrl(useProps) {

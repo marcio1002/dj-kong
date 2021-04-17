@@ -3,7 +3,7 @@ import Discord from 'discord.js'
 function embedYoutubePlay({ title, thumbnail, url, duration, author }) {
   return (new Discord.MessageEmbed())
     .setColor('#E62117')
-    .setTitle(`Tocando <a:song:771822822128353320> \n\n**\`\`${title}\`\`**`)
+    .setTitle(`Tocando <a:listening_music:833001205767733289>\n\n**\`\`${title}\`\`**`)
     .setThumbnail(thumbnail)
     .addFields(
       { name: '**Duração**', value: duration.timestamp, inline: true },
@@ -20,17 +20,17 @@ function embedAddQueue({ thumbnail, title, album }, color) {
 }
 
 function embedSpotifyPlay({ title, timestamp, url, album }) {
-  let authors = album.artists.map(s => `[${s.name}](${s.external_urls.spotify})`)
+  let artists = album.artists.map(s => `[${s.name}](${s.external_urls.spotify})`)
 
   return (new Discord.MessageEmbed())
     .setColor('#1DB954')
-    .setTitle(`Tocando <a:song:771822822128353320> \n\n**\`\`${title}\`\`**`)
+    .setTitle(`Tocando <a:listening_music:833001205767733289>\n\n**\`\`${title}\`\`**`)
     .setThumbnail(album.thumbnail)
     .addFields(
       { name: '**Duração**', value: timestamp, inline: true },
       { name: '**Música**', value: `[Ouvir no spotify](${url})`, inline: true },
       { name: '**Album**', value: `[${album.name}](${album.external_urls.spotify})`, inline: true },
-      { name: '**Autores**', value: authors.join('\n') ?? 'Desconhecido', inline: true }
+      { name: '**Artistas**', value: artists.join('\n') ?? 'Desconhecido', inline: true }
     )
 }
 

@@ -94,7 +94,7 @@ const command = {
     return (new Discord.MessageEmbed())
       .setColor(helpers.colorRadomEx())
       .setTitle('<:que:648555789119914005> **```Help```**')
-      .setDescription(`Adicione o **${user.username}** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=3891789633) \n\n**\`\`Prefixo:\`\`** ${PREFIX}\n\n**\`Comandos\`**`)
+      .setDescription(`Adicione o **${user.username}** em outros servidores [Convite](https://discordapp.com/oauth2/authorize?=&client_id=617522102895116358&scope=bot&permissions=3891789633) \n\n**\`\`Prefixo:\`\`** ${PREFIX}`)
       .addFields(commands)
   }
 }

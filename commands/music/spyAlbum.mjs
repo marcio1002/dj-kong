@@ -40,7 +40,7 @@ const command = {
       .slice(pageStart, pageEnd)
       .map(video => `**${option += 1}** ➜ <:spotify:817569762178629693> **\`${video.title ?? video.name}\`** \n`)
 
-    return optionsInfo.length !== 0 ? optionsInfo : `\`Não encontrei ${searchTitle}\``
+    return optionsInfo.length !== 0 ? optionsInfo : `Nenhum resultado relacionado a "${searchTitle}" `
   },
 
   async getAlbum(useProps, search) {
