@@ -25,7 +25,6 @@ const commands = {
                                     case 'music': collection.set('commandsMusic', [...collection.get('commandsMusic') ?? [], command]); break;
 
                                     default: collection.set('commandsOthers', [...collection.get('commandsOthers') ?? [], command]); break;
-
                                 }
 
                             }

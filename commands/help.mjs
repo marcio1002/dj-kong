@@ -7,7 +7,7 @@ const command = {
   description: `Mostra o menu de ajuda.`,
   exemple: `\n**Como usar:**\n\`\`\`${PREFIX}help ou ${PREFIX}help + comando\`\`\``,
   execute: async ([{ embed, args, message: { channel, author }, bot: { user } },]) => {
-    let commandInfo, msg = null
+    let commandInfo, msg = null, regex
 
     if (args.length > 0) {
       if (commandInfo = commands.getHelpCommands().get(args.join(' ').toLowerCase())) {
@@ -23,10 +23,25 @@ const command = {
     } else {
       commandInfo = commands.getHelpCommands()
 
-      const commandsMusic = commandInfo
+      let commandsMusic = commandInfo
         .get('commandsMusic')
-        .map(cm => ({ name: `**${cm.name}**`, value: cm.description, inline: true }))
         .reverse()
+        .sort((a, b) => {
+          const firstCommands = ['p', 'yp', 'album','rp']
+          if (firstCommands.includes(a.name) && !firstCommands.includes(b.name))
+            return -1
+
+          if (!firstCommands.includes(a.name) && firstCommands.includes(b.name))
+            return 1
+
+          if (['remove', 'clear', 'ls'].includes(a.name) && !firstCommands.includes(b.name))
+            return -1
+
+          return 0
+        })
+        .map(cm => ({ name: `**${cm.name}**`, value: cm.description, inline: true }))
+
+
 
 
       const commandsOthers = commandInfo
@@ -45,10 +60,10 @@ const command = {
       command.closeHelp({ msg, author })
     }
   },
-  
+
   commandsOthers({ commandsOthers, msg, author, user }) {
-    const filter  = (reaction, msgAuthor) => reaction.emoji.name == '\🕹' && msgAuthor.id == author.id
-    
+    const filter = (reaction, msgAuthor) => reaction.emoji.name == '\🕹' && msgAuthor.id == author.id
+
     msg
       .createReactionCollector(filter, { time: 50000 })
       .on('collect', r => {

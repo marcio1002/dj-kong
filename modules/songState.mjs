@@ -2,7 +2,7 @@ import Discord from 'discord.js'
 import ytdl from 'ytdl-core-discord'
 import spdl from 'discord-spdl-core'
 import helpers from '../modules/helpers.mjs'
-import { embedYoutubePlay, embedYoutubeQueue, embedSpotifyPlay, embedSpotifyQueue } from './messageEmbed.mjs'
+import { embedYoutubePlay, embedAddQueue, embedSpotifyPlay, embedPlaylistQueue } from './messageEmbed.mjs'
 
 async function reproduceYoutube(song, useProps) {
   const voiceChannel = useProps[0].voiceChannel, songsProps = useProps[0].streaming.get(voiceChannel?.id)
@@ -33,7 +33,7 @@ function sendMessage([{ streaming },], voiceChannel) {
   songsProps.speaking = true
 
   songsProps.channel.send(
-    helpers.isSpotifyURL(songsProps.current.url) ?
+    helpers.isSpotifyURL(songsProps.current.url) ? 
       embedSpotifyPlay(songsProps.current) :
       embedYoutubePlay(songsProps.current)
   )
@@ -78,7 +78,7 @@ async function finish(useProps, voiceChannel) {
 
     if(voiceChannel?.members?.size == 1 && voiceChannel.members.get(bot.user.id) )
       songsProps.connection.disconnect()
-  }, 90000)
+  }, 100000)
 
   if ([null, 0].includes(songsProps.queues.length)) return
 
@@ -91,13 +91,21 @@ function disconnect([{ streaming, voiceChannel },]) {
 
 async function reproduce(useProps) {
   const [messageProps,] = useProps
-  let { voiceChannel, streaming, message: { channel } } = messageProps, songsProps = streaming.get(voiceChannel?.id), song = null
+  let song = null, color, typeMsg, { voiceChannel, streaming, message: { channel } } = messageProps, songsProps = streaming.get(voiceChannel?.id)
 
   if (!voiceChannel || !songsProps?.connection || songsProps?.queues?.length == 0) return
 
   if (songsProps.speaking) {
     song = songsProps.queues[songsProps.queues.length - 1]
-    return songsProps.channel.send(helpers.isSpotifyURL(song.url) ? embedSpotifyQueue(song) : embedYoutubeQueue(song))
+    color = helpers.isSpotifyURL(song.url) ? '#1DB954' : '#E62117'
+    typeMsg = helpers.isSpotifyURL(song.url) ?  1 : 0 
+    return songsProps.channel.send(
+      songsProps.playlist ?
+      embedPlaylistQueue(songsProps.playlist, typeMsg, color) :
+      embedAddQueue(
+        song, 
+        color
+    ))
   } else
     songsProps.current = songsProps.queues.shift()
 
@@ -112,4 +120,4 @@ async function reproduce(useProps) {
 }
 
 
-export { reproduce, play, sendMessage, finish, disconnect, reproduceSpotify, reproduceYoutube, embedSpotifyPlay, embedSpotifyQueue, embedYoutubePlay, embedYoutubeQueue }
+export { reproduce, play, sendMessage, finish, disconnect, reproduceSpotify, reproduceYoutube, embedSpotifyPlay, embedYoutubePlay, embedAddQueue }

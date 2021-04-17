@@ -12,10 +12,10 @@ function embedYoutubePlay({ title, thumbnail, url, duration, author }) {
     )
 }
 
-function embedYoutubeQueue({ thumbnail, title }) {
+function embedAddQueue({ thumbnail, title, album }, color) {
   return (new Discord.MessageEmbed())
-    .setColor('#E62117')
-    .setThumbnail(thumbnail)
+    .setColor(color)
+    .setThumbnail(thumbnail ?? album?.thumbnail)
     .setTitle(`**Adicionado na fila:** \n\n **\`\`${title}\`\`** `)
 }
 
@@ -25,7 +25,7 @@ function embedSpotifyPlay({ title, timestamp, url, album }) {
   return (new Discord.MessageEmbed())
     .setColor('#1DB954')
     .setTitle(`Tocando <a:song:771822822128353320> \n\n**\`\`${title}\`\`**`)
-    .setThumbnail(album.images[1].url)
+    .setThumbnail(album.thumbnail)
     .addFields(
       { name: '**Duração**', value: timestamp, inline: true },
       { name: '**Música**', value: `[Ouvir no spotify](${url})`, inline: true },
@@ -34,11 +34,12 @@ function embedSpotifyPlay({ title, timestamp, url, album }) {
     )
 }
 
-function embedSpotifyQueue({ title, album }) {
+
+function embedPlaylistQueue({ title, thumbnail }, type, color) {
   return (new Discord.MessageEmbed())
-    .setColor('#1DB954')
-    .setThumbnail(album.images[1].url)
-    .setTitle(`**Adicionado na fila:** \n\n **\`\`${title}\`\`** `)
+    .setColor(color)
+    .setThumbnail(thumbnail)
+    .setTitle(`**${type == 1 ? 'Album adicionado' : 'Playlist adicionada'}:** \n\n **\`\`${title}\`\`** `)
 }
 
 function embedPlaylist({ title, thumbnail, description, color }) {
@@ -49,19 +50,19 @@ function embedPlaylist({ title, thumbnail, description, color }) {
     .setDescription(description)
 }
 
-function embedListOptions(options, color) {
+function embedListOptions(title, color, options) {
   return (new Discord.MessageEmbed())
     .setColor(color)
-    .setTitle('Selecione a música para tocar no canal de áudio.\nDigitando o número do índice para seleciona-lo:\n\n')
+    .setTitle(title)
     .setDescription(options);
 }
 
 
 export {
+  embedPlaylistQueue,
   embedYoutubePlay,
-  embedYoutubeQueue,
+  embedAddQueue,
   embedSpotifyPlay,
-  embedSpotifyQueue,
   embedListOptions,
   embedPlaylist,
 }

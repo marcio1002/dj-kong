@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import helpers from '../../modules/helpers.mjs'
 
-let options, embedQueues, prev = 0, next = 10
+let options = [], embedQueues, prev, next
 
 const command = {
   name: 'ls',
@@ -68,6 +68,7 @@ const command = {
     let msg, songsProps = streaming.get(voiceChannel?.id)
     if (!voiceChannel || !songsProps?.connection) return
 
+    prev = 0, next = 10
     options = songsProps.queues
 
     command.listQueues(prev, next)
@@ -75,7 +76,7 @@ const command = {
         msg = await channel.send(command.sendEmbedQueues(op))
         msg.delete({ timeout: 65000 })
 
-        if(typeof op == 'string') return
+        if(typeof op == 'string' || options?.length <= 10) return
         
         await msg.react('\⬅️')
         await msg.react('\➡️')
