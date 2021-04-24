@@ -1,5 +1,5 @@
-import helpers from '../../modules/helpers.mjs'
-import { finish } from '../../modules/songState.mjs'
+import helpers from '../../utils/helpers.mjs'
+import { finish } from '../../utils/songState.mjs'
 
 const command = {
   name: 'sk',

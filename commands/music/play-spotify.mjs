@@ -1,14 +1,14 @@
-import { spTracks } from '../../modules/search_spy.mjs'
-import permissionVoiceChannel from '../../modules/permissionVoiceChannel.mjs'
-import helpers from '../../modules/helpers.mjs'
-import { embedListOptions } from '../../modules/messageEmbed.mjs'
+import { spTracks } from '../../utils/search_spy.mjs'
+import permissionVoiceChannel from '../../utils/permissionVoiceChannel.mjs'
+import helpers from '../../utils/helpers.mjs'
+import { embedListOptions } from '../../utils/messageEmbed.mjs'
 import {
   collectReactionNext,
   collectReactionPrev,
   collectReactionCancel,
   collectMessageOption,
   sendConnection
-} from '../../modules/play.mjs'
+} from '../../utils/play.mjs'
 
 let songs, searchTitle, songTitle = 'Para selecionar a música digite o número que está na frente do título.'
 
@@ -37,9 +37,9 @@ const command = {
 
     optionsInfo = songs
       .slice(pageStart, pageEnd)
-      .map(video => `**${option += 1}** ➜ <:spotify:817569762178629693> **\`${video.title ?? video.name}\`** \n`)
+      .map(video => `**${option += 1}** ➜ <:spotify:817569762178629693> **\`${video.title}\`** \n`)
 
-    return optionsInfo.length !== 0 ? optionsInfo : `Nenhum resultado relacionado a "${searchTitle}" `
+    return optionsInfo.length !== 0 ? optionsInfo : `\`Nenhum resultado relacionado a "${searchTitle}"\` `
   },
 
   async spyUrl(useProps) {
@@ -47,7 +47,7 @@ const command = {
 
     let match = args.join(' ').match(/track\/\b(.)+(?=si=(.)+)?/)
 
-    if (!match) return channel.send(embed.setDescription(`<:error:773623679459262525> <@${author.id}> link inválido`))
+    if (!match) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 
@@ -57,7 +57,7 @@ const command = {
         collectionProps.msg.delete()
         useMessageProps(messageProps)
 
-        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
+        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nenhuma música**.`))
 
         sendConnection(useProps, helpers.formatSpTrack(data))
       },

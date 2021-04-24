@@ -1,9 +1,6 @@
 import Spotify from 'node-spotify-integration'
 
-const spy = Spotify(
-  process.env.SPOTIFY_ID,
-  process.env.SPOTIFY_SECRET
-)
+const spy = Spotify(process.env.SPOTIFY_ID, process.env.SPOTIFY_SECRET)
 
 const spTracks = ({ query = null, urlId = null, success, error }) => {
   if (urlId != null)

@@ -1,7 +1,7 @@
-import search from '../../modules/search_yt.mjs'
-import permissionVoiceChannel from '../../modules/permissionVoiceChannel.mjs'
-import helpers from '../../modules/helpers.mjs'
-import { embedPlaylist, embedListOptions } from '../../modules/messageEmbed.mjs'
+import { ytVideo, ytPlaylist } from '../../utils/search_yt.mjs'
+import permissionVoiceChannel from '../../utils/permissionVoiceChannel.mjs'
+import helpers from '../../utils/helpers.mjs'
+import { embedPlaylist, embedListOptions } from '../../utils/messageEmbed.mjs'
 import {
   collectReactionNext,
   collectReactionPrev,
@@ -9,7 +9,7 @@ import {
   collectMessageOption,
   collectReactionConfirm,
   sendConnection
-} from '../../modules/play.mjs'
+} from '../../utils/play.mjs'
 
 let songs, searchTitle, songTitle = 'Para selecionar a música digite o número que está na frente do título.'
 
@@ -38,31 +38,33 @@ const command = {
 
     optionsInfo = songs
       .slice(p, n)
-      .map(video => `**${option += 1}** ➜ <:youtube:817569761881227315> **\`${video.title ?? video.name}\`** \n`)
+      .map(video => `**${option += 1}** ➜ <:youtube:817569761881227315> **\`${video.title}\`** \n`)
 
-    return optionsInfo.length !== 0 ? optionsInfo : `Nenhum resultado relacionado a "${searchTitle}" `
+    return optionsInfo.length !== 0 ? optionsInfo : `\`Nenhum resultado relacionado a "${searchTitle}"\` `
   },
 
   async ytUrl(useProps) {
     const [messageProps, useMessageProps] = useProps, { collectionProps, args, embed, message: { channel, author } } = messageProps
-    let video, playlist, options
+    let url, videoId, listId, search
 
-    playlist = args.join(' ').match(/(playlist\?list=)\b(.)+/)
-    video = args.join(' ').match(/(v=|youtu\.be\/)\b(.)+/)
+    url = new URL(args.join(' '))
+    listId = url.searchParams.get('list') ?? null
+    videoId = url.searchParams.get('v') ?? args.join(' ').match(/(youtu\.be\/)\b(.)+/)?.replace('youtu\.be\/','')
 
-    if (!video && !playlist) return channel.send(embed.setDescription(`<:error:773623679459262525> <@${author.id}> link inválido`))
-
-    options = video ? { videoId: video[0].replace(video[1], '') } : { listId: playlist[0].replace(playlist[1], '') }
+    if (!videoId && !listId) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 
-    search(options)
+    search = videoId ? ytVideo({ videoId }) : ytPlaylist({ listId })
+
+    search
       .then(data => {
-        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
+        if (!data) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nenhum(a) playlist/vídeo.`))
 
-        if (playlist) {
-
-          collectionProps.songs = songs = data.videos.map(v => ({ url: `https://youtube.com/watch?v=${v.videoId}`, ...v }))
+        if (listId) {
+          data = helpers.formatYtPlayList(data)
+          
+          collectionProps.songs = songs = data.videos.map(helpers.formatYtQuery)
           collectionProps.songs.title = data.title
           collectionProps.songs.thumbnail = data.thumbnail
           collectionProps.type = 'playlist'
@@ -95,11 +97,12 @@ const command = {
           })
 
         } else {
+          data = helpers.formatYtQuery(data)
           collectionProps.msg.delete()
           sendConnection(useProps, data)
         }
       })
-      .catch(_ => collectionProps.msg.delete())
+      .catch(_ => console.log(_) && collectionProps.msg.delete())
   },
 
   async ytQuery(useProps) {
@@ -107,11 +110,11 @@ const command = {
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 
-    search({ query: args.join(' ').toLowerCase(), limit: 20 })
+    ytVideo({ video: args.join(' ').toLowerCase(), options: { pageStart: 0, pageEnd: 10 } })
       .then(data => {
-        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
+        if (!data) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
 
-        collectionProps.songs = songs = data?.videos ?? []
+        collectionProps.songs = songs = data.map(helpers.formatYtQuery)
         collectionProps.type = 'query'
 
         command.listOptions(0, 10).then(async d => {

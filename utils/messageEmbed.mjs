@@ -1,14 +1,14 @@
 import Discord from 'discord.js'
 
-function embedYoutubePlay({ title, thumbnail, url, duration, author }) {
+function embedYoutubePlay({ title, thumbnail, url, timestamp, channel }) {
   return (new Discord.MessageEmbed())
     .setColor('#E62117')
     .setTitle(`Tocando <a:listening_music:833001205767733289>\n\n**\`\`${title}\`\`**`)
     .setThumbnail(thumbnail)
     .addFields(
-      { name: '**Duração**', value: duration.timestamp, inline: true },
+      { name: '**Duração**', value: timestamp, inline: true },
       { name: '**Vídeo**', value: `[Ouvir no youtube](${url})`, inline: true },
-      { name: '**Canal**', value: `[${author.name}](${author.url})`, inline: true },
+      { name: '**Canal**', value: `[${channel.title}](${channel.url})`, inline: true },
     )
 }
 
@@ -56,7 +56,6 @@ function embedListOptions(title, color, options) {
     .setTitle(title)
     .setDescription(options);
 }
-
 
 export {
   embedPlaylistQueue,

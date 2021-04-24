@@ -1,14 +1,14 @@
-import { spAlbums } from '../../modules/search_spy.mjs'
-import permissionVoiceChannel from '../../modules/permissionVoiceChannel.mjs'
-import helpers from '../../modules/helpers.mjs'
-import { embedPlaylist } from '../../modules/messageEmbed.mjs'
+import { spAlbums } from '../../utils/search_spy.mjs'
+import permissionVoiceChannel from '../../utils/permissionVoiceChannel.mjs'
+import helpers from '../../utils/helpers.mjs'
+import { embedPlaylist } from '../../utils/messageEmbed.mjs'
 import {
   collectReactionNext,
   collectReactionPrev,
   collectReactionCancel,
   collectMessageOption,
   collectReactionConfirm,
-} from '../../modules/play.mjs'
+} from '../../utils/play.mjs'
 
 let songs, searchTitle, songTitle = 'Para selecionar o album digite o número que está na frente do título.'
 
@@ -40,7 +40,7 @@ const command = {
       .slice(pageStart, pageEnd)
       .map(video => `**${option += 1}** ➜ <:spotify:817569762178629693> **\`${video.title ?? video.name}\`** \n`)
 
-    return optionsInfo.length !== 0 ? optionsInfo : `Nenhum resultado relacionado a "${searchTitle}" `
+    return optionsInfo.length !== 0 ? optionsInfo : `\`Nenhum resultado relacionado a "${searchTitle}"\` `
   },
 
   async getAlbum(useProps, search) {
@@ -99,7 +99,7 @@ const command = {
 
     let match = args.join(' ').match(/album\/\b(.)+(?=si=(.)+)?/)
 
-    if (!match) return channel.send(embed.setDescription(`<:error:773623679459262525> <@${author.id}> link inválido`))
+    if (!match) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 

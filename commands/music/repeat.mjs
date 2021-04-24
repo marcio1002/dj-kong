@@ -1,6 +1,6 @@
 import Discord from 'discord.js'
-import helpers from '../../modules/helpers.mjs'
-import { play, disconnect, reproduceSpotify, reproduceYoutube } from '../../modules/songState.mjs'
+import helpers from '../../utils/helpers.mjs'
+import { play, disconnect, reproduceSpotify, reproduceYoutube } from '../../utils/songState.mjs'
 
 const command = {
   name: 'rp',

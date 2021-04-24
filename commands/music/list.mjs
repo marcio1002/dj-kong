@@ -1,5 +1,5 @@
 import Discord from 'discord.js'
-import helpers from '../../modules/helpers.mjs'
+import helpers from '../../utils/helpers.mjs'
 
 let options = [], embedQueues, prev, next
 

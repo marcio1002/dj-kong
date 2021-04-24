@@ -18,9 +18,9 @@ const helpers = {
     },
 
     songTimeStamp(ms) {
-        const minutes = Math.floor(ms / 60000);
-        const seconds = ((ms % 60000) / 1000).toFixed(0);
-        return [minutes, seconds.padStart(2,'0')].join(":")
+        const hours = Math.floor(ms / 60000)
+        const minutes = Math.floor((ms % 60000) / 1000)
+        return [hours, minutes].map(v => v.toString().padStart(2,'0')).join(":")
     },
 
     isSpotifyURL(url) {
@@ -46,6 +46,26 @@ const helpers = {
             thumbnail: images[1]?.url,
             artists,
             external_urls
+        }
+    },
+
+    formatYtQuery({ title, url, duration, thumbnail, channel }) {
+        return {
+            title,
+            url,
+            thumbnail: thumbnail.url,
+            timestamp: helpers.songTimeStamp(duration),
+            channel: { title: channel.name, url: channel.url }
+        }
+    },
+
+    formatYtPlayList({ title, url, videos, duration, thumbnail, channel }) {
+        return {
+            title,
+            url,
+            videos,
+            thumbnail,
+            channel: { title: channel.name, url: channel.url }
         }
     }
 

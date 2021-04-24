@@ -1,9 +1,9 @@
-import helpers from '../../modules/helpers.mjs'
+import helpers from '../../utils/helpers.mjs'
 
 const command = {
     name: 'avatar',
     description: 'Mostra o avatar do perfil.',
-    exemple:`\n**Como usar:**\n\`\`\`${PREFIX}avatar\n${PREFIX}avatar @nome_do_usuário\`\`\``,
+    exemple:`\n**Como usar:**\n\`\`\`${PREFIX}avatar\n${PREFIX}avatar @nickName\`\`\``,
     execute: ([messageProps,]) => {
         const { embed, mentionUser, memberMentions, message: { channel, author, createdTimestamp } } = messageProps
         let avatar
@@ -18,7 +18,7 @@ const command = {
             avatar = author.displayAvatarURL({ size: 1024, dynamic: true })
 
         embed
-            .setDescription(`<:image:633071783414726666>** [Baixar avatar](${avatar})**`)
+            .setDescription(`<:image:633071783414726666> **${memberMentions?.user?.username ?? author.username}**`)
             .setImage(avatar)
 
         channel.send(embed)

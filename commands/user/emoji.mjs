@@ -1,12 +1,12 @@
 const command = {
   name: 'emj',
   description: 'Envia emojis animados no canal de mensagens.',
-  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}emj :nome_do_emoji:\`\`\``,
+  exemple: `\n**Como usar:**\n\`\`\`${PREFIX}emj \⏯ \n\nor \n\n${PREFIX}emj :emoji_animado:\`\`\``,
   execute: ([messageProps,]) => {
     const { bot, args, message: { channel, guild } } = messageProps
     let guildsEmoji, emoji, filter
 
-    if (!args || args.length == 0) return channel.send(`Digite ou cole o emoji\nexem: \`\`${prefix} :emoji:\`\``)
+    if (!args || args.length == 0) return channel.send(`Consulte o comando \`${PREFIX}help emj\` para saber como usar o comando.`)
 
     filter = emoji => emoji.name == args[0].match(/\w+[^\:\\;]/)
 

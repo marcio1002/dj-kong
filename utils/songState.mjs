@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import ytdl from 'ytdl-core-discord'
 import spdl from 'discord-spdl-core'
-import helpers from '../modules/helpers.mjs'
+import helpers from '../utils/helpers.mjs'
 import { embedYoutubePlay, embedAddQueue, embedSpotifyPlay, embedPlaylistQueue } from './messageEmbed.mjs'
 
 let eventFinish = null

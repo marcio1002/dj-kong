@@ -2,8 +2,8 @@ import 'dotenv/config.js'
 import express from 'express'
 import Discord from 'discord.js'
 import commands from './commands/commands.mjs'
-import helpers from './modules/helpers.mjs'
-import { useState } from './modules/propsState.mjs'
+import helpers from './utils/helpers.mjs'
+import { useState } from './utils/propsState.mjs'
 
 const app = express()
 const bot = new Discord.Client
@@ -11,6 +11,8 @@ const PORT = process.env.PORT || Math.floor(Math.random() * 9999)
 const TOKEN = process.env.SECRET
 const host = process.env.HOST ?? '0.0.0.0'
 global.PREFIX = process.env.PREFIX
+
+// let commandDelay = []
 
 
 bot.on('ready', () => {

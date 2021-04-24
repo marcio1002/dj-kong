@@ -1,4 +1,4 @@
-import helpers from '../../modules/helpers.mjs'
+import helpers from '../../utils/helpers.mjs'
 
 const command  = {
   name: 'ps',

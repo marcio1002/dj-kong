@@ -5,8 +5,7 @@ let prev = 0, next = 10
 
 
 function sendConnection(useProps, data) {
-  const [messageProps, setMessageProps] = useProps
-  const { voiceChannel, streaming, broadcast, message: { author, channel } } = messageProps
+  const [messageProps, setMessageProps] = useProps, { voiceChannel, streaming, broadcast, message: { author, channel } } = messageProps
   const streamConnection = streaming.get(voiceChannel?.id)
   prev = 0, next = 10
 

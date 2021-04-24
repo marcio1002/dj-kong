@@ -1,4 +1,4 @@
-import { finish } from '../../modules/songState.mjs'
+import { finish } from '../../utils/songState.mjs'
 
 const command = {
   name: 'sp',
