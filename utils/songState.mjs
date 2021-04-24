@@ -14,7 +14,7 @@ async function reproduceYoutube(song, useProps) {
   return ytdl(song.url, { filter: 'audioonly' })
     .then(stream => {
       return songsProps.broadcast
-        .play(stream, { volume: .8, type: 'opus', highWaterMark: 80 })
+        .play(stream, { volume: 1, type: 'opus', highWaterMark: 80 })
         .once('finish', eventFinish)
     })
     .catch(console.error)
@@ -28,7 +28,7 @@ async function reproduceSpotify(song, useProps) {
   return spdl(song.url, { filter: 'audioonly', opusEncoded: true })
     .then(stream => {
       return songsProps.broadcast
-        .play(stream, { volume: .8, type: 'opus', highWaterMark: 80 })
+        .play(stream, { volume: 1, type: 'opus', highWaterMark: 80 })
         .once('finish', eventFinish)
     })
     .catch(console.error)

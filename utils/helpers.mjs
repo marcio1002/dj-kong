@@ -35,9 +35,9 @@ const helpers = {
         return {
             url: data.external_urls.spotify,
             title: data.name,
-            timestamp: helpers.getTimeStamp(data.duration_ms),
+            timestamp: helpers.songTimeStamp(data.duration_ms),
             ...(data?.album) ? { album: helpers.formatSpAlbum(data.album) } : {}
-          }
+        }
     },
     
     formatSpAlbum({ name, images, artists, external_urls, thumbnail }) {
