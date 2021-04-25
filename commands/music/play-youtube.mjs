@@ -50,7 +50,7 @@ const command = {
     
     url = new URL(args.join(' '))
 
-    listId = url.searchParams.get('list') ?? null
+    listId = args.join(' ').match(/(youtube\.com)\/playlist?(.)+/) ? url.searchParams.get('list') : null
     videoId = url.searchParams.get('v') ??  (
      (videoId = url.href.match(/(youtu\.be\/)(.)+/)) ? videoId[0].replace('youtu\.be\/','') : null
     )
