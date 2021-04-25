@@ -11,7 +11,7 @@ const command = {
     if(songsProps.queues.length == 0) return channel.send(embed.setDescription(`<@${author.id}>, a playlist já está vazia`))
 
     
-    let msg = await channel.send( embed.setDescription(`<:warning:773623678830903387> <@${author.id}> realmente deseja limpar a playlist?`) )
+    let msg = await channel.send( embed.setDescription(`<:alert:773623678830903387> <@${author.id}> realmente deseja limpar a playlist?`) )
 
       await msg.react('<:check:825582630158204928>')
       await msg.react('<:error:773623679459262525>')

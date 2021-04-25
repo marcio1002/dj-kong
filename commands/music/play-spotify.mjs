@@ -44,20 +44,25 @@ const command = {
 
   async spyUrl(useProps) {
     const [messageProps, useMessageProps] = useProps, { collectionProps, args, embed, message: { channel, author } } = messageProps
+    let url, audioId
 
-    let match = args.join(' ').match(/track\/\b(.)+(?=si=(.)+)?/)
+    url = new URL(args.join(' ')) 
 
-    if (!match) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
+    audioId = 
+      (audioId = url.href.match(/track\/(.)+(?=\?si)/)) ? audioId[0].replace(/[\/]*(track)[\/]/, '') : null ??
+      url.pathname.replace(/[\/]*(track)[\/]/,'')
+
+    if (!audioId) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 
     spTracks({
-      urlId: match[0].replace('track\/', ''),
+      urlId: audioId,
       success: ({ data }) => {
         collectionProps.msg.delete()
         useMessageProps(messageProps)
 
-        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nenhuma música**.`))
+        if (!data || data.error) return channel.send(embed.setDescription(`**<:alert:773623678830903387> não encontrei nenhuma música**.`))
 
         sendConnection(useProps, helpers.formatSpTrack(data))
       },
@@ -73,7 +78,10 @@ const command = {
     spTracks({
       query: args.join(' ').toLowerCase(),
       success: async ({ data }) => {
-        if (!data || data.error) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
+        if (!data || data.error) {
+          collectionProps.msg.delete()
+          return channel.send(embed.setDescription(`<:alert:773623678830903387> nenhum resultado relacionado a **\`${searchTitle}\`**.`))
+        }
 
         collectionProps.songs = songs = data?.items.map(helpers.formatSpTrack) ?? []
         collectionProps.type = 'query'

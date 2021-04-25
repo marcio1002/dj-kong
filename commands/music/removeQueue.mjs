@@ -27,7 +27,7 @@ const command = {
     }
 
     if (value && songsDeleting) {
-      msg = await channel.send( embed.setDescription(`<:warning:773623678830903387> <@${author.id}> realmente deseja remover \n**\`\`${value.title ?? value}\`\`** ?`) )
+      msg = await channel.send( embed.setDescription(`<:alert:773623678830903387> <@${author.id}> realmente deseja remover \n**\`\`${value.title ?? value}\`\`** ?`) )
 
       await msg.react('<:check:825582630158204928>')
       await msg.react('<:error:773623679459262525>')

@@ -47,9 +47,13 @@ const command = {
     const [messageProps, useMessageProps] = useProps, { collectionProps, args, embed, message: { channel, author } } = messageProps
     let url, videoId, listId, search
 
+    
     url = new URL(args.join(' '))
+
     listId = url.searchParams.get('list') ?? null
-    videoId = url.searchParams.get('v') ?? args.join(' ').match(/(youtu\.be\/)\b(.)+/)?.replace('youtu\.be\/','')
+    videoId = url.searchParams.get('v') ??  (
+     (videoId = url.href.match(/(youtu\.be\/)(.)+/)) ? videoId[0].replace('youtu\.be\/','') : null
+    )
 
     if (!videoId && !listId) return channel.send(embed.setDescription(`<:error:773623679459262525>  link inválido`))
 
@@ -59,7 +63,7 @@ const command = {
 
     search
       .then(data => {
-        if (!data) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nenhum(a) playlist/vídeo.`))
+        if (!data) return channel.send(embed.setDescription(`**<:alert:773623678830903387> não encontrei nenhum(a) playlist/vídeo.**`))
 
         if (listId) {
           data = helpers.formatYtPlayList(data)
@@ -110,9 +114,9 @@ const command = {
 
     collectionProps.msg = await channel.send('<a:load:771895739672428594>')
 
-    ytVideo({ video: args.join(' ').toLowerCase(), options: { pageStart: 0, pageEnd: 10 } })
+    ytVideo({ video: args.join(' ').toLowerCase(), options: { pageStart: 0, pageEnd: 25 } })
       .then(data => {
-        if (!data) return channel.send(embed.setDescription(`<:error:773623679459262525> não encontrei nada relacionado a **\`${searchTitle}\`**.`))
+        if (!data) return channel.send(embed.setDescription(`<:alert:773623678830903387> nenhum resultado relacionado a **\`${searchTitle}\`**.`))
 
         collectionProps.songs = songs = data.map(helpers.formatYtQuery)
         collectionProps.type = 'query'
