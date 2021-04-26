@@ -2,7 +2,7 @@
 <h1 align='center'>Dj. Kong</h1>
 
 
-![](https://img.shields.io/badge/Dj--Kong-v2.0-blue) ![](https://img.shields.io/static/v1?style=flat&label=Discord&message=^12.3&color=7289DA&logo=discord&logoColor=7289DA&link=https://discord.js.org/#) ![](https://img.shields.io/static/v1?style=flat&logo=javascript&label=%20&message=JavaScript&color=2B2B2B) ![](https://img.shields.io/badge/MIT7294FE)
+[![](https://img.shields.io/badge/Dj--Kong-v2.0-blue)](https://github.com/marcio1002/dj-kong) [![](https://img.shields.io/static/v1?style=flat&label=Discord&message=^12.3&color=7289DA&logo=discord&logoColor=7289DA&link=https://discord.js.org/#)](https://discord.js.org/#) [![](https://img.shields.io/static/v1?style=flat&logo=javascript&label=%20&message=JavaScript&color=2B2B2B)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 
 ### Dj. Kong é um bot Discord com funções de streaming de música para tocar nos canais de voz. 
 
