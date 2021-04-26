@@ -7,9 +7,8 @@ import { useState } from './utils/propsState.mjs'
 
 const app = express()
 const bot = new Discord.Client
-const PORT = process.env.PORT || Math.floor(Math.random() * 9999)
-const TOKEN = process.env.SECRET
-const host = process.env.HOST ?? '0.0.0.0'
+const PORT = process.env.PORT ?? Math.floor(Math.random() * 9999)
+const TOKEN = process.env.TOKEN
 global.PREFIX = process.env.PREFIX
 
 // let commandDelay = []
@@ -72,5 +71,5 @@ app.get('/', (_, res) => res.status(200).send('ok'))
 
 bot.login(TOKEN)
 
-app.listen(PORT, (console.clear(), console.log(`http://${host}:${PORT}`)))
+app.listen(PORT, (console.clear(), console.log(`http://0.0.0.0:${PORT}`)))
 

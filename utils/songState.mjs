@@ -14,7 +14,7 @@ async function reproduceYoutube(song, useProps) {
   return ytdl(song.url, { filter: 'audioonly' })
     .then(stream => {
       return songsProps.broadcast
-        .play(stream, { volume: 1, type: 'opus', highWaterMark: 80 })
+        .play(stream, { volume: 1.5, type: 'opus', highWaterMark: 80 })
         .once('finish', eventFinish)
     })
     .catch(console.error)
@@ -28,7 +28,7 @@ async function reproduceSpotify(song, useProps) {
   return spdl(song.url, { filter: 'audioonly', opusEncoded: true })
     .then(stream => {
       return songsProps.broadcast
-        .play(stream, { volume: 1, type: 'opus', highWaterMark: 80 })
+        .play(stream, { volume: 1.5, type: 'opus', highWaterMark: 80 })
         .once('finish', eventFinish)
     })
     .catch(console.error)
@@ -47,9 +47,10 @@ function sendMessage([{ streaming },], voiceChannel) {
 
 async function play(useProps, broadcastDispatcher) {
   const [messageProps, setMessageProps] = useProps
-  let dispatcher, eventStart, eventError, eventFailed, { voiceChannel, streaming, message: { channel } } = messageProps, songsProps = streaming.get(voiceChannel?.id)
+  let dispatcher, eventStart, eventDisconnect, eventError, eventFailed, { voiceChannel, streaming, message: { channel } } = messageProps, songsProps = streaming.get(voiceChannel?.id)
 
   eventStart = _ => sendMessage(useProps, voiceChannel)
+  eventDisconnect = _=> disconnect()
   eventError = _ => songsProps.connection.disconnect()
   eventFailed = _ => channel.send(
     (new Discord)
@@ -62,6 +63,7 @@ async function play(useProps, broadcastDispatcher) {
     songsProps.broadcastDispatcher.removeAllListeners('finish')
     songsProps.dispatcher
       .removeAllListeners('start')
+      .removeAllListeners('disconnect')
       .removeAllListeners('error')
       .removeAllListeners('failed')
   }
@@ -69,6 +71,7 @@ async function play(useProps, broadcastDispatcher) {
   dispatcher = await songsProps.connection
     .play(songsProps.broadcast)
     .once('start', eventStart)
+    .once('disconnect', eventDisconnect)
     .once('error', eventError)
     .once('failed', eventFailed)
 
