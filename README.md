@@ -11,7 +11,7 @@
 
 ### Quero rodar no meu ambiente
 
-Antes de tudo preencha as variáveis de ambiente no arquivo `.env`, você pode usar o arquivo de exemplo `.env.exemple` para preencher as veriáveis de forma certa e rodar aplicação.
+Antes de tudo preencha as variáveis de ambiente no arquivo `.env`, você pode usar o arquivo de exemplo `.env.exemple` para preencher as variáveis de forma certa e rodar aplicação.
 
 Rode a aplicação com `yarn dev` ou `npm run dev`
 
